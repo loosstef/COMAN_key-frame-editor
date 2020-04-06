@@ -89,7 +89,7 @@ void InputHandler::handleMouse() {
         double diffY = currMousePosY - mLastMousePosY;
         double moveSideways = diffX * MOUSE_SENSITIVITY_MOVEMENT;
         double moveForward = diffY * MOUSE_SENSITIVITY_MOVEMENT;
-        mRenderEngine->getEditorCamera().move(glm::vec3(-moveSideways, 0.0f, moveForward));
+        mRenderEngine->getEditorCamera().relativeMove(glm::vec3(-moveSideways, 0.0f, moveForward));
     }
 
     mLastMousePosX = currMousePosX;

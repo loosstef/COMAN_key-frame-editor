@@ -22,7 +22,7 @@
 
 
 const float ROT_SPEED = 0.15f;
-const float SCROLL_SENSITIVITY = 0.20f;
+const float SCROLL_SENSITIVITY = 0.30f;
 const int cursorMode = GLFW_CURSOR_NORMAL;
 
 char VERTEX_SHADER_FILENAME[] = "simple_shader.vert";
@@ -39,12 +39,14 @@ RenderEngine* renderEngine;
 
 // callback functions
 void glfw_window_size_callback(GLFWwindow* window, int width, int height) {
+    g_gl_width = width;
+    g_gl_height = height;
     renderEngine->onWindowSizeChange(width, height);
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    renderEngine->getEditorCamera().move(glm::vec3(0.0f, yoffset*SCROLL_SENSITIVITY, 0.0f));
+    renderEngine->getEditorCamera().relativeMove(glm::vec3(0.0f, yoffset*SCROLL_SENSITIVITY, 0.0f));
 }
 
 

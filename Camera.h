@@ -15,6 +15,7 @@ public:
     glm::mat4 getViewMatrix();
     void rot(float horAngle, float verAngle);
     void move(glm::vec3 movement);
+    void relativeMove(glm::vec3 movement);
 private:
     glm::vec3 calcViewDir();
     void rotHor(float angle);

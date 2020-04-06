@@ -45,7 +45,15 @@ void Camera::move(glm::vec3 movement) {
     glm::vec4 sideWaysViewDirHomo = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::vec4(horizontalViewDir, 1.0f);
     glm::vec3 sideWaysViewDir = glm::vec3(sideWaysViewDirHomo.x/sideWaysViewDirHomo.w, sideWaysViewDirHomo.y/sideWaysViewDirHomo.w, sideWaysViewDirHomo.z/sideWaysViewDirHomo.w);
     mPos += sideWaysViewDir * movement.x;
+}
 
+
+void Camera::relativeMove(glm::vec3 movement) {
+    glm::mat4 rotMat = glm::rotate(glm::mat4(1.0f), glm::radians(mRotY), glm::vec3(0.0f, 1.0f, 0.0f));
+    rotMat = glm::rotate(rotMat, glm::radians(mRotX), glm::vec3(1.0f, 0.0f, 0.0f));
+    rotMat = glm::rotate(rotMat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    glm::vec3 absMoveVec = rotMat * glm::vec4(movement, 1.0f);
+    mPos += absMoveVec;
 }
 
 
