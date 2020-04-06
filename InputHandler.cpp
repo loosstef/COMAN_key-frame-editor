@@ -5,6 +5,12 @@
 #include <fstream>
 #include <iostream>
 #include "InputHandler.h"
+#include "Camera.h"
+
+InputHandler::InputHandler(GLFWwindow *window, RenderEngine *renderEngine) :
+    window(window), mRenderEngine(renderEngine)
+{
+}
 
 void InputHandler::loadFile(char *fileName, std::string &content) {
     content.clear();
@@ -39,7 +45,7 @@ GLuint InputHandler::loadAndCompileShader(char *fileName, GLenum shaderType) {
 }
 
 
-glm::vec3 InputHandler::readMoveButtons(GLFWwindow* window, float moveSpeed) {
+glm::vec3 InputHandler::readMoveButtons_DEPRECATED(GLFWwindow* window, float moveSpeed) {
     glm::vec3 movement(0.0f);
     if(GLFW_PRESS == glfwGetKey(window, GLFW_KEY_LEFT)) {
         movement += glm::vec3(-moveSpeed, 0.0f, 0.0f);
@@ -60,4 +66,32 @@ glm::vec3 InputHandler::readMoveButtons(GLFWwindow* window, float moveSpeed) {
         movement += (glm::vec3(0.0f, moveSpeed, 0.0f));
     }
     return movement;
+}
+
+void InputHandler::handleMouse() {
+    double currMousePosX, currMousePosY;
+    glfwGetCursorPos(window, &currMousePosX, &currMousePosY);
+
+    // handle right mouse button (for rotation)
+    int rightBtnState = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT);
+    if(rightBtnState == GLFW_PRESS) {
+        double diffX = currMousePosX - mLastMousePosX;
+        double diffY = currMousePosY - mLastMousePosY;
+        double rotX = diffX*MOUSE_SENSITIVITY_ROTATION;
+        double rotY = diffY*MOUSE_SENSITIVITY_ROTATION;
+        mRenderEngine->getEditorCamera().rot(rotX, rotY);
+    }
+
+    // handle middle mouse button (for movement)
+    int middleBtnState = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE);
+    if(middleBtnState == GLFW_PRESS) {
+        double diffX = currMousePosX - mLastMousePosX;
+        double diffY = currMousePosY - mLastMousePosY;
+        double moveSideways = diffX * MOUSE_SENSITIVITY_MOVEMENT;
+        double moveForward = diffY * MOUSE_SENSITIVITY_MOVEMENT;
+        mRenderEngine->getEditorCamera().move(glm::vec3(-moveSideways, 0.0f, moveForward));
+    }
+
+    mLastMousePosX = currMousePosX;
+    mLastMousePosY = currMousePosY;
 }

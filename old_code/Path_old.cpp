@@ -3,15 +3,15 @@
 //
 
 #include <iostream>
-#include "Path.h"
+#include "Path_old.h"
 
 
-Path::Path(float *points, int pointsCount, GLenum mode) : Object(points, pointsCount, mode) {
+Path_old::Path_old(float *points, int pointsCount, GLenum mode) : Object(points, pointsCount, mode) {
 
 }
 
 
-glm::vec3 Path::valueArcLength(float g) {
+glm::vec3 Path_old::valueArcLength(float g) {
     if(g == 1.0f) {
         return valueParametric(1.0f);
     }
@@ -30,7 +30,7 @@ glm::vec3 Path::valueArcLength(float g) {
  * Populate the arc length table
  * @param stepCount
  */
-void Path::populateArcLengthTable(uint stepCount) {
+void Path_old::populateArcLengthTable(uint stepCount) {
     mTableStepSize = 1.0f / stepCount;
     float currArcLength = 0.0f;
     mArcLengthTable.push_back(currArcLength);
@@ -55,7 +55,7 @@ void Path::populateArcLengthTable(uint stepCount) {
  * @param v2 point 2
  * @return the distance
  */
-float Path::dist(glm::vec3 v1, glm::vec3 v2) {
+float Path_old::dist(glm::vec3 v1, glm::vec3 v2) {
     return sqrtf(powf(v1.x-v2.x, 2) + powf(v1.y-v2.y, 2) + powf(v1.z-v2.z, 2));
 }
 
@@ -65,7 +65,7 @@ float Path::dist(glm::vec3 v1, glm::vec3 v2) {
  * @param arcLength the searched for arc length
  * @return the index of the arc length which is closest to the given one
  */
-uint Path::locateClosestArcLength(float arcLength) {
+uint Path_old::locateClosestArcLength(float arcLength) {
     int closestIndex;
     float closestArcDist = INFINITY;
     for(int i = 0; i < mArcLengthTable.size(); ++i) {

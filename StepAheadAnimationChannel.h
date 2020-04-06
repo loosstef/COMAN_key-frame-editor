@@ -16,6 +16,7 @@ class StepAheadAnimationChannel {
 public:
     void render(int frameIndex, GLint uniformLocTransMat);
     void addObject(Object* object);
+    void setPath(Path* path);
 private:
     std::vector<Object*> mObjects;
     Path* mPath = nullptr;

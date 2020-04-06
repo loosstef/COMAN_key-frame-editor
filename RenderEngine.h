@@ -22,6 +22,7 @@ public:
     void render(int frameIndex);
     void addSaaChannel(StepAheadAnimationChannel *saaChannel);
     Camera& getEditorCamera();
+    void onWindowSizeChange(uint width, uint height);
 private:
     GLint mUniformLocTransMat;
     GLint mUniformLocViewMat;

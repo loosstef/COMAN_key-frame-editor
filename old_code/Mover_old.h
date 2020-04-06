@@ -7,20 +7,20 @@
 
 
 #include <chrono>
-#include "Object.h"
-#include "old_code/Path.h"
-#include "Chrono.h"
+#include "../Object.h"
+#include "Path_old.h"
+#include "../Chrono.h"
 
-class Mover {
+class Mover_old {
 public:
-    Mover(Object &obj, Path &path);
+    Mover_old(Object &obj, Path_old &path);
     glm::mat4 translation(float time);
     void draw(GLint uniTrans);
     void start();
     void pause();
 private:
     Object &mObject;
-    Path &mPath;
+    Path_old &mPath;
     Chrono mChrono;
 };
 

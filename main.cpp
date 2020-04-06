@@ -7,22 +7,22 @@
 #include <string>
 #include "Logger.h"
 #include "Camera.h"
-#include "BSpline.h"
+#include "old_code/BSpline_old.h"
 #include "Cube.h"
 #include "InputHandler.h"
-#include "Mover.h"
+#include "old_code/Mover_old.h"
 #include "StepAheadAnimationChannel.h"
 #include "RenderEngine.h"
 
 #include "vendor/imgui/imgui.h"
 #include "vendor/imgui/imgui_impl_opengl3.h"
 #include "vendor/imgui/imgui_impl_glfw.h"
+#include "LinearPath.h"
+#include "Path.h"
 
 
-const float MOVE_SPEED = 0.07f;
 const float ROT_SPEED = 0.15f;
-const float NEAR_CLIPPING = 1.0f;
-const float FAR_CLIPPING = 50.0f;
+const float SCROLL_SENSITIVITY = 0.20f;
 const int cursorMode = GLFW_CURSOR_NORMAL;
 
 char VERTEX_SHADER_FILENAME[] = "simple_shader.vert";
@@ -32,10 +32,19 @@ char FRAGMENT_SHADER_FILENAME[] = "simple_shader.frag";
 int g_gl_width = 1080;
 int g_gl_height = 720;
 
+
+// global variables
+RenderEngine* renderEngine;
+
+
+// callback functions
 void glfw_window_size_callback(GLFWwindow* window, int width, int height) {
-    g_gl_width = width;
-    g_gl_height = height;
-    //proj = gl#include <array>m::perspective(glm::radians(45.0f),  ((float)g_gl_width) / ((float)g_gl_height), NEAR_CLIPPING, FAR_CLIPPING);
+    renderEngine->onWindowSizeChange(width, height);
+}
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    renderEngine->getEditorCamera().move(glm::vec3(0.0f, yoffset*SCROLL_SENSITIVITY, 0.0f));
 }
 
 
@@ -83,6 +92,7 @@ int main() {
 
     glfwMakeContextCurrent(window);
     glfwSetWindowSizeCallback(window, glfw_window_size_callback);
+    glfwSetScrollCallback(window, scroll_callback);
 
     // start GLEW extension handler
     glewExperimental = GL_TRUE;
@@ -94,9 +104,9 @@ int main() {
         glfwSetCursorPos(window, 0, 0);
     }
 
-    //glEnable(GL_CULL_FACE); // cull face
-    //glCullFace(GL_BACK); // cull back face
-    //glFrontFace(GL_CW); // GL_CCW for counter clock-wise
+//    glEnable(GL_CULL_FACE); // cull face
+//    glCullFace(GL_BACK); // cull back face
+//    glFrontFace(GL_CW); // GL_CCW for counter clock-wise
 
     // get version info
     const GLubyte* renderer = glGetString(GL_RENDERER); // get renderer string
@@ -117,13 +127,13 @@ int main() {
     glAttachShader(shaderProgram, vs);
     glLinkProgram(shaderProgram);
 
-    Camera nav;
+//    Camera nav;
 
-    Cube cube;
-    cube.loadToGPU();
+//    Cube cube;
+//    cube.loadToGPU();
 
 //    const int bSplinePoints = 100;
-//    BSpline bSpline(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 2.0f, 0.0f));
+//    BSpline_old bSpline(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 2.0f, 0.0f));
 //    bSpline.add(glm::vec3(0.0f, 2.0f, 2.0f));
 //    bSpline.add(glm::vec3(-2.0f, 1.0f, 2.0f));
 //    bSpline.add(glm::vec3(2.0f, -2.0f, 0.0f));
@@ -134,7 +144,7 @@ int main() {
 //    bSpline.populatePointsVector(bSplinePoints);
 //    bSpline.loadToGPU();
 
-//    Mover mover(cube, bSpline);
+//    Mover_old mover(cube, bSpline);
 //    bSpline.populateArcLengthTable(20);
 
 //    glm::mat4 model = glm::mat4(1.0f);
@@ -147,6 +157,9 @@ int main() {
     GLint uniTrans = glGetUniformLocation(shaderProgram, "modelMatrix");
     GLint uniView = glGetUniformLocation(shaderProgram, "viewMatrix");
 
+    renderEngine = new RenderEngine(uniProj, uniView, uniTrans);
+    InputHandler inputHandler(window, renderEngine);
+
 //    mover.start();
 
     // imgui initialization
@@ -156,14 +169,20 @@ int main() {
     ImGui_ImplOpenGL3_Init();
     ImGui::StyleColorsDark();
 
-    // NEW CODE
-    RenderEngine renderEngine(uniProj, uniView, uniTrans);
+    // INITIALIZING TEST DATA
     StepAheadAnimationChannel saaChannel;
-    renderEngine.addSaaChannel(&saaChannel);
+    renderEngine->addSaaChannel(&saaChannel);
     Cube realCube;
     saaChannel.addObject(&realCube);
     realCube.loadToGPU();
-    // END OF NEW CODE
+    LinearPath realPath;
+    saaChannel.setPath(&realPath);
+    realPath.addKeyframe({100, glm::vec3(0.5f)});
+    realPath.addKeyframe({0, glm::vec3(0.0f)});
+    realPath.addKeyframe({150, glm::vec3(-0.5f)});
+    // END OF INITIALIZATION OF DATA
+
+    uint frameIndex = 0;
 
     while(!glfwWindowShouldClose(window)) {
         // loop init of imgui
@@ -184,23 +203,26 @@ int main() {
 //        mover.draw(uniTrans);
 //        cube.draw(uniTrans, model2);
 //        bSpline.draw(uniTrans);
-        renderEngine.render(0);
+        renderEngine->render(frameIndex);
+        ++frameIndex;
         // update other events like input handling
         glfwPollEvents();
         // close screen when esc button is pressed
         if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_ESCAPE)) {
             glfwSetWindowShouldClose(window, 1);
         }
-        renderEngine.getEditorCamera().move(InputHandler::readMoveButtons(window, MOVE_SPEED));
+//        renderEngine.getEditorCamera().move(InputHandler::readMoveButtons_DEPRECATED(window, MOVE_SPEED));
+
+        inputHandler.handleMouse();
 
         // mouse input
-        if(cursorMode != GLFW_CURSOR_NORMAL) {
-            const float mouseSensitivity = 0.05f;
-            double mouseX, mouseY;
-            glfwGetCursorPos(window, &mouseX, &mouseY);
-            nav.rot(ROT_SPEED * (float)mouseX, ROT_SPEED * (float)mouseY);
-            glfwSetCursorPos(window, 0, 0); //reset the mouse, so it doesn't go out of the window
-        }
+//        if(cursorMode != GLFW_CURSOR_NORMAL) {
+//            const float mouseSensitivity = 0.05f;
+//            double mouseX, mouseY;
+//            glfwGetCursorPos(window, &mouseX, &mouseY);
+//            nav.rot(ROT_SPEED * (float)mouseX, ROT_SPEED * (float)mouseY);
+//            glfwSetCursorPos(window, 0, 0); //reset the mouse, so it doesn't go out of the window
+//        }
 
         // put the stuff we've been drawing onto the display
 

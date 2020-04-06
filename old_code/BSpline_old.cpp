@@ -3,25 +3,25 @@
 //
 
 #include <glm/gtc/type_ptr.hpp>
-#include "BSpline.h"
+#include "BSpline_old.h"
 
 float matrixArray[16] = {-1, 3, -3, 1, 3, -6, 0, 4, -3, 3, 3, 1, 1, 0, 0, 0};
 glm::mat4 matrix(-1, 3, -3, 1, 3, -6, 0, 4, -3, 3, 3, 1, 1, 0, 0, 0);
 
 
-BSpline::BSpline(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 p4) : Path_old(nullptr, 0, GL_LINE_STRIP) {
+BSpline_old::BSpline_old(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 p4) : Path_old(nullptr, 0, GL_LINE_STRIP) {
     mKnotVector.push_back(p1);
     mKnotVector.push_back(p2);
     mKnotVector.push_back(p3);
     mKnotVector.push_back(p4);
 }
 
-void BSpline::add(glm::vec3 knot) {
+void BSpline_old::add(glm::vec3 knot) {
     mKnotVector.push_back(knot);
 }
 
 
-glm::vec3 BSpline::valueParametric(int i, float u) {
+glm::vec3 BSpline_old::valueParametric(int i, float u) {
     if(i > mKnotVector.size()-3 || i < 0) {
         throw "ERROR. Can't get valueParametric of B-Spline. Value i is too big";
     }
@@ -32,7 +32,7 @@ glm::vec3 BSpline::valueParametric(int i, float u) {
 }
 
 
-glm::vec3 BSpline::valueParametric(float u) {
+glm::vec3 BSpline_old::valueParametric(float u) {
     int n = mKnotVector.size();
     if(u == 1) {
         return valueParametric(n - 4, 1);
@@ -45,7 +45,7 @@ glm::vec3 BSpline::valueParametric(float u) {
 
 const int SIZE_OF_STRIP_POINT = 6;
 
-void BSpline::populatePointsVector(uint pointsCount) {
+void BSpline_old::populatePointsVector(uint pointsCount) {
     int pointCount = pointsCount;
     auto *data = new float[SIZE_OF_STRIP_POINT * pointCount];
 

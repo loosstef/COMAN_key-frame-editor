@@ -4,14 +4,14 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
-#include "Mover.h"
+#include "Mover_old.h"
 
 const float DURATION = 5.0f;
 
-Mover::Mover(Object &obj, Path &path) : mObject(obj), mPath(path) {
+Mover_old::Mover_old(Object &obj, Path_old &path) : mObject(obj), mPath(path) {
 }
 
-glm::mat4 Mover::translation(float time) {
+glm::mat4 Mover_old::translation(float time) {
     glm::mat4 modelMatrix(1.0f);
     float arcLength = time / DURATION;
     while(arcLength > 1.0f) {
@@ -22,16 +22,16 @@ glm::mat4 Mover::translation(float time) {
     return modelMatrix;
 }
 
-void Mover::draw(GLint uniTrans) {
+void Mover_old::draw(GLint uniTrans) {
     double moveTime = mChrono.getTime();
     glm::mat4 modelMatrix = translation(moveTime);
     mObject.draw(uniTrans, modelMatrix);
 }
 
-void Mover::start() {
+void Mover_old::start() {
     mChrono.start();
 }
 
-void Mover::pause() {
+void Mover_old::pause() {
     mChrono.pause();
 }

@@ -49,3 +49,16 @@ void RenderEngine::addSaaChannel(StepAheadAnimationChannel *saaChannel) {
 Camera &RenderEngine::getEditorCamera() {
     return *mEditorCamera;
 }
+
+void RenderEngine::onWindowSizeChange(uint width, uint height) {
+    mWindowWidth = width;
+    mWindowHeight = height;
+
+    mProjectionMatrix = glm::perspective(
+            glm::radians(45.0f),
+            ((float)mWindowWidth) / ((float)mWindowHeight),
+            CAMERA_NEAR_CLIPPING,
+            CAMERA_FAR_CLIPPING
+    );
+    glUniformMatrix4fv(mUniformLocProjMat, 1, GL_FALSE, glm::value_ptr(mProjectionMatrix));
+}
