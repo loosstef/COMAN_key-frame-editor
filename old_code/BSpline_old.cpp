@@ -9,7 +9,7 @@ float matrixArray[16] = {-1, 3, -3, 1, 3, -6, 0, 4, -3, 3, 3, 1, 1, 0, 0, 0};
 glm::mat4 matrix(-1, 3, -3, 1, 3, -6, 0, 4, -3, 3, 3, 1, 1, 0, 0, 0);
 
 
-BSpline::BSpline(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 p4) : Path(nullptr, 0, GL_LINE_STRIP) {
+BSpline::BSpline(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 p4) : Path_old(nullptr, 0, GL_LINE_STRIP) {
     mKnotVector.push_back(p1);
     mKnotVector.push_back(p2);
     mKnotVector.push_back(p3);

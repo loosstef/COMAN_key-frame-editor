@@ -8,10 +8,10 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include "Object.h"
-#include "Path.h"
+#include "old_code/Path_old.h"
 
 
-class BSpline : public Path {
+class BSpline : public Path_old {
 public:
     BSpline(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 p4);
     void add(glm::vec3 knot);
