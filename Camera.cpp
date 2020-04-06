@@ -3,7 +3,7 @@
 //
 
 #include <iostream>
-#include "Navigator.h"
+#include "Camera.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/string_cast.hpp>
@@ -16,14 +16,14 @@ const float MAX_HORIZONTAL_CAM_ROT = 180;
 /**
  * Constructor
  */
-Navigator::Navigator() {
+Camera::Camera() {
     mPos = glm::vec3(1.2f, 1.2f, 1.2f);
     setRotXSafe(-45.0f);
     setRotYSafe(45.0f);
 }
 
 
-glm::mat4 Navigator::getViewMatrix() {
+glm::mat4 Camera::getViewMatrix() {
     glm::mat4 viewMatrix = glm::lookAt(
             mPos,
             mPos + calcViewDir(),
@@ -33,7 +33,7 @@ glm::mat4 Navigator::getViewMatrix() {
 }
 
 
-void Navigator::move(glm::vec3 movement) {
+void Camera::move(glm::vec3 movement) {
     glm::vec3 horizontalViewDir = calcViewDir();
     horizontalViewDir.y = 0;
     horizontalViewDir = glm::normalize(horizontalViewDir);
@@ -49,7 +49,7 @@ void Navigator::move(glm::vec3 movement) {
 }
 
 
-glm::vec3 Navigator::calcViewDir() {
+glm::vec3 Camera::calcViewDir() {
     glm::mat4 rotViewMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(mRotY), glm::vec3(0.0f, 1.0f, 0.0f));
     rotViewMatrix = glm::rotate(rotViewMatrix, glm::radians(mRotX), glm::vec3(1.0f, 0.0f, 0.0f));
     glm::vec4 homogeneViewDir = rotViewMatrix * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f);
@@ -57,23 +57,23 @@ glm::vec3 Navigator::calcViewDir() {
 }
 
 
-void Navigator::rotHor(float angle) {
+void Camera::rotHor(float angle) {
     setRotYSafe(getRotY() - angle);
 }
 
 
-void Navigator::rotVert(float angle) {
+void Camera::rotVert(float angle) {
     setRotXSafe(getRotX() - angle);
 }
 
 
-void Navigator::rot(float horAngle, float verAngle) {
+void Camera::rot(float horAngle, float verAngle) {
     rotHor(horAngle);
     rotVert(verAngle);
 }
 
 
-void Navigator::setRotXSafe(float rotX) {
+void Camera::setRotXSafe(float rotX) {
     if(rotX > MAX_VERTICAL_CAM_ROT ) {
         mRotX = MAX_VERTICAL_CAM_ROT;
     }
@@ -85,7 +85,7 @@ void Navigator::setRotXSafe(float rotX) {
     }
 }
 
-void Navigator::setRotYSafe(float rotY) {
+void Camera::setRotYSafe(float rotY) {
     if(rotY > MAX_HORIZONTAL_CAM_ROT) {
         mRotY = -2 * MAX_HORIZONTAL_CAM_ROT + rotY;
     }

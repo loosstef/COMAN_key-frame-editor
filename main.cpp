@@ -6,12 +6,13 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
 #include "Logger.h"
-#include "Navigator.h"
-#include "Lights.h"
+#include "Camera.h"
 #include "BSpline.h"
 #include "Cube.h"
 #include "InputHandler.h"
 #include "Mover.h"
+#include "StepAheadAnimationChannel.h"
+#include "RenderEngine.h"
 
 #include "vendor/imgui/imgui.h"
 #include "vendor/imgui/imgui_impl_opengl3.h"
@@ -116,37 +117,37 @@ int main() {
     glAttachShader(shaderProgram, vs);
     glLinkProgram(shaderProgram);
 
-    Navigator nav;
+    Camera nav;
 
     Cube cube;
     cube.loadToGPU();
 
-    const int bSplinePoints = 100;
-    BSpline bSpline(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 2.0f, 0.0f));
-    bSpline.add(glm::vec3(0.0f, 2.0f, 2.0f));
-    bSpline.add(glm::vec3(-2.0f, 1.0f, 2.0f));
-    bSpline.add(glm::vec3(2.0f, -2.0f, 0.0f));
-    bSpline.add(glm::vec3(0.0f, -3.0f, 0.0f));
-    bSpline.add(glm::vec3(0.0f, 0.0f, 0.0f));
-    bSpline.add(glm::vec3(0.0f, 0.0f, 0.0f));
-    bSpline.add(glm::vec3(0.0f, 0.0f, 0.0f));
-    bSpline.populatePointsVector(bSplinePoints);
-    bSpline.loadToGPU();
+//    const int bSplinePoints = 100;
+//    BSpline bSpline(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 2.0f, 0.0f));
+//    bSpline.add(glm::vec3(0.0f, 2.0f, 2.0f));
+//    bSpline.add(glm::vec3(-2.0f, 1.0f, 2.0f));
+//    bSpline.add(glm::vec3(2.0f, -2.0f, 0.0f));
+//    bSpline.add(glm::vec3(0.0f, -3.0f, 0.0f));
+//    bSpline.add(glm::vec3(0.0f, 0.0f, 0.0f));
+//    bSpline.add(glm::vec3(0.0f, 0.0f, 0.0f));
+//    bSpline.add(glm::vec3(0.0f, 0.0f, 0.0f));
+//    bSpline.populatePointsVector(bSplinePoints);
+//    bSpline.loadToGPU();
 
-    Mover mover(cube, bSpline);
-    bSpline.populateArcLengthTable(20);
+//    Mover mover(cube, bSpline);
+//    bSpline.populateArcLengthTable(20);
 
-    glm::mat4 model = glm::mat4(1.0f);
-    glm::mat4 model2 = glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0.0f, 0.0f));
-    glm::mat4 view = nav.getViewMatrix();
-    glm::mat4 proj = glm::perspective(glm::radians(45.0f),  ((float)g_gl_width) / ((float)g_gl_height), NEAR_CLIPPING, FAR_CLIPPING);
+//    glm::mat4 model = glm::mat4(1.0f);
+//    glm::mat4 model2 = glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0.0f, 0.0f));
+//    glm::mat4 view = nav.getViewMatrix();
+//    glm::mat4 proj = glm::perspective(glm::radians(45.0f),  ((float)g_gl_width) / ((float)g_gl_height), NEAR_CLIPPING, FAR_CLIPPING);
     glUseProgram(shaderProgram);
     GLint uniProj = glGetUniformLocation(shaderProgram, "projectionMatrix");
-    glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
+//    glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
     GLint uniTrans = glGetUniformLocation(shaderProgram, "modelMatrix");
     GLint uniView = glGetUniformLocation(shaderProgram, "viewMatrix");
 
-    mover.start();
+//    mover.start();
 
     // imgui initialization
     IMGUI_CHECKVERSION();
@@ -154,6 +155,15 @@ int main() {
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init();
     ImGui::StyleColorsDark();
+
+    // NEW CODE
+    RenderEngine renderEngine(uniProj, uniView, uniTrans);
+    StepAheadAnimationChannel saaChannel;
+    renderEngine.addSaaChannel(&saaChannel);
+    Cube realCube;
+    saaChannel.addObject(&realCube);
+    realCube.loadToGPU();
+    // END OF NEW CODE
 
     while(!glfwWindowShouldClose(window)) {
         // loop init of imgui
@@ -167,20 +177,21 @@ int main() {
         glViewport(0, 0, g_gl_width, g_gl_height);
         glClearColor(0.6f, 0.6f, 0.8f, 1.0f);
         // update and load view matrix
-        view = nav.getViewMatrix();
-        glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
+//        view = nav.getViewMatrix();
+//        glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
         // draw objects
         //cube.draw(uniTrans);
-        mover.draw(uniTrans);
-        cube.draw(uniTrans, model2);
-        bSpline.draw(uniTrans);
+//        mover.draw(uniTrans);
+//        cube.draw(uniTrans, model2);
+//        bSpline.draw(uniTrans);
+        renderEngine.render(0);
         // update other events like input handling
         glfwPollEvents();
         // close screen when esc button is pressed
         if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_ESCAPE)) {
             glfwSetWindowShouldClose(window, 1);
         }
-        nav.move(InputHandler::readMoveButtons(window, MOVE_SPEED));
+        renderEngine.getEditorCamera().move(InputHandler::readMoveButtons(window, MOVE_SPEED));
 
         // mouse input
         if(cursorMode != GLFW_CURSOR_NORMAL) {

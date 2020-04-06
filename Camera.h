@@ -9,9 +9,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-class Navigator {
+class Camera {
 public:
-    Navigator();
+    Camera();
     glm::mat4 getViewMatrix();
     void rot(float horAngle, float verAngle);
     void move(glm::vec3 movement);
