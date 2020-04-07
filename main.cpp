@@ -19,6 +19,9 @@
 #include "vendor/imgui/imgui_impl_glfw.h"
 #include "LinearPath.h"
 #include "Path.h"
+#include "Clock.h"
+#include "gui/TimelineWindow.h"
+#include "gui/WindowRenderEngine.h"
 
 
 const float ROT_SPEED = 0.15f;
@@ -35,6 +38,8 @@ int g_gl_height = 720;
 
 // global variables
 RenderEngine* renderEngine;
+Clock *worldClock;
+WindowRenderEngine *windows;
 
 
 // callback functions
@@ -46,12 +51,13 @@ void glfw_window_size_callback(GLFWwindow* window, int width, int height) {
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    renderEngine->getEditorCamera().relativeMove(glm::vec3(0.0f, yoffset*SCROLL_SENSITIVITY, 0.0f));
+    if(!ImGui::GetIO().WantCaptureMouse)
+        renderEngine->getEditorCamera().relativeMove(glm::vec3(0.0f, yoffset*SCROLL_SENSITIVITY, 0.0f));
 }
 
 
 /**
- * Update the fps-counter on top of a window
+ * Update the mFps-counter on top of a window
  * @param window
  */
 void _update_fps_counter(GLFWwindow* window) {
@@ -63,7 +69,7 @@ void _update_fps_counter(GLFWwindow* window) {
         previous_seconds = current_seconds;
         double fps = (double)frame_count / elapsed_seconds;
         char tmp[128];
-        sprintf(tmp, "opengl @ fps: %.2f", fps);
+        sprintf(tmp, "opengl @ mFps: %.2f", fps);
         glfwSetWindowTitle(window, tmp);
         frame_count = 0;
     }
@@ -160,6 +166,8 @@ int main() {
     GLint uniView = glGetUniformLocation(shaderProgram, "viewMatrix");
 
     renderEngine = new RenderEngine(uniProj, uniView, uniTrans);
+    worldClock = new Clock();
+    windows = new WindowRenderEngine(worldClock);
     InputHandler inputHandler(window, renderEngine);
 
 //    mover.start();
@@ -179,17 +187,21 @@ int main() {
     realCube.loadToGPU();
     LinearPath realPath;
     saaChannel.setPath(&realPath);
-    realPath.addKeyframe({100, glm::vec3(0.5f)});
+    realPath.addKeyframe({100, glm::vec3(2.0f, 0.0f, -3.0f)});
     realPath.addKeyframe({0, glm::vec3(0.0f)});
-    realPath.addKeyframe({150, glm::vec3(-0.5f)});
+    realPath.addKeyframe({500, glm::vec3(-0.5f)});
     // END OF INITIALIZATION OF DATA
 
-    uint frameIndex = 0;
+    worldClock->start();
 
     while(!glfwWindowShouldClose(window)) {
         // loop init of imgui
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
+
+        // update other events like input handling
+        glfwPollEvents();
+
         ImGui::NewFrame();
 
         _update_fps_counter(window);
@@ -205,10 +217,9 @@ int main() {
 //        mover.draw(uniTrans);
 //        cube.draw(uniTrans, model2);
 //        bSpline.draw(uniTrans);
-        renderEngine->render(frameIndex);
-        ++frameIndex;
-        // update other events like input handling
-        glfwPollEvents();
+        renderEngine->render(worldClock->getFrameIndex());
+
+
         // close screen when esc button is pressed
         if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_ESCAPE)) {
             glfwSetWindowShouldClose(window, 1);
@@ -229,13 +240,14 @@ int main() {
         // put the stuff we've been drawing onto the display
 
         // imgui windowing
-        ImGui::Begin("Demo window");
-        ImGui::Button("Hello!");
-        ImGui::End();
+        windows->render();
+//        ImGui::ShowDemoWindow();
 
         // imgui rendering
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        ImGui::EndFrame();
 
         glfwSwapBuffers(window);
     }

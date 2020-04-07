@@ -3,15 +3,15 @@
 //
 
 #include <GLFW/glfw3.h>
-#include "Chrono.h"
+#include "Chrono_old.h"
 
-void Chrono::reset() {
+void Chrono_old::reset() {
     mRunning = false;
     mTime = 0;
 }
 
 
-void Chrono::start() {
+void Chrono_old::start() {
     if(!mRunning) {
         mMomentOfLastUpdate = glfwGetTime();
         mRunning = true;
@@ -19,7 +19,7 @@ void Chrono::start() {
 }
 
 
-void Chrono::pause() {
+void Chrono_old::pause() {
     if(mRunning) {
         mRunning = false;
         double currTime = glfwGetTime();
@@ -28,7 +28,7 @@ void Chrono::pause() {
 }
 
 
-double Chrono::getTime() {
+double Chrono_old::getTime() {
     if(mRunning) {
         double currTime = glfwGetTime();
         mTime += currTime - mMomentOfLastUpdate;

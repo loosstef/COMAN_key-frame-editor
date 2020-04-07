@@ -8,7 +8,7 @@
 
 #include <ctime>
 
-class Chrono {
+class Chrono_old {
 public:
     void reset();
     void start();

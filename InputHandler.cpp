@@ -6,6 +6,7 @@
 #include <iostream>
 #include "InputHandler.h"
 #include "Camera.h"
+#include "vendor/imgui/imgui.h"
 
 InputHandler::InputHandler(GLFWwindow *window, RenderEngine *renderEngine) :
     window(window), mRenderEngine(renderEngine)
@@ -69,6 +70,9 @@ glm::vec3 InputHandler::readMoveButtons_DEPRECATED(GLFWwindow* window, float mov
 }
 
 void InputHandler::handleMouse() {
+    if(ImGui::GetIO().WantCaptureMouse)
+        return;
+
     double currMousePosX, currMousePosY;
     glfwGetCursorPos(window, &currMousePosX, &currMousePosY);
 

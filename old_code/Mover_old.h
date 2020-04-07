@@ -9,7 +9,7 @@
 #include <chrono>
 #include "../Object.h"
 #include "Path_old.h"
-#include "../Chrono.h"
+#include "Chrono_old.h"
 
 class Mover_old {
 public:
@@ -21,7 +21,7 @@ public:
 private:
     Object &mObject;
     Path_old &mPath;
-    Chrono mChrono;
+    Chrono_old mChrono;
 };
 
 
