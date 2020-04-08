@@ -8,15 +8,18 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include <GL/glew.h>
+#include "Channel.h"
 
 class Object;
 class Path;
 
-class StepAheadAnimationChannel {
+class StepAheadAnimationChannel : public Channel {
 public:
+    ChannelType getType() override { return SAA; }
     void render(int frameIndex, GLint uniformLocTransMat);
     void addObject(Object* object);
     void setPath(Path* path);
+    Object* getObject(int index = 0);
 private:
     std::vector<Object*> mObjects;
     Path* mPath = nullptr;

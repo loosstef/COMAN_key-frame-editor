@@ -22,37 +22,53 @@
 #include "Clock.h"
 #include "gui/TimelineWindow.h"
 #include "gui/WindowRenderEngine.h"
+#include "Channel.h"
 
 
 const float ROT_SPEED = 0.15f;
 const float SCROLL_SENSITIVITY = 0.30f;
 const int cursorMode = GLFW_CURSOR_NORMAL;
+const int STANDARD_WINDOW_WIDTH = 1940;
+const int STANDARD_WINDOW_HEIGHT = 1080;
 
-char VERTEX_SHADER_FILENAME[] = "simple_shader.vert";
-char FRAGMENT_SHADER_FILENAME[] = "simple_shader.frag";
+char VERTEX_SHADER_FILENAME[] = "shaders/simple_shader.vert";
+char FRAGMENT_SHADER_FILENAME[] = "shaders/simple_shader.frag";
 
 // keep track of window size for things like the viewport and the mouse cursor
-int g_gl_width = 1080;
-int g_gl_height = 720;
+//int g_gl_width = 1940;
+//int g_gl_height = 1080;
 
 
 // global variables
 RenderEngine* renderEngine;
-Clock *worldClock;
+Clock *sceneClock;
 WindowRenderEngine *windows;
+Channel *pickedChannel = nullptr;
 
 
 // callback functions
 void glfw_window_size_callback(GLFWwindow* window, int width, int height) {
-    g_gl_width = width;
-    g_gl_height = height;
+//    g_gl_width = width;
+//    g_gl_height = height;
     renderEngine->onWindowSizeChange(width, height);
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    if(!ImGui::GetIO().WantCaptureMouse)
-        renderEngine->getEditorCamera().relativeMove(glm::vec3(0.0f, yoffset*SCROLL_SENSITIVITY, 0.0f));
+    if(!ImGui::GetIO().WantCaptureMouse) {
+        renderEngine->getEditorCamera().relativeMove(glm::vec3(0.0f, yoffset * SCROLL_SENSITIVITY, 0.0f));
+    }
+}
+
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+    if(ImGui::GetIO().WantCaptureMouse)
+        return;
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        double currMousePosX, currMousePosY;
+        glfwGetCursorPos(window, &currMousePosX, &currMousePosY);
+        pickedChannel = renderEngine->pick(sceneClock->getFrameIndex(), currMousePosX, currMousePosY, window);
+    }
 }
 
 
@@ -91,7 +107,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_SAMPLES, 4);
 
-    GLFWwindow* window = glfwCreateWindow(g_gl_width, g_gl_height, "Hello Triangle", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(STANDARD_WINDOW_WIDTH, STANDARD_WINDOW_HEIGHT, "Hello Triangle", NULL, NULL);
     if (!window) {
         fprintf(stderr, "ERROR: could not open window with GLFW3\n");
         glfwTerminate();
@@ -99,8 +115,11 @@ int main() {
     }
 
     glfwMakeContextCurrent(window);
+    glfwSwapInterval(1);
+    glShadeModel(GL_FLAT);
     glfwSetWindowSizeCallback(window, glfw_window_size_callback);
     glfwSetScrollCallback(window, scroll_callback);
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
 
     // start GLEW extension handler
     glewExperimental = GL_TRUE;
@@ -128,12 +147,12 @@ int main() {
 
 
     // load shaders
-    GLuint vs = InputHandler::loadAndCompileShader(VERTEX_SHADER_FILENAME, GL_VERTEX_SHADER);
-    GLuint fs = InputHandler::loadAndCompileShader(FRAGMENT_SHADER_FILENAME, GL_FRAGMENT_SHADER);
-    GLuint shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, fs);
-    glAttachShader(shaderProgram, vs);
-    glLinkProgram(shaderProgram);
+//    GLuint vs = InputHandler::loadAndCompileShader(VERTEX_SHADER_FILENAME, GL_VERTEX_SHADER);
+//    GLuint fs = InputHandler::loadAndCompileShader(FRAGMENT_SHADER_FILENAME, GL_FRAGMENT_SHADER);
+//    GLuint shaderProgram = glCreateProgram();
+//    glAttachShader(shaderProgram, fs);
+//    glAttachShader(shaderProgram, vs);
+//    glLinkProgram(shaderProgram);
 
 //    Camera nav;
 
@@ -159,15 +178,14 @@ int main() {
 //    glm::mat4 model2 = glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0.0f, 0.0f));
 //    glm::mat4 view = nav.getViewMatrix();
 //    glm::mat4 proj = glm::perspective(glm::radians(45.0f),  ((float)g_gl_width) / ((float)g_gl_height), NEAR_CLIPPING, FAR_CLIPPING);
-    glUseProgram(shaderProgram);
-    GLint uniProj = glGetUniformLocation(shaderProgram, "projectionMatrix");
+//    glUseProgram(shaderProgram);
+//    GLint uniProj = glGetUniformLocation(shaderProgram, "projectionMatrix");
 //    glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
-    GLint uniTrans = glGetUniformLocation(shaderProgram, "modelMatrix");
-    GLint uniView = glGetUniformLocation(shaderProgram, "viewMatrix");
-
-    renderEngine = new RenderEngine(uniProj, uniView, uniTrans);
-    worldClock = new Clock();
-    windows = new WindowRenderEngine(worldClock);
+//    GLint uniTrans = glGetUniformLocation(shaderProgram, "modelMatrix");
+//    GLint uniView = glGetUniformLocation(shaderProgram, "viewMatrix");
+    renderEngine = new RenderEngine();
+    sceneClock = new Clock();
+    windows = new WindowRenderEngine(sceneClock);
     InputHandler inputHandler(window, renderEngine);
 
 //    mover.start();
@@ -192,23 +210,23 @@ int main() {
     realPath.addKeyframe({500, glm::vec3(-0.5f)});
     // END OF INITIALIZATION OF DATA
 
-    worldClock->start();
+    sceneClock->start();
 
     while(!glfwWindowShouldClose(window)) {
+        _update_fps_counter(window);
+
         // loop init of imgui
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
-
-        // update other events like input handling
-        glfwPollEvents();
-
         ImGui::NewFrame();
 
-        _update_fps_counter(window);
+        int windowWidth, windowHeight;
+        glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
+        glViewport(0, 0, windowWidth, windowHeight);
+
         // wipe the drawing surface clear
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glViewport(0, 0, g_gl_width, g_gl_height);
         glClearColor(0.6f, 0.6f, 0.8f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // update and load view matrix
 //        view = nav.getViewMatrix();
 //        glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
@@ -217,16 +235,11 @@ int main() {
 //        mover.draw(uniTrans);
 //        cube.draw(uniTrans, model2);
 //        bSpline.draw(uniTrans);
-        renderEngine->render(worldClock->getFrameIndex());
+        renderEngine->render(sceneClock->getFrameIndex());
+        double currMousePosX, currMousePosY;
+        glfwGetCursorPos(window, &currMousePosX, &currMousePosY);
 
-
-        // close screen when esc button is pressed
-        if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_ESCAPE)) {
-            glfwSetWindowShouldClose(window, 1);
-        }
 //        renderEngine.getEditorCamera().move(InputHandler::readMoveButtons_DEPRECATED(window, MOVE_SPEED));
-
-        inputHandler.handleMouse();
 
         // mouse input
 //        if(cursorMode != GLFW_CURSOR_NORMAL) {
@@ -240,16 +253,25 @@ int main() {
         // put the stuff we've been drawing onto the display
 
         // imgui windowing
-        windows->render();
+        windows->render(pickedChannel);
 //        ImGui::ShowDemoWindow();
+
 
         // imgui rendering
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
         ImGui::EndFrame();
 
         glfwSwapBuffers(window);
+        glfwPollEvents();
+
+        // update other events like input handling
+        inputHandler.handleMouse();
+
+        // close screen when esc button is pressed
+        if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_ESCAPE)) {
+            glfwSetWindowShouldClose(window, 1);
+        }
     }
 
     // close imgui context

@@ -27,3 +27,7 @@ void StepAheadAnimationChannel::addObject(Object *object) {
 void StepAheadAnimationChannel::setPath(Path *path) {
     mPath = path;
 }
+
+Object *StepAheadAnimationChannel::getObject(int index) {
+    return mObjects[index];
+}

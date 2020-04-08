@@ -3,6 +3,8 @@
 //
 
 #include "WindowRenderEngine.h"
+#include "../Channel.h"
+#include "../StepAheadAnimationChannel.h"
 
 WindowRenderEngine::WindowRenderEngine(Clock *clock) :
     timelineWindow(clock)
@@ -10,6 +12,11 @@ WindowRenderEngine::WindowRenderEngine(Clock *clock) :
 
 }
 
-void WindowRenderEngine::render() {
+void WindowRenderEngine::render(Channel *pickedChannel) {
     timelineWindow.render();
+    if(pickedChannel != nullptr) {
+        if(pickedChannel->getType() == SAA) {
+            editSaaChannelWindow.Render((StepAheadAnimationChannel*)pickedChannel);
+        }
+    }
 }
