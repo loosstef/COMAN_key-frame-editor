@@ -19,6 +19,7 @@ public:
     void render(int frameIndex, GLint uniformLocTransMat);
     void addObject(Object* object);
     void setPath(Path* path);
+    Path* getPath() { return mPath; }
     Object* getObject(int index = 0);
 private:
     std::vector<Object*> mObjects;

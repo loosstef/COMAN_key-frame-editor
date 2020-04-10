@@ -13,6 +13,7 @@ public:
     void addKeyframe(Keyframe newKeyframe);
     bool hasKeyframe(uint frameIndex);
     Keyframe getKeyframe(uint frameIndex);
+    std::list<Keyframe>* getKeyFrames() { return &mKeyframes; }
 private:
     std::list<Keyframe> mKeyframes;
 };
