@@ -7,7 +7,8 @@
 #include "../StepAheadAnimationChannel.h"
 
 WindowRenderEngine::WindowRenderEngine(Clock *clock) :
-    timelineWindow(clock)
+    timelineWindow(clock),
+    editSaaChannelWindow(clock)
 {
 
 }

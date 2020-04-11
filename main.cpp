@@ -23,7 +23,7 @@
 #include "gui/TimelineWindow.h"
 #include "gui/WindowRenderEngine.h"
 #include "Channel.h"
-
+#include "Keyframe.h"
 
 const float ROT_SPEED = 0.15f;
 const float SCROLL_SENSITIVITY = 0.30f;
@@ -68,6 +68,38 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
         double currMousePosX, currMousePosY;
         glfwGetCursorPos(window, &currMousePosX, &currMousePosY);
         pickedChannel = renderEngine->pick(sceneClock->getFrameIndex(), currMousePosX, currMousePosY, window);
+    }
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    // close screen when esc button is pressed
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, 1);
+    }
+
+    // pause or play scene
+    if(key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+        if(sceneClock->isRunning())
+            sceneClock->pause();
+        else
+            sceneClock->start();
+    }
+
+    // jump back in time 1 or 10 frames
+    if(key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
+        int frameJumpSize = 1;
+        if(GLFW_PRESS == glfwGetKey(window, GLFW_KEY_LEFT_CONTROL))
+            frameJumpSize = 10;
+        sceneClock->setFrameIndex(sceneClock->getFrameIndex()-frameJumpSize);
+    }
+
+    // jump forward in time 1 or 10 frames
+    if(key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
+        int frameJumpSize = 1;
+        if(GLFW_PRESS == glfwGetKey(window, GLFW_KEY_LEFT_CONTROL))
+            frameJumpSize = 10;
+        sceneClock->setFrameIndex(sceneClock->getFrameIndex()+frameJumpSize);
     }
 }
 
@@ -120,6 +152,7 @@ int main() {
     glfwSetWindowSizeCallback(window, glfw_window_size_callback);
     glfwSetScrollCallback(window, scroll_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
+    glfwSetKeyCallback(window, key_callback);
 
     // start GLEW extension handler
     glewExperimental = GL_TRUE;
@@ -205,9 +238,9 @@ int main() {
     realCube.loadToGPU();
     LinearPath realPath;
     saaChannel.setPath(&realPath);
-    realPath.addKeyframe({100, glm::vec3(2.0f, 0.0f, -3.0f)});
-    realPath.addKeyframe({0, glm::vec3(0.0f)});
-    realPath.addKeyframe({500, glm::vec3(-0.5f)});
+    realPath.addKeyframe(Keyframe(100, glm::vec3(0.0f), glm::vec3(glm::pi<float>(), glm::half_pi<float>(), 0.0f)));
+    realPath.addKeyframe(Keyframe(0));
+    realPath.addKeyframe(Keyframe(500, glm::vec3(-0.5f)));
     // END OF INITIALIZATION OF DATA
 
     sceneClock->start();
@@ -267,11 +300,6 @@ int main() {
 
         // update other events like input handling
         inputHandler.handleMouse();
-
-        // close screen when esc button is pressed
-        if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_ESCAPE)) {
-            glfwSetWindowShouldClose(window, 1);
-        }
     }
 
     // close imgui context

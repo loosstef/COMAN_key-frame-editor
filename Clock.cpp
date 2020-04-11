@@ -35,7 +35,12 @@ double Clock::getTime() {
 }
 
 void Clock::setFrameIndex(int frameIndex) {
-    mFrameIndex = frameIndex;
+    if(frameIndex < 0)
+        mFrameIndex = 0;
+    else if(frameIndex > mLastFrameIndex)
+        mFrameIndex = mLastFrameIndex;
+    else
+        mFrameIndex = frameIndex;
 }
 
 void Clock::start() {

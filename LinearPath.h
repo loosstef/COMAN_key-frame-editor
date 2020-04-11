@@ -10,11 +10,15 @@
 
 class LinearPath : public Path {
 public:
-    void addKeyframe(Keyframe newKeyframe);
-    bool hasKeyframe(uint frameIndex);
-    Keyframe getKeyframe(uint frameIndex);
-    std::list<Keyframe>* getKeyFrames() { return &mKeyframes; }
+    void addKeyframe(Keyframe newKeyframe) override;
+    bool hasKeyframe(uint frameIndex) override;
+    std::list<Keyframe>* getKeyFrames() override { return &mKeyframes; }
+    Orientation orientation(int frameIndex) override;
+    // DEPRECATED FUNCTIONS
+    Keyframe getKeyframe_DEPRECATED(uint frameIndex) override;
 private:
+    glm::vec3 linearInterpolate(glm::vec3 &vec1, glm::vec3 &vec2, float factor);
+    glm::vec3 linearInterpolateRotation(glm::vec3 &rot1, glm::vec3 &rot2, float factor);
     std::list<Keyframe> mKeyframes;
 };
 

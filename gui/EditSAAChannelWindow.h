@@ -7,10 +7,14 @@
 
 
 #include "../StepAheadAnimationChannel.h"
+#include "../Clock.h"
 
 class EditSAAChannelWindow {
 public:
+    EditSAAChannelWindow(Clock *clock);
     void Render(StepAheadAnimationChannel *saaChannel);
+private:
+    Clock *sceneClock;
 };
 
 
