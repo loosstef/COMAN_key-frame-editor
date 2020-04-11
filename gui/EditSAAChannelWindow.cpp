@@ -19,7 +19,7 @@ void EditSAAChannelWindow::Render(StepAheadAnimationChannel *saaChannel) {
     ImGui::Text("Object stats:");
     Orientation currOrient = saaChannel->getPath()->orientation(sceneClock->getFrameIndex());
     ImGui::DragFloat3("position", &currOrient.position[0], 0.02f, 0, 0, "%0.3f", ImGuiInputTextFlags_ReadOnly);
-    ImGui::DragFloat3("rotation", &currOrient.rotation[0], 0.02f, 0, 0, "%0.3f", ImGuiInputTextFlags_ReadOnly);
+    ImGui::DragFloat4("rotation", &currOrient.rotation[0], 0.02f, 0, 0, "%0.3f", ImGuiInputTextFlags_ReadOnly);
     ImGui::DragFloat3("scale", &currOrient.scale[0], 0.02f, 0, 0, "%0.3f", ImGuiInputTextFlags_ReadOnly);
     int i = 0;
     for(auto &keyframe : *keyframes) {

@@ -62,7 +62,9 @@ Orientation LinearPath::orientation(int frameIndex) {
     //             glm::quat quat1Y = glm::angleAxis(keyframe.getRot().y, glm::vec3(0.0f, 1.0f, 0.0f));
     //             glm::quat quat1Z = glm::angleAxis(keyframe.getRot().z, glm::vec3(0.0f, 0.0f, 1.0f));
     //             glm::quat quat = quat1Y * quat1X * quat1Z;
-            glm::quat quat = glm::quat(keyframe.getRot());
+            glm::mat4x4 euler = glm::eulerAngleYXZ(keyframe.getRot().y, keyframe.getRot().x, keyframe.getRot().z);
+            glm::quat quat = glm::toQuat(euler);
+//            glm::quat quat = glm::quat(keyframe.getRot());
             glm::vec3 interpEuler = glm::eulerAngles(quat);
             return Orientation(keyframe.getPos(), interpEuler, keyframe.getScale());
          }
@@ -84,7 +86,7 @@ Orientation LinearPath::orientation(int frameIndex) {
     float partition =
              ((float) (frameIndex - beforeFrameIndex)) / ((float) (afterFrameIndex - beforeFrameIndex));
     glm::vec3 position = linearInterpolate(beforeKeyframe.getPos(), afterKeyframe.getPos(), partition);
-    glm::vec3 rotation = linearInterpolateRotation(beforeKeyframe.getRot(), afterKeyframe.getRot(), partition);
+    glm::quat rotation = linearInterpolateRotation(beforeKeyframe.getRot(), afterKeyframe.getRot(), partition);
     glm::vec3 scale = linearInterpolate(beforeKeyframe.getScale(), afterKeyframe.getScale(), partition);
     return Orientation(position, rotation, scale);
 }
@@ -128,7 +130,7 @@ glm::vec3 LinearPath::linearInterpolate(glm::vec3 &vec1, glm::vec3 &vec2, float 
     return glm::vec3();
 }
 
-glm::vec3 LinearPath::linearInterpolateRotation(glm::vec3 &rot1, glm::vec3 &rot2, float factor) {
+glm::quat LinearPath::linearInterpolateRotation(glm::vec3 &rot1, glm::vec3 &rot2, float factor) {
     if(factor < 0)
         factor = 0.0f;
     else if(factor > 1)
@@ -152,11 +154,17 @@ glm::vec3 LinearPath::linearInterpolateRotation(glm::vec3 &rot1, glm::vec3 &rot2
 //    glm::quat quat1 = quat1Y * quat1X * quat1Z;
 //    glm::quat quat2 = quat2Y * quat2X * quat2Z;
 
-    glm::quat quat1(rot1);
-    glm::quat quat2(rot2);
+    glm::mat4x4 euler1 = glm::eulerAngleYXZ(rot1.y, rot1.x, rot1.z);
+    glm::mat4x4 euler2 = glm::eulerAngleYXZ(rot2.y, rot2.x, rot2.z);
+
+    glm::quat quat1 = glm::toQuat(euler1);
+    glm::quat quat2 = glm::toQuat(euler2);
+
+//    glm::quat quat1(rot1);
+//    glm::quat quat2(rot2);
 
 //    glm::quat interpQuat = glm::slerp(quat1, quat2, factor);
     glm::quat interpQuat = glm::mix(quat1, quat2, factor);
-    glm::vec3 interpEuler = glm::eulerAngles(interpQuat);
-    return interpEuler;
+//    glm::vec3 interpEuler = glm::eulerAngles(interpQuat);
+    return interpQuat;
 }

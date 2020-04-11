@@ -18,7 +18,7 @@ public:
     Keyframe getKeyframe_DEPRECATED(uint frameIndex) override;
 private:
     glm::vec3 linearInterpolate(glm::vec3 &vec1, glm::vec3 &vec2, float factor);
-    glm::vec3 linearInterpolateRotation(glm::vec3 &rot1, glm::vec3 &rot2, float factor);
+    glm::quat linearInterpolateRotation(glm::vec3 &rot1, glm::vec3 &rot2, float factor);
     std::list<Keyframe> mKeyframes;
 };
 

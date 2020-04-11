@@ -18,9 +18,9 @@ void StepAheadAnimationChannel::render(int frameIndex, GLint uniformLocTransMat)
         else {
 //            Keyframe keyframe = mPath->getKeyframe_DEPRECATED(frameIndex);
             Orientation orientation = mPath->orientation(frameIndex);
-            glm::vec3 rot = orientation.rotation;
-//            glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), orientation.scale);
-            glm::mat4 rotMat = glm::eulerAngleYXZ(rot.y, rot.x, rot.z);
+//            glm::vec3 rot = orientation.rotation;
+//            glm::mat4 rotMat = glm::eulerAngleYXZ(rot.y, rot.x, rot.z);
+            glm::mat4 rotMat = glm::toMat4(orientation.rotation);
             glm::mat4 transMat = glm::translate(glm::mat4(1.0f), orientation.position);
 
             glm::mat4 transformationMatrix = glm::scale(transMat*rotMat, orientation.scale);

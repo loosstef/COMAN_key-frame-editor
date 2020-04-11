@@ -4,7 +4,7 @@
 
 #include "Orientation.h"
 
-Orientation::Orientation(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) :
+Orientation::Orientation(glm::vec3 position, glm::quat rotation, glm::vec3 scale) :
     position(position),
     rotation(rotation),
     scale(scale)
