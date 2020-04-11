@@ -16,13 +16,14 @@ class Path;
 class StepAheadAnimationChannel : public Channel {
 public:
     ChannelType getType() override { return SAA; }
-    void render(int frameIndex, GLint uniformLocTransMat);
-    void addObject(Object* object);
     void setPath(Path* path);
     Path* getPath() { return mPath; }
-    Object* getObject(int index = 0);
+    Object* getObject() { return mObject; }
+    // deprecated functions
+    void addObject_DEPRECATED(Object* object);
 private:
-    std::vector<Object*> mObjects;
+    Object *mObject;
+//    std::vector<Object*> mObjects;
     Path* mPath = nullptr;
 };
 

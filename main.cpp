@@ -234,7 +234,7 @@ int main() {
     StepAheadAnimationChannel saaChannel;
     renderEngine->addSaaChannel(&saaChannel);
     Cube realCube;
-    saaChannel.addObject(&realCube);
+    saaChannel.addObject_DEPRECATED(&realCube);
     realCube.loadToGPU();
     LinearPath realPath;
     saaChannel.setPath(&realPath);

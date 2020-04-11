@@ -28,6 +28,7 @@ public:
     Camera& getEditorCamera();
     void onWindowSizeChange(uint width, uint height);
 private:
+    void renderSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel);
     GLuint mStandardShaderProgram;
     GLint mUniLocTransMat;
     GLint mUniLocViewMat;

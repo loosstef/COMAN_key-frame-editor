@@ -7,6 +7,9 @@
 #include "Camera.h"
 #include "StepAheadAnimationChannel.h"
 #include "InputHandler.h"
+#include "Object.h"
+#include "Orientation.h"
+#include "Path.h"
 
 char BASIC_VERTEX_SHADER_FILENAME[] = "shaders/simple_shader.vert";
 char BASIC_FRAGMENT_SHADER_FILENAME[] = "shaders/simple_shader.frag";
@@ -54,7 +57,7 @@ void RenderEngine::render(int frameIndex) {
 
     // render objects
     for(StepAheadAnimationChannel *saaChannel : mStepAheadAnimationChannels) {
-        saaChannel->render(frameIndex, mUniLocTransMat);
+        renderSaaChannel(frameIndex, *saaChannel);
     }
 }
 
@@ -74,7 +77,7 @@ Channel *RenderEngine::pick(int frameIndex, double mouseX, double mouseY, GLFWwi
     for(int id = 1; id < mStepAheadAnimationChannels.size()+1; ++id) {
         GLint realId = id;
         glUniform1i(mUniLocObjId, realId);
-        mStepAheadAnimationChannels[id-1]->render(frameIndex, mUniLocTransMat);
+        renderSaaChannel(frameIndex, *mStepAheadAnimationChannels[id-1]);
     }
 
 //    glFlush();
@@ -118,4 +121,23 @@ void RenderEngine::onWindowSizeChange(uint width, uint height) {
             CAMERA_FAR_CLIPPING
     );
     glUniformMatrix4fv(mUniLocProjMat, 1, GL_FALSE, glm::value_ptr(mProjectionMatrix));
+}
+
+
+void RenderEngine::renderSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel) {
+    Path *path = saaChannel.getPath();
+    Object *object = saaChannel.getObject();
+    if(object == nullptr) {
+        return;
+    }
+    if(path == nullptr) {
+        object->draw(mUniLocTransMat);
+    }
+    else {
+        Orientation orientation = path->orientation(frameIndex);
+        glm::mat4 rotMat = glm::toMat4(orientation.rotation);
+        glm::mat4 transMat = glm::translate(glm::mat4(1.0f), orientation.position);
+        glm::mat4 transformationMatrix = glm::scale(transMat*rotMat, orientation.scale);
+        object->draw(mUniLocTransMat, transformationMatrix);
+    }
 }
