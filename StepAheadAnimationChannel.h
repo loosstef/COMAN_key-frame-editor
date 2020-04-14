@@ -10,7 +10,7 @@
 #include <GL/glew.h>
 #include "Channel.h"
 
-class Object;
+class Object_DEPRECATED;
 class Path;
 
 class StepAheadAnimationChannel : public Channel {
@@ -18,11 +18,11 @@ public:
     ChannelType getType() override { return SAA; }
     void setPath(Path* path);
     Path* getPath() { return mPath; }
-    Object* getObject() { return mObject; }
+    Object_DEPRECATED* getObject() { return mObject; }
     // deprecated functions
-    void addObject_DEPRECATED(Object* object);
+    void addObject_DEPRECATED(Object_DEPRECATED* object);
 private:
-    Object *mObject;
+    Object_DEPRECATED *mObject;
 //    std::vector<Object*> mObjects;
     Path* mPath = nullptr;
 };

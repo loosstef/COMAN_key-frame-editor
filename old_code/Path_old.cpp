@@ -6,7 +6,7 @@
 #include "Path_old.h"
 
 
-Path_old::Path_old(float *points, int pointsCount, GLenum mode) : Object(points, pointsCount, mode) {
+Path_old::Path_old(float *points, int pointsCount, GLenum mode) : Object_DEPRECATED(points, pointsCount, mode) {
 
 }
 

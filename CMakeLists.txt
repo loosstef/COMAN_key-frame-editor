@@ -13,11 +13,22 @@ include_directories(${GLEW_INCLUDE_DIRS} ${ASSIMP_INCLUDE_DIRS})
 
 configure_file(shaders/simple_shader.vert shaders/simple_shader.vert COPYONLY)
 configure_file(shaders/simple_shader.frag shaders/simple_shader.frag COPYONLY)
-configure_file(shaders/color_picking_shader.vert shaders/color_picking_shader.vert COPYONLY)
-configure_file(shaders/color_picking_shader.frag shaders/color_picking_shader.frag COPYONLY)
+#configure_file(shaders/color_picking_shader.vert shaders/color_picking_shader.vert COPYONLY)
+#configure_file(shaders/color_picking_shader.frag shaders/color_picking_shader.frag COPYONLY)
+configure_file(shaders/new_shader.vert shaders/new_shader.vert COPYONLY)
+configure_file(shaders/new_shader.frag shaders/new_shader.frag COPYONLY)
+configure_file(models/spongebob.obj models/spongebob.obj COPYONLY)
+configure_file(models/tex_spongebob.png models/tex_spongebob.png COPYONLY)
+configure_file(models/spongebob.mtl models/spongebob.mtl COPYONLY)
+configure_file(models/Cartoon_Lowpoly_Car.3ds models/Cartoon_Lowpoly_Car.3ds COPYONLY)
+configure_file(models/cube.obj models/cube.obj COPYONLY)
+configure_file(models/cube.mtl models/cube.mtl COPYONLY)
 file(COPY models DESTINATION models)
 
-add_executable(project main.cpp Logger.h Camera.cpp Camera.h Lights.cpp Lights.h old_code/BSpline_old.cpp old_code/BSpline_old.h Object.cpp Object.h Cube.cpp Cube.h InputHandler.cpp InputHandler.h old_code/Path_old.cpp old_code/Path_old.h old_code/Mover_old.cpp old_code/Mover_old.h old_code/Chrono_old.cpp old_code/Chrono_old.h CJoint.cpp CJoint.h CLink.cpp CLink.h CSkeleton.cpp CSkeleton.h
-        vendor/imgui/imconfig.h vendor/imgui/imgui.cpp vendor/imgui/imgui.h vendor/imgui/imgui_demo.cpp vendor/imgui/imgui_draw.cpp vendor/imgui/imgui_impl_glfw.cpp vendor/imgui/imgui_impl_glfw.h vendor/imgui/imgui_impl_opengl3.cpp vendor/imgui/imgui_impl_opengl3.h vendor/imgui/imgui_internal.h vendor/imgui/imgui_widgets.cpp vendor/imgui/imstb_rectpack.h vendor/imgui/imstb_textedit.h vendor/imgui/imstb_truetype.h RenderEngine.cpp RenderEngine.h StepAheadAnimationChannel.cpp StepAheadAnimationChannel.h Path.cpp Path.h LinearPath.cpp LinearPath.h Clock.cpp Clock.h gui/TimelineWindow.cpp gui/TimelineWindow.h gui/WindowRenderEngine.cpp gui/WindowRenderEngine.h Channel.cpp Channel.h gui/EditSAAChannelWindow.cpp gui/EditSAAChannelWindow.h Keyframe.cpp Keyframe.h Orientation.cpp Orientation.h)
+add_executable(project main.cpp Logger.h Camera.cpp Camera.h Lights.cpp Lights.h old_code/BSpline_old.cpp old_code/BSpline_old.h Object_DEPRECATED.cpp Object_DEPRECATED.h Cube_DEPRECATED.cpp Cube_DEPRECATED.h InputHandler.cpp InputHandler.h old_code/Path_old.cpp old_code/Path_old.h old_code/Mover_old.cpp old_code/Mover_old.h old_code/Chrono_old.cpp old_code/Chrono_old.h CJoint.cpp CJoint.h CLink.cpp CLink.h CSkeleton.cpp CSkeleton.h
+        vendor/imgui/imconfig.h vendor/imgui/imgui.cpp vendor/imgui/imgui.h vendor/imgui/imgui_demo.cpp vendor/imgui/imgui_draw.cpp vendor/imgui/imgui_impl_glfw.cpp vendor/imgui/imgui_impl_glfw.h vendor/imgui/imgui_impl_opengl3.cpp vendor/imgui/imgui_impl_opengl3.h vendor/imgui/imgui_internal.h vendor/imgui/imgui_widgets.cpp vendor/imgui/imstb_rectpack.h vendor/imgui/imstb_textedit.h vendor/imgui/imstb_truetype.h RenderEngine.cpp RenderEngine.h StepAheadAnimationChannel.cpp StepAheadAnimationChannel.h Path.cpp Path.h LinearPath.cpp LinearPath.h Clock.cpp Clock.h gui/TimelineWindow.cpp gui/TimelineWindow.h gui/WindowRenderEngine.cpp gui/WindowRenderEngine.h Channel.cpp Channel.h gui/EditSAAChannelWindow.cpp gui/EditSAAChannelWindow.h Keyframe.cpp Keyframe.h Orientation.cpp Orientation.h ObjectLoader_DEPRECATED.cpp ObjectLoader_DEPRECATED.h Mesh.cpp Mesh.h Model.cpp Model.h Vertex.cpp)
+
+
+set(CMAKE_CXX_FLAGS "-O0")
 
 target_link_libraries(project glfw OpenGL::GL ${GLEW_LIBRARIES} ${ASSIMP_LIBRARIES})

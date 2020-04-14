@@ -7,9 +7,9 @@
 
 
 #include <vector>
-#include "../Object.h"
+#include "../Object_DEPRECATED.h"
 
-class Path_old : public Object {
+class Path_old : public Object_DEPRECATED {
 public:
     Path_old(float* points = nullptr, int pointsCount = 0, GLenum mode = GL_LINE_STRIP);
     virtual glm::vec3 valueParametric(float u) = 0;

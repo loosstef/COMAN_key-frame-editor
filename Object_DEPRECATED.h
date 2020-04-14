@@ -9,10 +9,11 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/detail/type_mat.hpp>
+#include <string>
 
-class Object {
+class Object_DEPRECATED {
 public:
-    Object(float* points = nullptr, int pointsCount = 0, GLenum mode = GL_TRIANGLES);
+    Object_DEPRECATED(float* points = nullptr, int pointsCount = 0, GLenum mode = GL_TRIANGLES);
     void loadToGPU(int pointsLayout = 0, int colorLayout = 1);
     void draw(GLint uniTrans, glm::mat4 modelMat = glm::mat4(1.0f));
 

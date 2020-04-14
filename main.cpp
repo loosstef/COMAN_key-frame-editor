@@ -8,7 +8,7 @@
 #include "Logger.h"
 #include "Camera.h"
 #include "old_code/BSpline_old.h"
-#include "Cube.h"
+#include "Cube_DEPRECATED.h"
 #include "InputHandler.h"
 #include "old_code/Mover_old.h"
 #include "StepAheadAnimationChannel.h"
@@ -164,8 +164,9 @@ int main() {
         glfwSetCursorPos(window, 0, 0);
     }
 
-//    glEnable(GL_CULL_FACE); // cull face
-//    glCullFace(GL_BACK); // cull back face
+
+    glEnable(GL_CULL_FACE); // cull face
+    glCullFace(GL_BACK); // cull back face
 //    glFrontFace(GL_CW); // GL_CCW for counter clock-wise
 
     // get version info
@@ -233,7 +234,7 @@ int main() {
     // INITIALIZING TEST DATA
     StepAheadAnimationChannel saaChannel;
     renderEngine->addSaaChannel(&saaChannel);
-    Cube realCube;
+    Cube_DEPRECATED realCube;
     saaChannel.addObject_DEPRECATED(&realCube);
     realCube.loadToGPU();
     LinearPath realPath;

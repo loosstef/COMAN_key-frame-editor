@@ -6,11 +6,11 @@
 #define ANTONGERDELAN_CUBE_H
 
 
-#include "Object.h"
+#include "Object_DEPRECATED.h"
 
-class Cube : public Object {
+class Cube_DEPRECATED : public Object_DEPRECATED {
 public:
-    Cube(float size = 1.0f);
+    Cube_DEPRECATED(float size = 1.0f);
 };
 
 

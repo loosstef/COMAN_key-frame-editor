@@ -7,17 +7,17 @@
 #include "Camera.h"
 #include "StepAheadAnimationChannel.h"
 #include "InputHandler.h"
-#include "Object.h"
+#include "Object_DEPRECATED.h"
 #include "Orientation.h"
 #include "Path.h"
 
-char BASIC_VERTEX_SHADER_FILENAME[] = "shaders/simple_shader.vert";
-char BASIC_FRAGMENT_SHADER_FILENAME[] = "shaders/simple_shader.frag";
-char PICKING_VERTEX_SHADER_FILENAME[] = "shaders/color_picking_shader.vert";
-char PICKING_FRAGMENT_SHADER_FILENAME[] = "shaders/color_picking_shader.frag";
+char BASIC_VERTEX_SHADER_FILENAME[] = "shaders/new_shader.vert";
+char BASIC_FRAGMENT_SHADER_FILENAME[] = "shaders/new_shader.frag";
+//char PICKING_VERTEX_SHADER_FILENAME[] = "shaders/color_picking_shader.vert";
+//char PICKING_FRAGMENT_SHADER_FILENAME[] = "shaders/color_picking_shader.frag";
 
 
-RenderEngine::RenderEngine() {
+RenderEngine::RenderEngine() : mTestModel("models/spongebob.obj") {
     // load standard shaders
     GLuint vs = InputHandler::loadAndCompileShader(BASIC_VERTEX_SHADER_FILENAME, GL_VERTEX_SHADER);
     GLuint fs = InputHandler::loadAndCompileShader(BASIC_FRAGMENT_SHADER_FILENAME, GL_FRAGMENT_SHADER);
@@ -56,9 +56,19 @@ void RenderEngine::render(int frameIndex) {
     glUniformMatrix4fv(mUniLocViewMat, 1, GL_FALSE, glm::value_ptr(viewMat));
 
     // render objects
-    for(StepAheadAnimationChannel *saaChannel : mStepAheadAnimationChannels) {
-        renderSaaChannel(frameIndex, *saaChannel);
-    }
+//    for(StepAheadAnimationChannel *saaChannel : mStepAheadAnimationChannels) {
+//        renderSaaChannel(frameIndex, *saaChannel);
+//    }
+
+    // TESTING CODE
+    // render loaded file
+    GLint standardId = 150;
+    glUniform1i(mUniLocObjId, standardId);
+    glm::mat4 modelMat(1.0f);
+    glUniformMatrix4fv(mUniLocTransMat, 1, GL_FALSE, glm::value_ptr(modelMat));
+    mTestModel.Draw();
+    standardId = 300;
+    glUniform1i(mUniLocObjId, standardId);
 }
 
 
@@ -126,7 +136,7 @@ void RenderEngine::onWindowSizeChange(uint width, uint height) {
 
 void RenderEngine::renderSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel) {
     Path *path = saaChannel.getPath();
-    Object *object = saaChannel.getObject();
+    Object_DEPRECATED *object = saaChannel.getObject();
     if(object == nullptr) {
         return;
     }

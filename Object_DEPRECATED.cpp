@@ -3,7 +3,8 @@
 //
 
 #include <glm/gtc/type_ptr.hpp>
-#include "Object.h"
+#include <iostream>
+#include "Object_DEPRECATED.h"
 
 const int POINT_COORD_DATASIZE = 3;
 const int POINT_COLOR_DATASIZE = 3;
@@ -15,12 +16,12 @@ const int POINT_DATASIZE = POINT_COORD_DATASIZE + POINT_COLOR_DATASIZE;
  * @param pointsCount
  * @param mode
  */
-Object::Object(float *points, int pointsCount, GLenum mode) :
+Object_DEPRECATED::Object_DEPRECATED(float *points, int pointsCount, GLenum mode) :
     mPoints(points), mPointsCount(pointsCount), mMode(mode) {
 }
 
 
-void Object::loadToGPU(int pointsLayout, int colorLayout) {
+void Object_DEPRECATED::loadToGPU(int pointsLayout, int colorLayout) {
     // generate vbo
     glGenBuffers(1, &mVBO);
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
@@ -37,7 +38,7 @@ void Object::loadToGPU(int pointsLayout, int colorLayout) {
 }
 
 
-void Object::draw(GLint uniTrans, glm::mat4 modelMat) {
+void Object_DEPRECATED::draw(GLint uniTrans, glm::mat4 modelMat) {
     glBindVertexArray(mVAO);
     glUniformMatrix4fv(uniTrans, 1, GL_FALSE, glm::value_ptr(modelMat));
     glDrawArrays(mMode, 0, mPointsCount);

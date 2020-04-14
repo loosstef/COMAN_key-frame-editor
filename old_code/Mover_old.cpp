@@ -8,7 +8,7 @@
 
 const float DURATION = 5.0f;
 
-Mover_old::Mover_old(Object &obj, Path_old &path) : mObject(obj), mPath(path) {
+Mover_old::Mover_old(Object_DEPRECATED &obj, Path_old &path) : mObject(obj), mPath(path) {
 }
 
 glm::mat4 Mover_old::translation(float time) {

@@ -2,11 +2,11 @@
 // Created by stef on 02.03.20.
 //
 
-#include "Cube.h"
+#include "Cube_DEPRECATED.h"
 
 const int POINTS_COUNT = 36;
 
-Cube::Cube(float size) {
+Cube_DEPRECATED::Cube_DEPRECATED(float size) {
     // todo: adapt cube size to given size
     mPoints = new float[6*6*6] {
                 // BACK

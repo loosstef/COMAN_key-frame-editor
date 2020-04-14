@@ -7,19 +7,19 @@
 
 
 #include <chrono>
-#include "../Object.h"
+#include "../Object_DEPRECATED.h"
 #include "Path_old.h"
 #include "Chrono_old.h"
 
 class Mover_old {
 public:
-    Mover_old(Object &obj, Path_old &path);
+    Mover_old(Object_DEPRECATED &obj, Path_old &path);
     glm::mat4 translation(float time);
     void draw(GLint uniTrans);
     void start();
     void pause();
 private:
-    Object &mObject;
+    Object_DEPRECATED &mObject;
     Path_old &mPath;
     Chrono_old mChrono;
 };

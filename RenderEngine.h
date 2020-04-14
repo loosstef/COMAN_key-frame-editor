@@ -8,6 +8,7 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <vector>
+#include "Model.h"
 
 const float CAMERA_FOV = 45.0f;
 const float CAMERA_NEAR_CLIPPING = 1.0f;
@@ -15,7 +16,7 @@ const float CAMERA_FAR_CLIPPING = 50.0f;
 
 class Camera;
 class StepAheadAnimationChannel;
-class Object;
+class Object_DEPRECATED;
 class Channel;
 class GLFWwindow;
 
@@ -41,6 +42,9 @@ private:
     Camera* mEditorCamera;
     Camera* mVirtualCamera;
     std::vector<StepAheadAnimationChannel*> mStepAheadAnimationChannels;
+
+    // debug variable
+    Model mTestModel;
 };
 
 
