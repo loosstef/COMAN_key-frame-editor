@@ -7,7 +7,7 @@
 
 #include <glm/glm.hpp>
 #include <vector>
-#include "../Object_DEPRECATED.h"
+#include "Object_DEPRECATED.h"
 #include "Path_old.h"
 
 

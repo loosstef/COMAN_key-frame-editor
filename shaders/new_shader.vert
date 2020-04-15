@@ -12,8 +12,6 @@ uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 
-uniform int id;
-
 void main() {
 //    int r = (id & 0x000000FF) >>  0;
 //    int g = (id & 0x0000FF00) >>  8;

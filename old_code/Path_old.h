@@ -7,7 +7,7 @@
 
 
 #include <vector>
-#include "../Object_DEPRECATED.h"
+#include "Object_DEPRECATED.h"
 
 class Path_old : public Object_DEPRECATED {
 public:

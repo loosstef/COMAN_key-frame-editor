@@ -7,7 +7,7 @@
 #include "Camera.h"
 #include "StepAheadAnimationChannel.h"
 #include "InputHandler.h"
-#include "Object_DEPRECATED.h"
+#include "old_code/Object_DEPRECATED.h"
 #include "Orientation.h"
 #include "Path.h"
 
@@ -30,6 +30,7 @@ RenderEngine::RenderEngine() : mTestModel("models/spongebob.obj") {
     mUniLocTransMat = glGetUniformLocation(mStandardShaderProgram, "modelMatrix");
     mUniLocViewMat = glGetUniformLocation(mStandardShaderProgram, "viewMatrix");
     mUniLocObjId = glGetUniformLocation(mStandardShaderProgram, "id");
+    mUniLocTexture = glGetUniformLocation(mStandardShaderProgram, "material.texture_diffuse1");
     GLint standardId = 0;
     glUniform1i(mUniLocObjId, standardId);
 
@@ -56,20 +57,20 @@ void RenderEngine::render(int frameIndex) {
     glUniformMatrix4fv(mUniLocViewMat, 1, GL_FALSE, glm::value_ptr(viewMat));
 
     // render objects
-//    for(StepAheadAnimationChannel *saaChannel : mStepAheadAnimationChannels) {
-//        renderSaaChannel(frameIndex, *saaChannel);
-//    }
+    for(StepAheadAnimationChannel *saaChannel : mStepAheadAnimationChannels) {
+        renderSaaChannel(frameIndex, *saaChannel);
+    }
 
     // TESTING CODE
     // render loaded file
-    GLint standardId = 150;
-    glUniform1i(mUniLocObjId, standardId);
-    glm::mat4 modelMat(1.0f);
-    glUniformMatrix4fv(mUniLocTransMat, 1, GL_FALSE, glm::value_ptr(modelMat));
-    GLint uniTexture = glGetUniformLocation(mStandardShaderProgram, "material.texture_diffuse1");
-    mTestModel.Draw(uniTexture);
-    standardId = 300;
-    glUniform1i(mUniLocObjId, standardId);
+//    GLint standardId = 150;
+//    glUniform1i(mUniLocObjId, standardId);
+//    glm::mat4 modelMat(1.0f);
+//    glUniformMatrix4fv(mUniLocTransMat, 1, GL_FALSE, glm::value_ptr(modelMat));
+//    GLint uniTexture = glGetUniformLocation(mStandardShaderProgram, "material.texture_diffuse1");
+//    mTestModel.Draw(uniTexture);
+//    standardId = 300;
+//    glUniform1i(mUniLocObjId, standardId);
 }
 
 
@@ -137,18 +138,19 @@ void RenderEngine::onWindowSizeChange(uint width, uint height) {
 
 void RenderEngine::renderSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel) {
     Path *path = saaChannel.getPath();
-    Object_DEPRECATED *object = saaChannel.getObject();
-    if(object == nullptr) {
+    Model *model = saaChannel.getModel();
+    if(model == nullptr) {
         return;
     }
     if(path == nullptr) {
-        object->draw(mUniLocTransMat);
+        model->Draw(mUniLocTexture);
     }
     else {
         Orientation orientation = path->orientation(frameIndex);
         glm::mat4 rotMat = glm::toMat4(orientation.rotation);
         glm::mat4 transMat = glm::translate(glm::mat4(1.0f), orientation.position);
         glm::mat4 transformationMatrix = glm::scale(transMat*rotMat, orientation.scale);
-        object->draw(mUniLocTransMat, transformationMatrix);
+        glUniformMatrix4fv(mUniLocTransMat, 1, GL_FALSE, glm::value_ptr(transformationMatrix));
+        model->Draw(mUniLocTexture);
     }
 }

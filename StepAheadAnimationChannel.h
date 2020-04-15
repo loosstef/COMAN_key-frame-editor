@@ -9,6 +9,7 @@
 #include <glm/glm.hpp>
 #include <GL/glew.h>
 #include "Channel.h"
+#include "Model.h"
 
 class Object_DEPRECATED;
 class Path;
@@ -18,12 +19,10 @@ public:
     ChannelType getType() override { return SAA; }
     void setPath(Path* path);
     Path* getPath() { return mPath; }
-    Object_DEPRECATED* getObject() { return mObject; }
-    // deprecated functions
-    void addObject_DEPRECATED(Object_DEPRECATED* object);
+    Model* getModel() { return mModel; }
+    void setObject(Model* model);
 private:
-    Object_DEPRECATED *mObject;
-//    std::vector<Object*> mObjects;
+    Model *mModel;
     Path* mPath = nullptr;
 };
 

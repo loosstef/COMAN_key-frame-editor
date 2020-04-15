@@ -35,6 +35,7 @@ private:
     GLint mUniLocViewMat;
     GLint mUniLocProjMat;
     GLint mUniLocObjId;
+    GLint mUniLocTexture;
 
     uint mWindowWidth = 1940;
     uint mWindowHeight = 1080;

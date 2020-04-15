@@ -6,7 +6,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/euler_angles.hpp>
 #include "StepAheadAnimationChannel.h"
-#include "Object_DEPRECATED.h"
+#include "old_code/Object_DEPRECATED.h"
 #include "Path.h"
 #include "Keyframe.h"
 
@@ -16,7 +16,6 @@ void StepAheadAnimationChannel::setPath(Path *path) {
 }
 
 
-void StepAheadAnimationChannel::addObject_DEPRECATED(Object_DEPRECATED *object) {
-    mObject = object;
-//    mObjects.push_back(object);
+void StepAheadAnimationChannel::setObject(Model *model) {
+    mModel = model;
 }

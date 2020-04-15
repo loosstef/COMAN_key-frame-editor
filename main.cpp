@@ -8,7 +8,7 @@
 #include "Logger.h"
 #include "Camera.h"
 #include "old_code/BSpline_old.h"
-#include "Cube_DEPRECATED.h"
+#include "old_code/Cube_DEPRECATED.h"
 #include "InputHandler.h"
 #include "old_code/Mover_old.h"
 #include "StepAheadAnimationChannel.h"
@@ -234,9 +234,11 @@ int main() {
     // INITIALIZING TEST DATA
     StepAheadAnimationChannel saaChannel;
     renderEngine->addSaaChannel(&saaChannel);
-    Cube_DEPRECATED realCube;
-    saaChannel.addObject_DEPRECATED(&realCube);
-    realCube.loadToGPU();
+    Model spongebob_model("models/spongebob.obj");
+    saaChannel.setObject(&spongebob_model);
+//    Cube_DEPRECATED realCube;
+//    saaChannel.setObject(&realCube);
+//    realCube.loadToGPU();
     LinearPath realPath;
     saaChannel.setPath(&realPath);
     realPath.addKeyframe(Keyframe(100, glm::vec3(0.0f), glm::vec3(glm::pi<float>(), glm::half_pi<float>(), 0.0f)));
