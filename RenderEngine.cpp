@@ -66,7 +66,8 @@ void RenderEngine::render(int frameIndex) {
     glUniform1i(mUniLocObjId, standardId);
     glm::mat4 modelMat(1.0f);
     glUniformMatrix4fv(mUniLocTransMat, 1, GL_FALSE, glm::value_ptr(modelMat));
-    mTestModel.Draw();
+    GLint uniTexture = glGetUniformLocation(mStandardShaderProgram, "material.texture_diffuse1");
+    mTestModel.Draw(uniTexture);
     standardId = 300;
     glUniform1i(mUniLocObjId, standardId);
 }
