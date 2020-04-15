@@ -148,3 +148,47 @@ unsigned int Model::TextureFromFile(const char *path, const std::string &directo
 
     return textureID;
 }
+
+void Model::getModelDimensions(glm::vec3 &P0, glm::vec3 &S, glm::vec3 &T, glm::vec3 &U) {
+    P0.x = meshes[0].vertices[0].Position.x;
+    P0.y = meshes[0].vertices[0].Position.y;
+    P0.z = meshes[0].vertices[0].Position.z;
+    // calculate P0
+    for(int i = 0; i < meshes.size(); ++i) {
+        Mesh &mesh = meshes[i];
+        for(int j = 0; j < mesh.vertices.size(); ++j) {
+            Vertex &vertex = mesh.vertices[j];
+            if(vertex.Position.x < P0.x)
+                P0.x = vertex.Position.x;
+            if(vertex.Position.y < P0.y)
+                P0.y = vertex.Position.y;
+            if(vertex.Position.z < P0.z)
+                P0.z = vertex.Position.z;
+        }
+    }
+    // calculate S, T and U
+    float deltaX = 0;
+    float deltaY = 0;
+    float deltaZ = 0;
+    for(int i = 0; i < meshes.size(); ++i) {
+        Mesh &mesh = meshes[i];
+        for (int j = 0; j < mesh.vertices.size(); ++j) {
+            Vertex &vertex = mesh.vertices[j];
+            if((vertex.Position.x - P0.x) > deltaX)
+                deltaX = vertex.Position.x - P0.x;
+            if((vertex.Position.y - P0.y) > deltaY)
+                deltaY = vertex.Position.y - P0.y;
+            if((vertex.Position.z - P0.z) > deltaZ)
+                deltaZ = vertex.Position.z - P0.z;
+        }
+    }
+    S.x = deltaX;
+    S.y = 0;
+    S.z = 0;
+    T.x = 0;
+    T.y = deltaY;
+    T.z = 0;
+    U.x = 0;
+    U.y = 0;
+    U.z = deltaZ;
+}

@@ -19,6 +19,7 @@ public:
     /*  Functions   */
     Model(char *path);
     void Draw(GLint uniTexture/*Shader shader*/);
+    void getModelDimensions(glm::vec3 &P0, glm::vec3 &S, glm::vec3 &T, glm::vec3 &U);
 private:
     /*  Model Data  */
     std::vector<Mesh> meshes;

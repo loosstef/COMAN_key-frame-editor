@@ -74,17 +74,15 @@ void RenderEngine::render(int frameIndex) {
 }
 
 
-Channel *RenderEngine::pick(int frameIndex, double mouseX, double mouseY, GLFWwindow *window) {
+Channel* RenderEngine::pick( int frameIndex, double mouseX, double mouseY, GLFWwindow *window) {
     // reset render
     glDisable(GL_MULTISAMPLE);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     // calculate camera matrix
     glm::mat4 viewMat = mEditorCamera->getViewMatrix();
     glUniformMatrix4fv(mUniLocViewMat, 1, GL_FALSE, glm::value_ptr(viewMat));
-
-    // render objects
+    // render objects based on id
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     for(int id = 1; id < mStepAheadAnimationChannels.size()+1; ++id) {
         GLint realId = id;
@@ -92,8 +90,6 @@ Channel *RenderEngine::pick(int frameIndex, double mouseX, double mouseY, GLFWwi
         renderSaaChannel(frameIndex, *mStepAheadAnimationChannels[id-1]);
     }
 
-//    glFlush();
-//    glFinish();
     unsigned char data[4];
     glReadBuffer(GL_BACK);
     glReadPixels(floor(mouseX), mWindowHeight-floor(mouseY),1,1, GL_RGBA, GL_UNSIGNED_BYTE, data);
@@ -105,9 +101,9 @@ Channel *RenderEngine::pick(int frameIndex, double mouseX, double mouseY, GLFWwi
 
     glEnable(GL_MULTISAMPLE);
 
-    if(id == 0)
+    if(id == 0) {
         return nullptr;
-
+    }
     return mStepAheadAnimationChannels[id-1];
 //    glfwSwapBuffers(window);
 }
@@ -139,10 +135,14 @@ void RenderEngine::onWindowSizeChange(uint width, uint height) {
 void RenderEngine::renderSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel) {
     Path *path = saaChannel.getPath();
     Model *model = saaChannel.getModel();
+    FFD *ffd = saaChannel.getFFD();
     if(model == nullptr) {
         return;
     }
     if(path == nullptr) {
+        float camDist = glm::length(mEditorCamera->getPos());
+//        glm::mat4 transformationMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(camDist/200));
+//        glUniformMatrix4fv(mUniLocTransMat, 1, GL_FALSE, glm::value_ptr(transformationMatrix));
         model->Draw(mUniLocTexture);
     }
     else {
@@ -152,5 +152,8 @@ void RenderEngine::renderSaaChannel(int frameIndex, StepAheadAnimationChannel &s
         glm::mat4 transformationMatrix = glm::scale(transMat*rotMat, orientation.scale);
         glUniformMatrix4fv(mUniLocTransMat, 1, GL_FALSE, glm::value_ptr(transformationMatrix));
         model->Draw(mUniLocTexture);
+        if(ffd != nullptr) {
+            ffd->renderControlPoints(frameIndex, transformationMatrix, mUniLocTransMat, mUniLocTexture, *mEditorCamera);
+        }
     }
 }

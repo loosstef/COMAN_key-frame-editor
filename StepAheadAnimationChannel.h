@@ -10,6 +10,7 @@
 #include <GL/glew.h>
 #include "Channel.h"
 #include "Model.h"
+#include "FFD.h"
 
 class Object_DEPRECATED;
 class Path;
@@ -21,9 +22,12 @@ public:
     Path* getPath() { return mPath; }
     Model* getModel() { return mModel; }
     void setObject(Model* model);
+    void setFFD(FFD *ffd) { mFFD = ffd; }
+    FFD* getFFD() { return mFFD; }
 private:
     Model *mModel;
     Path* mPath = nullptr;
+    FFD *mFFD = nullptr;
 };
 
 

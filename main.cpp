@@ -241,9 +241,15 @@ int main() {
 //    realCube.loadToGPU();
     LinearPath realPath;
     saaChannel.setPath(&realPath);
-    realPath.addKeyframe(Keyframe(100, glm::vec3(0.0f), glm::vec3(glm::pi<float>(), glm::half_pi<float>(), 0.0f)));
-    realPath.addKeyframe(Keyframe(0));
-    realPath.addKeyframe(Keyframe(500, glm::vec3(-0.5f)));
+    realPath.addKeyframe(Keyframe(0, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(0.3f)));
+    FFD ffd(spongebob_model, 2, 2, 2);
+    saaChannel.setFFD(&ffd);
+
+//    StepAheadAnimationChannel redDot;
+//    renderEngine->addSaaChannel(&redDot);
+//    Model redDotModel("base_models/red_dot.obj");
+//    redDot.setObject(&redDotModel);
+//    realPath.addKeyframe(Keyframe(0, glm::vec3(0.0f, 0.0f, 5.0f)));
     // END OF INITIALIZATION OF DATA
 
     sceneClock->start();

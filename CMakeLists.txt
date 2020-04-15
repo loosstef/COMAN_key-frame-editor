@@ -18,6 +18,7 @@ configure_file(shaders/simple_shader.frag shaders/simple_shader.frag COPYONLY)
 configure_file(shaders/new_shader.vert shaders/new_shader.vert COPYONLY)
 configure_file(shaders/new_shader.frag shaders/new_shader.frag COPYONLY)
 file(COPY models DESTINATION .)
+file(COPY base_models DESTINATION .)
 
 add_executable(project main.cpp Logger.h Camera.cpp Camera.h Lights.cpp Lights.h old_code/BSpline_old.cpp
         old_code/BSpline_old.h old_code/Object_DEPRECATED.cpp old_code/Object_DEPRECATED.h old_code/Cube_DEPRECATED.cpp old_code/Cube_DEPRECATED.h
@@ -32,7 +33,7 @@ add_executable(project main.cpp Logger.h Camera.cpp Camera.h Lights.cpp Lights.h
         LinearPath.h Clock.cpp Clock.h gui/TimelineWindow.cpp gui/TimelineWindow.h gui/WindowRenderEngine.cpp
         gui/WindowRenderEngine.h Channel.cpp Channel.h gui/EditSAAChannelWindow.cpp gui/EditSAAChannelWindow.h
         Keyframe.cpp Keyframe.h Orientation.cpp Orientation.h
-        Mesh.cpp Mesh.h Model.cpp Model.h stb_image.h)
+        Mesh.cpp Mesh.h Model.cpp Model.h stb_image.h FFD.cpp FFD.h)
 
 
 set(CMAKE_CXX_FLAGS "-O0")

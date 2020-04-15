@@ -16,6 +16,7 @@ public:
     void rot(float horAngle, float verAngle);
     void move(glm::vec3 movement);
     void relativeMove(glm::vec3 movement);
+    glm::vec3 getPos() { return mPos; }
 private:
     glm::vec3 calcViewDir();
     void rotHor(float angle);
