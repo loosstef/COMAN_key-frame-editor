@@ -33,7 +33,7 @@ add_executable(project main.cpp Logger.h Camera.cpp Camera.h Lights.cpp Lights.h
         LinearPath.h Clock.cpp Clock.h gui/TimelineWindow.cpp gui/TimelineWindow.h gui/WindowRenderEngine.cpp
         gui/WindowRenderEngine.h Channel.cpp Channel.h gui/EditSAAChannelWindow.cpp gui/EditSAAChannelWindow.h
         Keyframe.cpp Keyframe.h Orientation.cpp Orientation.h
-        Mesh.cpp Mesh.h Model.cpp Model.h stb_image.h FFD.cpp FFD.h)
+        Mesh.cpp Mesh.h Model.cpp Model.h stb_image.h FFD.cpp FFD.h Picked.cpp)
 
 
 set(CMAKE_CXX_FLAGS "-O0")

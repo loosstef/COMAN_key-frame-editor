@@ -43,7 +43,8 @@ char FRAGMENT_SHADER_FILENAME[] = "shaders/simple_shader.frag";
 RenderEngine* renderEngine;
 Clock *sceneClock;
 WindowRenderEngine *windows;
-Channel *pickedChannel = nullptr;
+//Channel *pickedChannel = nullptr;
+Picked picked;
 
 
 // callback functions
@@ -67,7 +68,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
         double currMousePosX, currMousePosY;
         glfwGetCursorPos(window, &currMousePosX, &currMousePosY);
-        pickedChannel = renderEngine->pick(sceneClock->getFrameIndex(), currMousePosX, currMousePosY, window);
+        picked = renderEngine->pick(sceneClock->getFrameIndex(), currMousePosX, currMousePosY, window);
     }
 }
 
@@ -295,7 +296,7 @@ int main() {
         // put the stuff we've been drawing onto the display
 
         // imgui windowing
-        windows->render(pickedChannel);
+        windows->render(picked.channel);
 //        ImGui::ShowDemoWindow();
 
 

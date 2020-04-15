@@ -38,7 +38,7 @@ RenderEngine::RenderEngine() : mTestModel("models/spongebob.obj") {
     mEditorCamera = new Camera();
     // generate and load projection matrix
     mProjectionMatrix = glm::perspective(
-            glm::radians(45.0f),
+            glm::radians(CAMERA_FOV),
             ((float)mWindowWidth) / ((float)mWindowHeight),
             CAMERA_NEAR_CLIPPING,
             CAMERA_FAR_CLIPPING
@@ -74,7 +74,7 @@ void RenderEngine::render(int frameIndex) {
 }
 
 
-Channel* RenderEngine::pick( int frameIndex, double mouseX, double mouseY, GLFWwindow *window) {
+Picked RenderEngine::pick( int frameIndex, double mouseX, double mouseY, GLFWwindow *window) {
     // reset render
     glDisable(GL_MULTISAMPLE);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -102,9 +102,9 @@ Channel* RenderEngine::pick( int frameIndex, double mouseX, double mouseY, GLFWw
     glEnable(GL_MULTISAMPLE);
 
     if(id == 0) {
-        return nullptr;
+        return {};
     }
-    return mStepAheadAnimationChannels[id-1];
+    return {mStepAheadAnimationChannels[id-1]};
 //    glfwSwapBuffers(window);
 }
 

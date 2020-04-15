@@ -9,6 +9,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include "Model.h"
+#include "Picked.cpp"
 
 const float CAMERA_FOV = 45.0f;
 const float CAMERA_NEAR_CLIPPING = 1.0f;
@@ -24,7 +25,7 @@ class RenderEngine {
 public:
     RenderEngine();
     void render(int frameIndex);
-    Channel* pick(int frameIndex, double mouseX, double mouseY, GLFWwindow *window);
+    Picked pick(int frameIndex, double mouseX, double mouseY, GLFWwindow *window);
     void addSaaChannel(StepAheadAnimationChannel *saaChannel);
     Camera& getEditorCamera();
     void onWindowSizeChange(uint width, uint height);

@@ -7,6 +7,7 @@
 
 #include "TimelineWindow.h"
 #include "EditSAAChannelWindow.h"
+#include "../Picked.cpp"
 
 class Clock;
 class Channel;
@@ -14,7 +15,7 @@ class Channel;
 class WindowRenderEngine {
 public:
     WindowRenderEngine(Clock *clock);
-    void render(Channel *pickedChannel);
+    void render(Picked picked);
 private:
     TimelineWindow timelineWindow;
     EditSAAChannelWindow editSaaChannelWindow;

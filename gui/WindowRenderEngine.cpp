@@ -13,7 +13,8 @@ WindowRenderEngine::WindowRenderEngine(Clock *clock) :
 
 }
 
-void WindowRenderEngine::render(Channel *pickedChannel) {
+void WindowRenderEngine::render(Picked picked) {
+    Channel * pickedChannel = picked.channel;
     timelineWindow.render();
     if(pickedChannel != nullptr) {
         if(pickedChannel->getType() == SAA) {
