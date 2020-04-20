@@ -9,7 +9,7 @@
 
 struct Picked {
     Picked(Channel *channel = nullptr, FFD *ffd = nullptr, int ctrlPtI = 0) :
-            channel(nullptr), ffd(nullptr), controlPointIndex(0) {}
+            channel(channel), ffd(ffd), controlPointIndex(ctrlPtI) {}
     Channel *channel;
     FFD *ffd;
     int controlPointIndex;

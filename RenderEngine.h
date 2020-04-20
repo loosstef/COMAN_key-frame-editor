@@ -23,13 +23,14 @@ class GLFWwindow;
 class RenderEngine {
 public:
     RenderEngine();
-    void render(int frameIndex);
+    void render(int frameIndex, Picked picked);
     Picked pick(int frameIndex, double mouseX, double mouseY, GLFWwindow *window);
     void addSaaChannel(StepAheadAnimationChannel *saaChannel);
     Camera& getEditorCamera();
     void onWindowSizeChange(uint width, uint height);
 private:
-    void renderSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel);
+    void renderSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel, Picked picked);
+    glm::mat4 calcTransMatOfSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel);
     GLuint mStandardShaderProgram;
     GLint mUniLocTransMat;
     GLint mUniLocViewMat;

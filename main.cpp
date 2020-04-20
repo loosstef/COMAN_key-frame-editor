@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
+#include <iostream>
 #include "InputHandler.h"
 #include "StepAheadAnimationChannel.h"
 #include "RenderEngine.h"
@@ -62,6 +63,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
         double currMousePosX, currMousePosY;
         glfwGetCursorPos(window, &currMousePosX, &currMousePosY);
         picked = renderEngine->pick(sceneClock->getFrameIndex(), currMousePosX, currMousePosY, window);
+        std::cout << picked.controlPointIndex << std::endl;
     }
 }
 
@@ -267,7 +269,7 @@ int main() {
 //        mover.draw(uniTrans);
 //        cube.draw(uniTrans, model2);
 //        bSpline.draw(uniTrans);
-        renderEngine->render(sceneClock->getFrameIndex());
+        renderEngine->render(sceneClock->getFrameIndex(), picked);
         double currMousePosX, currMousePosY;
         glfwGetCursorPos(window, &currMousePosX, &currMousePosY);
 

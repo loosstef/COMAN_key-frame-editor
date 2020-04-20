@@ -10,8 +10,12 @@
 
 const float CONTROL_POINT_SIZE = 0.005;
 std::string RED_DOT_MODEL_LOCATION("base_models/red_dot.obj");
+std::string ORANGE_DOT_MODEL_LOCATION("base_models/orange_dot.obj");
 
-FFD::FFD(Model &model, int l, int m, int n) : redDot(&RED_DOT_MODEL_LOCATION[0]) {
+FFD::FFD(Model &model, int l, int m, int n) :
+redDot(&RED_DOT_MODEL_LOCATION[0]),
+orangeDot(&ORANGE_DOT_MODEL_LOCATION[0])
+{
     P0 = glm::vec3(0.0f);
     S = glm::vec3(0.0f);
     T = glm::vec3(0.0f);
@@ -35,10 +39,11 @@ FFD::FFD(Model &model, int l, int m, int n) : redDot(&RED_DOT_MODEL_LOCATION[0])
 //    frameIndices.push_back(0);
 }
 
-void FFD::renderControlPoints(glm::mat4 transMat, GLint uniLocTransMat, GLint uniLocTexture, Camera &cam) {
+void FFD::renderControlPoints(glm::mat4 transMat, GLint uniLocTransMat, GLint uniLocTexture, Camera &cam, int pickedDot) {
     int l = controlPoints.size();
     int m = controlPoints[0].size();
     int n = controlPoints[0][0].size();
+    int dotID = 1;
     for(int i = 0; i < l; ++i) {
         for (int j = 0; j < m; ++j) {
             for (int k = 0; k < n; ++k) {
@@ -48,7 +53,35 @@ void FFD::renderControlPoints(glm::mat4 transMat, GLint uniLocTransMat, GLint un
                 glm::mat4 transformationMatrix = glm::translate(glm::mat4(1.0f), globPos);
                 transformationMatrix = glm::scale(transformationMatrix, glm::vec3(camDist*CONTROL_POINT_SIZE));
                 glUniformMatrix4fv(uniLocTransMat, 1, GL_FALSE, glm::value_ptr(transformationMatrix));
+                if(dotID == pickedDot) {
+                    orangeDot.Draw(0, uniLocTexture);
+                } else {
+                    redDot.Draw(0, uniLocTexture);
+                }
+                ++dotID;
+            }
+        }
+    }
+}
+
+
+void FFD::pickControlPoints(glm::mat4 transMat, GLint uniLocTransMat, GLint uniLocTexture, GLint uniLocObjId, Camera &cam) {
+    int l = controlPoints.size();
+    int m = controlPoints[0].size();
+    int n = controlPoints[0][0].size();
+    int id = 1;
+    for(int i = 0; i < l; ++i) {
+        for (int j = 0; j < m; ++j) {
+            for (int k = 0; k < n; ++k) {
+                glm::vec3 locPos = controlPoints[i][j][k];
+                glm::vec3 globPos = transMat * glm::vec4(P0 + locPos.x * S + locPos.y * T + locPos.z * U, 1.0f);
+                float camDist = abs(glm::length(globPos - cam.getPos()));
+                glm::mat4 transformationMatrix = glm::translate(glm::mat4(1.0f), globPos);
+                transformationMatrix = glm::scale(transformationMatrix, glm::vec3(camDist*CONTROL_POINT_SIZE));
+                glUniformMatrix4fv(uniLocTransMat, 1, GL_FALSE, glm::value_ptr(transformationMatrix));
+                glUniform1i(uniLocObjId, id);
                 redDot.Draw(0, uniLocTexture);
+                ++id;
             }
         }
     }

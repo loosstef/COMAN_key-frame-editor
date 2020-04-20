@@ -16,7 +16,8 @@ class Camera;
 class FFD {
 public:
     FFD(Model &model, int l, int m, int n);
-    void renderControlPoints(glm::mat4 transMat, GLint uniLocTransMat, GLint uniLocTexture, Camera &cam);
+    void renderControlPoints(glm::mat4 transMat, GLint uniLocTransMat, GLint uniLocTexture, Camera &cam, int pickedDot = -1);
+    void pickControlPoints(glm::mat4 transMat, GLint uniLocTransMat, GLint uniLocTexture, GLint uniLocObjId, Camera &cam);
     Vertex calcPos(Vertex locPos);
     std::vector<Vertex> calcPos_debug(std::vector<Vertex> &origGlobPos);
     void setControlPoint(glm::tvec3<int> index, glm::vec3 pos);
@@ -33,6 +34,7 @@ private:
     std::vector<std::vector<std::vector<glm::vec3>>> controlPoints;
 //    int currFrameIndex;
     Model redDot;
+    Model orangeDot;
 };
 
 
