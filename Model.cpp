@@ -8,14 +8,20 @@
 #include "Model.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#include "FFD.h"
 
 Model::Model(char *path) {
     loadModel(path);
 }
 
-void Model::Draw(GLint uniTexture) {
+void Model::Draw(int frameIndex, GLint uniTexture) {
     for(unsigned int i = 0; i < meshes.size(); i++)
-        meshes[i].Draw(uniTexture);
+        meshes[i].Draw(frameIndex, uniTexture);
+//    for(int i = 0; i < all_frameIndices.size(); ++i) {
+//        if(all_frameIndices[i] == frameIndex) {
+//            all_ffds[i]->renderControlPoints()
+//        }
+//    }
 }
 
 
@@ -150,14 +156,18 @@ unsigned int Model::TextureFromFile(const char *path, const std::string &directo
 }
 
 void Model::getModelDimensions(glm::vec3 &P0, glm::vec3 &S, glm::vec3 &T, glm::vec3 &U) {
-    P0.x = meshes[0].vertices[0].Position.x;
-    P0.y = meshes[0].vertices[0].Position.y;
-    P0.z = meshes[0].vertices[0].Position.z;
+//    P0.x = meshes[0].curr_vertices[0].Position.x;
+    P0.x = meshes[0].getOrigVertices()[0].Position.x;
+//    P0.y = meshes[0].curr_vertices[0].Position.y;
+    P0.y = meshes[0].getOrigVertices()[0].Position.y;
+//    P0.z = meshes[0].curr_vertices[0].Position.z;
+    P0.z = meshes[0].getOrigVertices()[0].Position.z;
     // calculate P0
     for(int i = 0; i < meshes.size(); ++i) {
         Mesh &mesh = meshes[i];
-        for(int j = 0; j < mesh.vertices.size(); ++j) {
-            Vertex &vertex = mesh.vertices[j];
+        for(int j = 0; j < /*mesh.curr_vertices.size()*/ mesh.getOrigVertices().size(); ++j) {
+            Vertex &vertex = mesh.getOrigVertices()[j];
+//            Vertex &vertex = mesh.curr_vertices[j];
             if(vertex.Position.x < P0.x)
                 P0.x = vertex.Position.x;
             if(vertex.Position.y < P0.y)
@@ -172,8 +182,9 @@ void Model::getModelDimensions(glm::vec3 &P0, glm::vec3 &S, glm::vec3 &T, glm::v
     float deltaZ = 0;
     for(int i = 0; i < meshes.size(); ++i) {
         Mesh &mesh = meshes[i];
-        for (int j = 0; j < mesh.vertices.size(); ++j) {
-            Vertex &vertex = mesh.vertices[j];
+        for (int j = 0; j < /*mesh.curr_vertices.size()*/mesh.getOrigVertices().size(); ++j) {
+            Vertex &vertex = mesh.getOrigVertices()[j];
+//            Vertex &vertex = mesh.curr_vertices[j];
             if((vertex.Position.x - P0.x) > deltaX)
                 deltaX = vertex.Position.x - P0.x;
             if((vertex.Position.y - P0.y) > deltaY)
@@ -192,3 +203,15 @@ void Model::getModelDimensions(glm::vec3 &P0, glm::vec3 &S, glm::vec3 &T, glm::v
     U.y = 0;
     U.z = deltaZ;
 }
+
+void Model::applyFFD(int frameIndex, FFD *ffd) {
+    for(unsigned int i = 0; i < meshes.size(); i++)
+        meshes[i].applyFFD(frameIndex, *ffd);
+    all_ffds.push_back(ffd);
+    all_frameIndices.push_back(frameIndex);
+}
+
+//void Model::setFFD(FFD *ffd) {
+//    for(unsigned int i = 0; i < meshes.size(); i++)
+//        meshes[i].setFFD(ffd);
+//}

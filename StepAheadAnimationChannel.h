@@ -6,14 +6,15 @@
 #define PROJECT_STEPAHEADANIMATIONCHANNEL_H
 
 #include <vector>
+#include <string>
 #include <glm/glm.hpp>
 #include <GL/glew.h>
 #include "Channel.h"
-#include "Model.h"
-#include "FFD.h"
 
 class Object_DEPRECATED;
 class Path;
+class Model;
+class FFD;
 
 class StepAheadAnimationChannel : public Channel {
 public:
@@ -22,12 +23,17 @@ public:
     Path* getPath() { return mPath; }
     Model* getModel() { return mModel; }
     void setObject(Model* model);
-    void setFFD(FFD *ffd) { mFFD = ffd; }
-    FFD* getFFD() { return mFFD; }
+    void addFFD(int frameIndex, FFD *ffd);
+    FFD* getFFD(int frameIndex);
+//    void setFFD(FFD *ffd);
+//    FFD* getFFD() { return mFFD; }
+    std::string name;
 private:
     Model *mModel;
     Path* mPath = nullptr;
-    FFD *mFFD = nullptr;
+    std::vector<FFD*> mFFDs;
+    std::vector<int> mFFFDFrameIndices;
+//    FFD *mFFD = nullptr;
 };
 
 

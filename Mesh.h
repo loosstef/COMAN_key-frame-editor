@@ -13,6 +13,8 @@
 #include <glm/mat4x4.hpp>
 #include <GL/glew.h>
 
+class FFD;
+
 struct Vertex {
     Vertex(glm::vec3 pos = glm::vec3(0.0f), glm::vec3 norm = glm::vec3(0.0f), glm::vec2 texCoords = glm::vec2(0.0f)) : Position(pos), Normal(norm), TexCoords(texCoords) {}
     glm::vec3 Position;
@@ -29,17 +31,29 @@ struct Texture {
 class Mesh {
 public:
     /*  Mesh Data  */
-    std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     std::vector<Texture> textures;
+    /* ffd */
+    std::vector<Vertex> deformed_vertices;
     /*  Functions  */
     Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
-    void Draw(GLint uniTexture);
+    void Draw(int frameIndex, GLint uniTexture);
+    std::vector<Vertex>& getOrigVertices() { return orig_vertices; }
+    void applyFFD(int frameIndex, FFD &ffd);
+    void setTime(int frameIndex);
 private:
     /*  Render data  */
     unsigned int VAO, VBO, EBO;
+    /* time dependant data */
+    std::vector<Vertex> orig_vertices;
+    std::vector<Vertex> *curr_vertices = nullptr;
+    std::vector<std::vector<Vertex>> all_vertices;
+    std::vector<std::vector<Vertex>> generated_vertices;
+    std::vector<int> generated_keyframeIndices;
+    std::vector<int> keyframeIndices;
+    int currentFrameIndex = 0;
     /*  Functions    */
-    void setupMesh();
+    void setupMesh(std::vector<Vertex> &vertices);
 };
 
 

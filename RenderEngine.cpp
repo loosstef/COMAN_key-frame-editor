@@ -17,7 +17,7 @@ char BASIC_FRAGMENT_SHADER_FILENAME[] = "shaders/new_shader.frag";
 //char PICKING_FRAGMENT_SHADER_FILENAME[] = "shaders/color_picking_shader.frag";
 
 
-RenderEngine::RenderEngine() : mTestModel("models/spongebob.obj") {
+RenderEngine::RenderEngine() {
     // load standard shaders
     GLuint vs = InputHandler::loadAndCompileShader(BASIC_VERTEX_SHADER_FILENAME, GL_VERTEX_SHADER);
     GLuint fs = InputHandler::loadAndCompileShader(BASIC_FRAGMENT_SHADER_FILENAME, GL_FRAGMENT_SHADER);
@@ -30,7 +30,7 @@ RenderEngine::RenderEngine() : mTestModel("models/spongebob.obj") {
     mUniLocTransMat = glGetUniformLocation(mStandardShaderProgram, "modelMatrix");
     mUniLocViewMat = glGetUniformLocation(mStandardShaderProgram, "viewMatrix");
     mUniLocObjId = glGetUniformLocation(mStandardShaderProgram, "id");
-    mUniLocTexture = glGetUniformLocation(mStandardShaderProgram, "material.texture_diffuse1");
+    mUniLocTexture = glGetUniformLocation(mStandardShaderProgram, "texture_diffuse1"); //material.
     GLint standardId = 0;
     glUniform1i(mUniLocObjId, standardId);
 
@@ -57,8 +57,12 @@ void RenderEngine::render(int frameIndex) {
     glUniformMatrix4fv(mUniLocViewMat, 1, GL_FALSE, glm::value_ptr(viewMat));
 
     // render objects
-    for(StepAheadAnimationChannel *saaChannel : mStepAheadAnimationChannels) {
-        renderSaaChannel(frameIndex, *saaChannel);
+//    for(StepAheadAnimationChannel *saaChannel : mStepAheadAnimationChannels) {
+//        renderSaaChannel(frameIndex, *saaChannel);
+//    }
+
+    for(int i = 0; i < mStepAheadAnimationChannels.size(); ++i) {
+        renderSaaChannel(frameIndex, *mStepAheadAnimationChannels[i]);
     }
 
     // TESTING CODE
@@ -135,15 +139,16 @@ void RenderEngine::onWindowSizeChange(uint width, uint height) {
 void RenderEngine::renderSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel) {
     Path *path = saaChannel.getPath();
     Model *model = saaChannel.getModel();
-    FFD *ffd = saaChannel.getFFD();
+    FFD *ffd = saaChannel.getFFD(frameIndex);
     if(model == nullptr) {
         return;
     }
     if(path == nullptr) {
-        float camDist = glm::length(mEditorCamera->getPos());
-//        glm::mat4 transformationMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(camDist/200));
-//        glUniformMatrix4fv(mUniLocTransMat, 1, GL_FALSE, glm::value_ptr(transformationMatrix));
-        model->Draw(mUniLocTexture);
+        glUniformMatrix4fv(mUniLocTransMat, 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
+        model->Draw(frameIndex, mUniLocTexture);
+        if(ffd != nullptr) {
+            ffd->renderControlPoints(glm::mat4(1.0f), mUniLocTransMat, mUniLocTexture, *mEditorCamera);
+        }
     }
     else {
         Orientation orientation = path->orientation(frameIndex);
@@ -151,9 +156,9 @@ void RenderEngine::renderSaaChannel(int frameIndex, StepAheadAnimationChannel &s
         glm::mat4 transMat = glm::translate(glm::mat4(1.0f), orientation.position);
         glm::mat4 transformationMatrix = glm::scale(transMat*rotMat, orientation.scale);
         glUniformMatrix4fv(mUniLocTransMat, 1, GL_FALSE, glm::value_ptr(transformationMatrix));
-        model->Draw(mUniLocTexture);
+        model->Draw(frameIndex, mUniLocTexture);
         if(ffd != nullptr) {
-            ffd->renderControlPoints(frameIndex, transformationMatrix, mUniLocTransMat, mUniLocTexture, *mEditorCamera);
+            ffd->renderControlPoints(transformationMatrix, mUniLocTransMat, mUniLocTexture, *mEditorCamera);
         }
     }
 }

@@ -5,25 +5,18 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
-#include "Logger.h"
-#include "Camera.h"
-#include "old_code/BSpline_old.h"
-#include "old_code/Cube_DEPRECATED.h"
 #include "InputHandler.h"
-#include "old_code/Mover_old.h"
 #include "StepAheadAnimationChannel.h"
 #include "RenderEngine.h"
-
 #include "vendor/imgui/imgui.h"
 #include "vendor/imgui/imgui_impl_opengl3.h"
 #include "vendor/imgui/imgui_impl_glfw.h"
 #include "LinearPath.h"
 #include "Path.h"
 #include "Clock.h"
-#include "gui/TimelineWindow.h"
 #include "gui/WindowRenderEngine.h"
-#include "Channel.h"
 #include "Keyframe.h"
+#include "Camera.h"
 
 const float ROT_SPEED = 0.15f;
 const float SCROLL_SENSITIVITY = 0.30f;
@@ -234,23 +227,19 @@ int main() {
 
     // INITIALIZING TEST DATA
     StepAheadAnimationChannel saaChannel;
+    saaChannel.name = std::string("green_cube_channel");
     renderEngine->addSaaChannel(&saaChannel);
     Model spongebob_model("models/spongebob.obj");
     saaChannel.setObject(&spongebob_model);
-//    Cube_DEPRECATED realCube;
-//    saaChannel.setObject(&realCube);
-//    realCube.loadToGPU();
     LinearPath realPath;
     saaChannel.setPath(&realPath);
     realPath.addKeyframe(Keyframe(0, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(0.3f)));
-    FFD ffd(spongebob_model, 2, 2, 2);
-    saaChannel.setFFD(&ffd);
-
-//    StepAheadAnimationChannel redDot;
-//    renderEngine->addSaaChannel(&redDot);
-//    Model redDotModel("base_models/red_dot.obj");
-//    redDot.setObject(&redDotModel);
-//    realPath.addKeyframe(Keyframe(0, glm::vec3(0.0f, 0.0f, 5.0f)));
+    FFD ffd_sb_0(spongebob_model, 2, 2, 2);
+    ffd_sb_0.setControlPoint(glm::tvec3<int>(0,1,0), glm::vec3(0, 1.5, 0));
+    FFD ffd_sb_200(spongebob_model, 2, 2, 2);
+    ffd_sb_200.setControlPoint(glm::tvec3<int>(1, 0, 1), glm::vec3(1.5, 0.2, 1.2));
+    saaChannel.addFFD(0, &ffd_sb_0);
+    saaChannel.addFFD(200, &ffd_sb_200);
     // END OF INITIALIZATION OF DATA
 
     sceneClock->start();

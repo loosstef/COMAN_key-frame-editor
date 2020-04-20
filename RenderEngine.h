@@ -8,7 +8,6 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <vector>
-#include "Model.h"
 #include "Picked.cpp"
 
 const float CAMERA_FOV = 45.0f;
@@ -46,7 +45,7 @@ private:
     std::vector<StepAheadAnimationChannel*> mStepAheadAnimationChannels;
 
     // debug variable
-    Model mTestModel;
+//    Model mTestModel;
 };
 
 
