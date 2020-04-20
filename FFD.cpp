@@ -42,7 +42,6 @@ void FFD::renderControlPoints(glm::mat4 transMat, GLint uniLocTransMat, GLint un
     for(int i = 0; i < l; ++i) {
         for (int j = 0; j < m; ++j) {
             for (int k = 0; k < n; ++k) {
-//                glm::vec3 locPos = controlPoints[i][j][k].orientation(frameIndex).position;
                 glm::vec3 locPos = controlPoints[i][j][k];
                 glm::vec3 globPos = transMat * glm::vec4(P0 + locPos.x * S + locPos.y * T + locPos.z * U, 1.0f);
                 float camDist = abs(glm::length(globPos - cam.getPos()));

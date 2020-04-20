@@ -143,22 +143,17 @@ void RenderEngine::renderSaaChannel(int frameIndex, StepAheadAnimationChannel &s
     if(model == nullptr) {
         return;
     }
-    if(path == nullptr) {
-        glUniformMatrix4fv(mUniLocTransMat, 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
-        model->Draw(frameIndex, mUniLocTexture);
-        if(ffd != nullptr) {
-            ffd->renderControlPoints(glm::mat4(1.0f), mUniLocTransMat, mUniLocTexture, *mEditorCamera);
-        }
-    }
-    else {
+    // determine transformation matrix
+    glm::mat4 transformationMatrix(1.0f);
+    if(path != nullptr) {
         Orientation orientation = path->orientation(frameIndex);
         glm::mat4 rotMat = glm::toMat4(orientation.rotation);
         glm::mat4 transMat = glm::translate(glm::mat4(1.0f), orientation.position);
-        glm::mat4 transformationMatrix = glm::scale(transMat*rotMat, orientation.scale);
-        glUniformMatrix4fv(mUniLocTransMat, 1, GL_FALSE, glm::value_ptr(transformationMatrix));
-        model->Draw(frameIndex, mUniLocTexture);
-        if(ffd != nullptr) {
-            ffd->renderControlPoints(transformationMatrix, mUniLocTransMat, mUniLocTexture, *mEditorCamera);
-        }
+        transformationMatrix = glm::scale(transMat*rotMat, orientation.scale);
+    }
+    glUniformMatrix4fv(mUniLocTransMat, 1, GL_FALSE, glm::value_ptr(transformationMatrix));
+    model->Draw(frameIndex, mUniLocTexture);
+    if(ffd != nullptr) {
+        ffd->renderControlPoints(transformationMatrix, mUniLocTransMat, mUniLocTexture, *mEditorCamera);
     }
 }
