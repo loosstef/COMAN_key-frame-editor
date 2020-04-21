@@ -4,8 +4,8 @@
 #ifndef PROJECT_PICKED_CPP
 #define PROJECT_PICKED_CPP
 
-#include "Channel.h"
 #include "FFD.h"
+#include "Channel.h"
 
 struct Picked {
     Picked(Channel *channel = nullptr, FFD *ffd = nullptr, int ctrlPtI = 0) :

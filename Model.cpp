@@ -2,9 +2,9 @@
 // Created by stef on 11.04.20.
 //
 
+#include <GL/glew.h>
 #include <iostream>
 #include <vector>
-#include <GL/glew.h>
 #include "Model.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"

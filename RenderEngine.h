@@ -9,6 +9,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include "Picked.cpp"
+#include "StandardShader.h"
 
 const float CAMERA_FOV = 45.0f;
 const float CAMERA_NEAR_CLIPPING = 1.0f;
@@ -30,13 +31,13 @@ public:
     void onWindowSizeChange(uint width, uint height);
 private:
     void renderSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel, Picked picked);
-    glm::mat4 calcTransMatOfSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel);
-    GLuint mStandardShaderProgram;
-    GLint mUniLocTransMat;
-    GLint mUniLocViewMat;
-    GLint mUniLocProjMat;
-    GLint mUniLocObjId;
-    GLint mUniLocTexture;
+//    glm::mat4 calcTransMatOfSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel);
+    StandardShader mStandardShader;
+//    GLint mUniLocTransMat;
+//    GLint mUniLocViewMat;
+//    GLint mUniLocProjMat;
+//    GLint mUniLocObjId;
+//    GLint mUniLocTexture;
 
     uint mWindowWidth = 1940;
     uint mWindowHeight = 1080;

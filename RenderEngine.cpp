@@ -11,28 +11,29 @@
 #include "Orientation.h"
 #include "Path.h"
 
-char BASIC_VERTEX_SHADER_FILENAME[] = "shaders/new_shader.vert";
-char BASIC_FRAGMENT_SHADER_FILENAME[] = "shaders/new_shader.frag";
+//char VERTEX_SHADER_FILENAME[] = "shaders/new_shader.vert";
+//char FRAGMENT_SHADER_FILENAME[] = "shaders/new_shader.frag";
 //char PICKING_VERTEX_SHADER_FILENAME[] = "shaders/color_picking_shader.vert";
 //char PICKING_FRAGMENT_SHADER_FILENAME[] = "shaders/color_picking_shader.frag";
 
 
 RenderEngine::RenderEngine() {
     // load standard shaders
-    GLuint vs = InputHandler::loadAndCompileShader(BASIC_VERTEX_SHADER_FILENAME, GL_VERTEX_SHADER);
-    GLuint fs = InputHandler::loadAndCompileShader(BASIC_FRAGMENT_SHADER_FILENAME, GL_FRAGMENT_SHADER);
-    mStandardShaderProgram = glCreateProgram();
-    glAttachShader(mStandardShaderProgram, fs);
-    glAttachShader(mStandardShaderProgram, vs);
-    glLinkProgram(mStandardShaderProgram);
-    glUseProgram(mStandardShaderProgram);
-    mUniLocProjMat = glGetUniformLocation(mStandardShaderProgram, "projectionMatrix");
-    mUniLocTransMat = glGetUniformLocation(mStandardShaderProgram, "modelMatrix");
-    mUniLocViewMat = glGetUniformLocation(mStandardShaderProgram, "viewMatrix");
-    mUniLocObjId = glGetUniformLocation(mStandardShaderProgram, "id");
-    mUniLocTexture = glGetUniformLocation(mStandardShaderProgram, "texture_diffuse1"); //material.
-    GLint standardId = 0;
-    glUniform1i(mUniLocObjId, standardId);
+//    GLuint vs = InputHandler::loadAndCompileShader(VERTEX_SHADER_FILENAME, GL_VERTEX_SHADER);
+//    GLuint fs = InputHandler::loadAndCompileShader(FRAGMENT_SHADER_FILENAME, GL_FRAGMENT_SHADER);
+//    mStandardShaderProgram = glCreateProgram();
+//    glAttachShader(mStandardShaderProgram, fs);
+//    glAttachShader(mStandardShaderProgram, vs);
+//    glLinkProgram(mStandardShaderProgram);
+//    glUseProgram(mStandardShaderProgram);
+//    mUniLocProjMat = mStandardShader.getUniLoc("projectionMatrix");
+//    mUniLocTransMat = mStandardShader.getUniLoc("modelMatrix");
+//    mUniLocViewMat = mStandardShader.getUniLoc("viewMatrix");
+//    mUniLocObjId = mStandardShader.getUniLoc("id");
+//    mUniLocTexture = mStandardShader.getUniLoc("texture_diffuse1");
+    mStandardShader.setId(0);
+//    GLint standardId = 0;
+//    glUniform1i(mUniLocObjId, standardId);
     // create new camera
     mEditorCamera = new Camera();
     // generate and load projection matrix
@@ -42,7 +43,8 @@ RenderEngine::RenderEngine() {
             CAMERA_NEAR_CLIPPING,
             CAMERA_FAR_CLIPPING
     );
-    glUniformMatrix4fv(mUniLocProjMat, 1, GL_FALSE, glm::value_ptr(mProjectionMatrix));
+    mStandardShader.setMatrix(PROJECTION_MATRIX, mProjectionMatrix);
+//    glUniformMatrix4fv(mUniLocProjMat, 1, GL_FALSE, glm::value_ptr(mProjectionMatrix));
 }
 
 
@@ -53,7 +55,8 @@ RenderEngine::RenderEngine() {
 void RenderEngine::render(int frameIndex, Picked picked) {
     // calculate camera matrix
     glm::mat4 viewMat = mEditorCamera->getViewMatrix();
-    glUniformMatrix4fv(mUniLocViewMat, 1, GL_FALSE, glm::value_ptr(viewMat));
+    mStandardShader.setMatrix(VIEW_MATRIX, viewMat);
+//    glUniformMatrix4fv(mUniLocViewMat, 1, GL_FALSE, glm::value_ptr(viewMat));
 
     // render objects
 //    for(StepAheadAnimationChannel *saaChannel : mStepAheadAnimationChannels) {
@@ -84,12 +87,14 @@ Picked RenderEngine::pick( int frameIndex, double mouseX, double mouseY, GLFWwin
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // calculate camera matrix
     glm::mat4 viewMat = mEditorCamera->getViewMatrix();
-    glUniformMatrix4fv(mUniLocViewMat, 1, GL_FALSE, glm::value_ptr(viewMat));
+    mStandardShader.setMatrix(VIEW_MATRIX, viewMat);
+//    glUniformMatrix4fv(mUniLocViewMat, 1, GL_FALSE, glm::value_ptr(viewMat));
     // render objects based on id
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     for(int id = 1; id < mStepAheadAnimationChannels.size()+1; ++id) {
-        GLint realId = id;
-        glUniform1i(mUniLocObjId, realId);
+        mStandardShader.setId(id);
+//        GLint realId = id;
+//        glUniform1i(mUniLocObjId, realId);
         renderSaaChannel(frameIndex, *mStepAheadAnimationChannels[id-1], {});
     }
 
@@ -97,8 +102,9 @@ Picked RenderEngine::pick( int frameIndex, double mouseX, double mouseY, GLFWwin
     glReadBuffer(GL_BACK);
     glReadPixels(floor(mouseX), mWindowHeight-floor(mouseY),1,1, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
-    GLint standardId = 0;
-    glUniform1i(mUniLocObjId, standardId);
+    mStandardShader.setId(0);
+//    GLint standardId = 0;
+//    glUniform1i(mUniLocObjId, standardId);
 
     int id = (int)data[0] + (int)data[1] * 256 + (int)data[2] * 256 * 256;
 //    std::cout << id << std::endl;
@@ -119,15 +125,20 @@ Picked RenderEngine::pick( int frameIndex, double mouseX, double mouseY, GLFWwin
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glm::mat4 transformationMatrix = calcTransMatOfSaaChannel(frameIndex, *pickedChannel);
-    ffd->pickControlPoints(transformationMatrix, mUniLocTransMat, mUniLocTexture, mUniLocObjId, *mEditorCamera);
+//    glm::mat4 transformationMatrix = calcTransMatOfSaaChannel(frameIndex, *pickedChannel);
+    glm::mat4 transformationMatrix = pickedChannel->getTransMat();
+    GLint uniLocTransMat = mStandardShader.getUniLoc("modelMatrix");
+    GLint uniLocTexture = mStandardShader.getUniLocTexture();
+    GLint uniLocObjId = mStandardShader.getUniLoc("id");
+    ffd->pickControlPoints(transformationMatrix, uniLocTransMat, uniLocTexture, uniLocObjId, *mEditorCamera);
 
     unsigned char data_2[4];
     glReadBuffer(GL_BACK);
     glReadPixels(floor(mouseX), mWindowHeight-floor(mouseY),1,1, GL_RGBA, GL_UNSIGNED_BYTE, data_2);
 
-    standardId = 0;
-    glUniform1i(mUniLocObjId, standardId);
+    mStandardShader.setId(0);
+//    standardId = 0;
+//    glUniform1i(mUniLocObjId, standardId);
 
     int id_2 = (int)data_2[0] + (int)data_2[1] * 256 + (int)data_2[2] * 256 * 256;
 
@@ -157,7 +168,8 @@ void RenderEngine::onWindowSizeChange(uint width, uint height) {
             CAMERA_NEAR_CLIPPING,
             CAMERA_FAR_CLIPPING
     );
-    glUniformMatrix4fv(mUniLocProjMat, 1, GL_FALSE, glm::value_ptr(mProjectionMatrix));
+    mStandardShader.setMatrix(PROJECTION_MATRIX, mProjectionMatrix);
+//    glUniformMatrix4fv(mUniLocProjMat, 1, GL_FALSE, glm::value_ptr(mProjectionMatrix));
 }
 
 
@@ -176,28 +188,33 @@ void RenderEngine::renderSaaChannel(int frameIndex, StepAheadAnimationChannel &s
 //        glm::mat4 transMat = glm::translate(glm::mat4(1.0f), orientation.position);
 //        transformationMatrix = glm::scale(transMat*rotMat, orientation.scale);
 //    }
-    glm::mat4 transformationMatrix = calcTransMatOfSaaChannel(frameIndex, saaChannel);
-    glUniformMatrix4fv(mUniLocTransMat, 1, GL_FALSE, glm::value_ptr(transformationMatrix));
-    model->Draw(frameIndex, mUniLocTexture);
+//    glm::mat4 transformationMatrix = calcTransMatOfSaaChannel(frameIndex, saaChannel);
+    saaChannel.prepare(frameIndex);
+    glm::mat4 transformationMatrix = saaChannel.getTransMat();
+    mStandardShader.setMatrix(TRANSFORMATION_MATRIX, transformationMatrix);
+//    glUniformMatrix4fv(mUniLocTransMat, 1, GL_FALSE, glm::value_ptr(transformationMatrix));
+    model->Draw(frameIndex, /*mUniLocTexture*/mStandardShader.getUniLocTexture());
     if(ffd != nullptr) {
         int ffdControlPointIndex = -1;
         if(picked.ffd != nullptr) {
             ffdControlPointIndex = picked.controlPointIndex;
         }
-        ffd->renderControlPoints(transformationMatrix, mUniLocTransMat, mUniLocTexture, *mEditorCamera, ffdControlPointIndex);
+        GLint uniLocTransMat = mStandardShader.getUniLoc("modelMatrix");
+        GLint uniLocTexture = mStandardShader.getUniLocTexture();
+        ffd->renderControlPoints(transformationMatrix, uniLocTransMat, uniLocTexture, *mEditorCamera, ffdControlPointIndex);
     }
 }
 
-glm::mat4 RenderEngine::calcTransMatOfSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel) {
-    Path *path = saaChannel.getPath();
-    if(path == nullptr) {
-        return glm::mat4(1.0f);
-    }
-    else {
-        Orientation orientation = path->orientation(frameIndex);
-        glm::mat4 rotMat = glm::toMat4(orientation.rotation);
-        glm::mat4 transMat = glm::translate(glm::mat4(1.0f), orientation.position);
-        glm::mat4 transformationMatrix = glm::scale(transMat*rotMat, orientation.scale);
-        return transformationMatrix;
-    }
-}
+//glm::mat4 RenderEngine::calcTransMatOfSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel) {
+//    Path *path = saaChannel.getPath();
+//    if(path == nullptr) {
+//        return glm::mat4(1.0f);
+//    }
+//    else {
+//        Orientation orientation = path->orientation(frameIndex);
+//        glm::mat4 rotMat = glm::toMat4(orientation.rotation);
+//        glm::mat4 transMat = glm::translate(glm::mat4(1.0f), orientation.position);
+//        glm::mat4 transformationMatrix = glm::scale(transMat*rotMat, orientation.scale);
+//        return transformationMatrix;
+//    }
+//}

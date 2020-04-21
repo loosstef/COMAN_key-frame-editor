@@ -6,8 +6,8 @@
 #define ANTONGERDELAN_INPUTHANDLER_H
 
 
-#include <string>
 #include <GL/glew.h>
+#include <string>
 #include <glm/vec3.hpp>
 #include <GLFW/glfw3.h>
 #include <glm/vec2.hpp>

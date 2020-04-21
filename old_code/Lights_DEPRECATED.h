@@ -8,9 +8,9 @@
 
 #include <GL/glew.h>
 
-class Lights {
+class Lights_DEPRECATED {
 public:
-    Lights();
+    Lights_DEPRECATED();
     void sendToGPU(GLuint shader_program);
     void setPos(int index, float x, float y, float z);
     void setAmbientColor(int index, float r, float g, float b);

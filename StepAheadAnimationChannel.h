@@ -5,10 +5,10 @@
 #ifndef PROJECT_STEPAHEADANIMATIONCHANNEL_H
 #define PROJECT_STEPAHEADANIMATIONCHANNEL_H
 
+#include <GL/glew.h>
 #include <vector>
 #include <string>
 #include <glm/glm.hpp>
-#include <GL/glew.h>
 #include "Channel.h"
 
 class Object_DEPRECATED;
@@ -18,6 +18,7 @@ class FFD;
 
 class StepAheadAnimationChannel : public Channel {
 public:
+    StepAheadAnimationChannel() : mTransMat(1.0f) {}
     ChannelType getType() override { return SAA; }
     void setPath(Path* path);
     Path* getPath() { return mPath; }
@@ -25,15 +26,16 @@ public:
     void setObject(Model* model);
     void addFFD(int frameIndex, FFD *ffd);
     FFD* getFFD(int frameIndex);
-//    void setFFD(FFD *ffd);
-//    FFD* getFFD() { return mFFD; }
+    void setTransMat(glm::mat4 &mat);
+    glm::mat4 getTransMat();
+    void prepare(int frameIndex);
     std::string name;
 private:
     Model *mModel;
     Path* mPath = nullptr;
     std::vector<FFD*> mFFDs;
     std::vector<int> mFFFDFrameIndices;
-//    FFD *mFFD = nullptr;
+    glm::mat4 mTransMat;
 };
 
 

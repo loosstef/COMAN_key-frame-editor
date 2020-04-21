@@ -18,6 +18,8 @@
 #include "gui/WindowRenderEngine.h"
 #include "Keyframe.h"
 #include "Camera.h"
+#include "Scene.h"
+#include "Mouse3D.h"
 
 const float ROT_SPEED = 0.15f;
 const float SCROLL_SENSITIVITY = 0.30f;
@@ -25,8 +27,8 @@ const int cursorMode = GLFW_CURSOR_NORMAL;
 const int STANDARD_WINDOW_WIDTH = 1940;
 const int STANDARD_WINDOW_HEIGHT = 1080;
 
-char VERTEX_SHADER_FILENAME[] = "shaders/simple_shader.vert";
-char FRAGMENT_SHADER_FILENAME[] = "shaders/simple_shader.frag";
+//char VERTEX_SHADER_FILENAME[] = "shaders/simple_shader.vert";
+//char FRAGMENT_SHADER_FILENAME[] = "shaders/simple_shader.frag";
 
 // keep track of window size for things like the viewport and the mouse cursor
 //int g_gl_width = 1940;
@@ -34,24 +36,22 @@ char FRAGMENT_SHADER_FILENAME[] = "shaders/simple_shader.frag";
 
 
 // global variables
-RenderEngine* renderEngine;
-Clock *sceneClock;
+Scene scene;
+Mouse3D mouse3D;
 WindowRenderEngine *windows;
-//Channel *pickedChannel = nullptr;
-Picked picked;
 
 
 // callback functions
 void glfw_window_size_callback(GLFWwindow* window, int width, int height) {
 //    g_gl_width = width;
 //    g_gl_height = height;
-    renderEngine->onWindowSizeChange(width, height);
+    scene.getRenderEngine()->onWindowSizeChange(width, height);
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     if(!ImGui::GetIO().WantCaptureMouse) {
-        renderEngine->getEditorCamera().relativeMove(glm::vec3(0.0f, yoffset * SCROLL_SENSITIVITY, 0.0f));
+        scene.getRenderEngine()->getEditorCamera().relativeMove(glm::vec3(0.0f, yoffset * SCROLL_SENSITIVITY, 0.0f));
     }
 }
 
@@ -59,12 +59,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
     if(ImGui::GetIO().WantCaptureMouse)
         return;
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-        double currMousePosX, currMousePosY;
-        glfwGetCursorPos(window, &currMousePosX, &currMousePosY);
-        picked = renderEngine->pick(sceneClock->getFrameIndex(), currMousePosX, currMousePosY, window);
-        std::cout << picked.controlPointIndex << std::endl;
-    }
+    mouse3D.mouse_button_callback(window, button, action, mods, scene);
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -76,10 +71,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
     // pause or play scene
     if(key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
-        if(sceneClock->isRunning())
-            sceneClock->pause();
+        if(scene.getClock()->isRunning())
+            scene.getClock()->pause();
         else
-            sceneClock->start();
+            scene.getClock()->start();
     }
 
     // jump back in time 1 or 10 frames
@@ -87,7 +82,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         int frameJumpSize = 1;
         if(GLFW_PRESS == glfwGetKey(window, GLFW_KEY_LEFT_CONTROL))
             frameJumpSize = 10;
-        sceneClock->setFrameIndex(sceneClock->getFrameIndex()-frameJumpSize);
+        scene.getClock()->setFrameIndex(scene.getClock()->getFrameIndex()-frameJumpSize);
     }
 
     // jump forward in time 1 or 10 frames
@@ -95,7 +90,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         int frameJumpSize = 1;
         if(GLFW_PRESS == glfwGetKey(window, GLFW_KEY_LEFT_CONTROL))
             frameJumpSize = 10;
-        sceneClock->setFrameIndex(sceneClock->getFrameIndex()+frameJumpSize);
+        scene.getClock()->setFrameIndex(scene.getClock()->getFrameIndex()+frameJumpSize);
     }
 }
 
@@ -175,50 +170,11 @@ int main() {
     glEnable(GL_DEPTH_TEST); // enable depth-testing
     glDepthFunc(GL_LESS); // depth-testing interprets a smaller valueParametric as "closer"
 
-
-    // load shaders
-//    GLuint vs = InputHandler::loadAndCompileShader(VERTEX_SHADER_FILENAME, GL_VERTEX_SHADER);
-//    GLuint fs = InputHandler::loadAndCompileShader(FRAGMENT_SHADER_FILENAME, GL_FRAGMENT_SHADER);
-//    GLuint shaderProgram = glCreateProgram();
-//    glAttachShader(shaderProgram, fs);
-//    glAttachShader(shaderProgram, vs);
-//    glLinkProgram(shaderProgram);
-
-//    Camera nav;
-
-//    Cube cube;
-//    cube.loadToGPU();
-
-//    const int bSplinePoints = 100;
-//    BSpline_old bSpline(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 2.0f, 0.0f));
-//    bSpline.add(glm::vec3(0.0f, 2.0f, 2.0f));
-//    bSpline.add(glm::vec3(-2.0f, 1.0f, 2.0f));
-//    bSpline.add(glm::vec3(2.0f, -2.0f, 0.0f));
-//    bSpline.add(glm::vec3(0.0f, -3.0f, 0.0f));
-//    bSpline.add(glm::vec3(0.0f, 0.0f, 0.0f));
-//    bSpline.add(glm::vec3(0.0f, 0.0f, 0.0f));
-//    bSpline.add(glm::vec3(0.0f, 0.0f, 0.0f));
-//    bSpline.populatePointsVector(bSplinePoints);
-//    bSpline.loadToGPU();
-
-//    Mover_old mover(cube, bSpline);
-//    bSpline.populateArcLengthTable(20);
-
-//    glm::mat4 model = glm::mat4(1.0f);
-//    glm::mat4 model2 = glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0.0f, 0.0f));
-//    glm::mat4 view = nav.getViewMatrix();
-//    glm::mat4 proj = glm::perspective(glm::radians(45.0f),  ((float)g_gl_width) / ((float)g_gl_height), NEAR_CLIPPING, FAR_CLIPPING);
-//    glUseProgram(shaderProgram);
-//    GLint uniProj = glGetUniformLocation(shaderProgram, "projectionMatrix");
-//    glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
-//    GLint uniTrans = glGetUniformLocation(shaderProgram, "modelMatrix");
-//    GLint uniView = glGetUniformLocation(shaderProgram, "viewMatrix");
-    renderEngine = new RenderEngine();
-    sceneClock = new Clock();
-    windows = new WindowRenderEngine(sceneClock);
-    InputHandler inputHandler(window, renderEngine);
-
-//    mover.start();
+    // init global variables
+    scene.setRenderEngine(new RenderEngine());
+    scene.setClock(new Clock());
+    windows = new WindowRenderEngine(scene.getClock());
+    InputHandler inputHandler(window, scene.getRenderEngine());
 
     // imgui initialization
     IMGUI_CHECKVERSION();
@@ -230,7 +186,7 @@ int main() {
     // INITIALIZING TEST DATA
     StepAheadAnimationChannel saaChannel;
     saaChannel.name = std::string("green_cube_channel");
-    renderEngine->addSaaChannel(&saaChannel);
+    scene.addSaaChannel(&saaChannel);
     Model spongebob_model("models/spongebob.obj");
     saaChannel.setObject(&spongebob_model);
     LinearPath realPath;
@@ -244,7 +200,7 @@ int main() {
     saaChannel.addFFD(200, &ffd_sb_200);
     // END OF INITIALIZATION OF DATA
 
-    sceneClock->start();
+    scene.getClock()->start();
 
     while(!glfwWindowShouldClose(window)) {
         _update_fps_counter(window);
@@ -269,7 +225,7 @@ int main() {
 //        mover.draw(uniTrans);
 //        cube.draw(uniTrans, model2);
 //        bSpline.draw(uniTrans);
-        renderEngine->render(sceneClock->getFrameIndex(), picked);
+        scene.getRenderEngine()->render(scene.getClock()->getFrameIndex(), mouse3D.picked);
         double currMousePosX, currMousePosY;
         glfwGetCursorPos(window, &currMousePosX, &currMousePosY);
 
@@ -287,7 +243,7 @@ int main() {
         // put the stuff we've been drawing onto the display
 
         // imgui windowing
-        windows->render(picked.channel);
+        windows->render(mouse3D.picked.channel);
 //        ImGui::ShowDemoWindow();
 
 

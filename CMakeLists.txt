@@ -20,7 +20,7 @@ configure_file(shaders/new_shader.frag shaders/new_shader.frag COPYONLY)
 file(COPY models DESTINATION .)
 file(COPY base_models DESTINATION .)
 
-add_executable(project main.cpp Logger.h Camera.cpp Camera.h Lights.cpp Lights.h old_code/BSpline_old.cpp
+add_executable(project main.cpp Logger.h Camera.cpp Camera.h old_code/Lights_DEPRECATED.cpp old_code/Lights_DEPRECATED.h old_code/BSpline_old.cpp
         old_code/BSpline_old.h old_code/Object_DEPRECATED.cpp old_code/Object_DEPRECATED.h old_code/Cube_DEPRECATED.cpp old_code/Cube_DEPRECATED.h
         InputHandler.cpp InputHandler.h old_code/Path_old.cpp old_code/Path_old.h old_code/Mover_old.cpp
         old_code/Mover_old.h old_code/Chrono_old.cpp old_code/Chrono_old.h CJoint.cpp CJoint.h CLink.cpp CLink.h
@@ -33,7 +33,7 @@ add_executable(project main.cpp Logger.h Camera.cpp Camera.h Lights.cpp Lights.h
         LinearPath.h Clock.cpp Clock.h gui/TimelineWindow.cpp gui/TimelineWindow.h gui/WindowRenderEngine.cpp
         gui/WindowRenderEngine.h Channel.cpp Channel.h gui/EditSAAChannelWindow.cpp gui/EditSAAChannelWindow.h
         Keyframe.cpp Keyframe.h Orientation.cpp Orientation.h
-        Mesh.cpp Mesh.h Model.cpp Model.h stb_image.h FFD.cpp FFD.h Picked.cpp LinInterp.cpp)
+        Mesh.cpp Mesh.h Model.cpp Model.h stb_image.h FFD.cpp FFD.h Picked.cpp LinInterp.cpp Shader.cpp Shader.h StandardShader.cpp StandardShader.h Mouse3D.cpp Mouse3D.h Scene.cpp Scene.h)
 
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")

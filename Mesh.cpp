@@ -3,8 +3,6 @@
 //
 
 #include "Mesh.h"
-#include <GL/glew.h>
-#include <glm/glm.hpp>
 #include "FFD.h"
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures) :
