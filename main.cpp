@@ -198,6 +198,8 @@ int main() {
     ffd_sb_200.setControlPoint(glm::tvec3<int>(1, 0, 1), glm::vec3(1.5, 0.2, 1.2));
     saaChannel.addFFD(0, &ffd_sb_0);
     saaChannel.addFFD(200, &ffd_sb_200);
+    FFD ffd_sb_400(spongebob_model, 2, 2, 2);
+    saaChannel.addFFD(400, &ffd_sb_400);
     // END OF INITIALIZATION OF DATA
 
     scene.getClock()->start();
@@ -246,6 +248,7 @@ int main() {
         windows->render(mouse3D.picked.channel);
 //        ImGui::ShowDemoWindow();
 
+        mouse3D.loop(scene, currMousePosX, currMousePosY);
 
         // imgui rendering
         ImGui::Render();

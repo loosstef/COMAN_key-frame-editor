@@ -56,3 +56,8 @@ void StepAheadAnimationChannel::prepare(int frameIndex) {
     mTransMat = transformationMatrix;
     return;
 }
+
+void StepAheadAnimationChannel::tellModelFFDChanged(FFD *ffd, int frameIndex) {
+    mModel->applyFFD(frameIndex, ffd);
+//    mModel->onFFDChange();
+}

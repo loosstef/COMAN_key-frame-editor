@@ -43,7 +43,7 @@ void FFD::renderControlPoints(glm::mat4 transMat, GLint uniLocTransMat, GLint un
     int l = controlPoints.size();
     int m = controlPoints[0].size();
     int n = controlPoints[0][0].size();
-    int dotID = 1;
+    int dotID = 0;
     for(int i = 0; i < l; ++i) {
         for (int j = 0; j < m; ++j) {
             for (int k = 0; k < n; ++k) {
@@ -141,8 +141,44 @@ void FFD::setControlPoint(glm::tvec3<int> index, glm::vec3 pos) {
 //    controlPoints[index.x][index.y][index.z].addKeyframe(Keyframe(frameIndex, pos));
 }
 
-//void FFD::setFrameIndex(int frameIndex) {
-//    if(currFrameIndex == frameIndex) {
-//        return;
-//    }
-//}
+void FFD::setControlPoint(int index, glm::vec3 pos) {
+    setControlPoint(flatIndexToFullIndex(index), pos);
+}
+
+
+glm::vec3 FFD::getLocalAbsoluteLoc(glm::tvec3<int> index) {
+    glm::vec3 localRelPos = controlPoints[index.x][index.y][index.z];
+    glm::vec3 localAbsPos = P0 + localRelPos.x * S + localRelPos.y * T + localRelPos.z * U;
+    return localAbsPos;
+}
+
+glm::vec3 FFD::getLocalAbsoluteLoc(int index) {
+    return getLocalAbsoluteLoc(flatIndexToFullIndex(index));
+}
+
+glm::tvec3<int> FFD::flatIndexToFullIndex(int index) {
+    int width = (int)controlPoints.size();
+    int height = (int)controlPoints[0].size();
+    int depth = (int)controlPoints[0][0].size();
+
+    int verticalSliceSize = height * depth;
+    int i = index / verticalSliceSize;
+    int resultingIndex = index - i * verticalSliceSize;
+    int j = resultingIndex / depth;
+    int k = resultingIndex - j * depth;
+    return glm::tvec3<int>(i, j, k);
+}
+
+glm::vec3 FFD::absToRelCoords(glm::vec3 coords) {
+    glm::vec3 pos = coords - P0;
+    glm::vec3 relPos(pos.x/S.x, pos.y/T.y, pos.z/U.z);
+    return relPos;
+}
+
+void FFD::setControlPointAbsCoord(glm::tvec3<int> index, glm::vec3 pos) {
+    setControlPoint(index, absToRelCoords(pos));
+}
+
+void FFD::setControlPointAbsCoord(int index, glm::vec3 pos) {
+    setControlPoint(flatIndexToFullIndex(index), absToRelCoords(pos));
+}

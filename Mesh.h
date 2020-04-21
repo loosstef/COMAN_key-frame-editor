@@ -40,7 +40,8 @@ public:
     void Draw(int frameIndex, GLint uniTexture);
     std::vector<Vertex>& getOrigVertices() { return orig_vertices; }
     void applyFFD(int frameIndex, FFD &ffd);
-    void setTime(int frameIndex);
+    void setTime(int frameIndex, bool checkChanged = true);
+    void onFFDChange();
 private:
     /*  Render data  */
     unsigned int VAO, VBO, EBO;

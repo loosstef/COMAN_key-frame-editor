@@ -207,8 +207,13 @@ void Model::getModelDimensions(glm::vec3 &P0, glm::vec3 &S, glm::vec3 &T, glm::v
 void Model::applyFFD(int frameIndex, FFD *ffd) {
     for(unsigned int i = 0; i < meshes.size(); i++)
         meshes[i].applyFFD(frameIndex, *ffd);
-    all_ffds.push_back(ffd);
-    all_frameIndices.push_back(frameIndex);
+//    all_ffds.push_back(ffd);
+//    all_frameIndices.push_back(frameIndex);
+}
+
+void Model::onFFDChange() {
+    for(unsigned int i = 0; i < meshes.size(); i++)
+        meshes[i].onFFDChange();
 }
 
 //void Model::setFFD(FFD *ffd) {

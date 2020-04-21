@@ -79,10 +79,16 @@ void Mesh::Draw(int frameIndex, GLint uniTexture) {
 }
 
 void Mesh::applyFFD(int frameIndex, FFD &ffd) {
+    for(int i = 0; i < keyframeIndices.size(); ++i) {
+        if(keyframeIndices[i] == frameIndex) {
+            keyframeIndices.erase(keyframeIndices.begin()+i);
+            all_vertices.erase(all_vertices.begin()+i);
+            break;
+        }
+    }
     keyframeIndices.push_back(frameIndex);
     all_vertices.emplace_back(ffd.calcPos_debug(orig_vertices));
-    generated_keyframeIndices.clear();
-    generated_vertices.clear();
+    onFFDChange();
 }
 
 /**
@@ -90,8 +96,8 @@ void Mesh::applyFFD(int frameIndex, FFD &ffd) {
  * It will calculate new vertices and load them to the GPU.
  * @param frameIndex
  */
-void Mesh::setTime(int frameIndex) {
-    if(currentFrameIndex == frameIndex)
+void Mesh::setTime(int frameIndex, bool checkChanged) {
+    if(currentFrameIndex == frameIndex && checkChanged)
         return;
     if(keyframeIndices.empty()) {
         curr_vertices = &orig_vertices;
@@ -155,4 +161,10 @@ void Mesh::setTime(int frameIndex) {
     generated_keyframeIndices.push_back(frameIndex);
     curr_vertices = &generated_vertices[generated_vertices.size()-1];
     setupMesh(*curr_vertices);
+}
+
+void Mesh::onFFDChange() {
+    generated_keyframeIndices.clear();
+    generated_vertices.clear();
+    setTime(currentFrameIndex, false);
 }

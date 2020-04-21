@@ -145,7 +145,7 @@ Picked RenderEngine::pick( int frameIndex, double mouseX, double mouseY, GLFWwin
     if(id_2 == 0) {
         return {pickedChannel};
     }
-    return {pickedChannel, ffd, id_2};
+    return {pickedChannel, ffd, id_2-1};
 }
 
 

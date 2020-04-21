@@ -29,6 +29,9 @@ public:
     void addSaaChannel(StepAheadAnimationChannel *saaChannel);
     Camera& getEditorCamera();
     void onWindowSizeChange(uint width, uint height);
+    uint getWindowHeight() { return mWindowHeight; }
+    uint getWindowWidth() { return mWindowWidth; }
+    glm::mat4 getProjectionMatrix() { return mProjectionMatrix; }
 private:
     void renderSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel, Picked picked);
 //    glm::mat4 calcTransMatOfSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel);

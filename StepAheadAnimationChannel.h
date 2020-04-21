@@ -29,6 +29,7 @@ public:
     void setTransMat(glm::mat4 &mat);
     glm::mat4 getTransMat();
     void prepare(int frameIndex);
+    void tellModelFFDChanged(FFD *ffd, int frameIndex);
     std::string name;
 private:
     Model *mModel;

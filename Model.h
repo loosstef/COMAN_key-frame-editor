@@ -21,6 +21,7 @@ public:
     void Draw(int frameIndex, GLint uniTexture/*Shader shader*/);
     void getModelDimensions(glm::vec3 &P0, glm::vec3 &S, glm::vec3 &T, glm::vec3 &U);
     void applyFFD(int frameIndex, FFD *ffd);
+    void onFFDChange();
 //    void setName(std::string name) { this->name = name; }
 //    std::string& getName() { return name; }
     /* FFD */
@@ -32,8 +33,8 @@ private:
     std::string directory;
 //    std::string name;
     /* FFD DATA */
-    std::vector<FFD*> all_ffds;
-    std::vector<int> all_frameIndices;
+//    std::vector<FFD*> all_ffds;
+//    std::vector<int> all_frameIndices;
     /*  Functions   */
     void loadModel(std::string path);
     void processNode(aiNode *node, const aiScene *scene);
