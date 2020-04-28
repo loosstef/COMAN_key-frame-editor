@@ -91,6 +91,18 @@ void Mesh::applyFFD(int frameIndex, FFD &ffd) {
     onFFDChange();
 }
 
+
+void Mesh::removeFFD(int frameIndex) {
+    for(int i = 0; i < keyframeIndices.size(); ++i) {
+        if(keyframeIndices[i] == frameIndex) {
+            keyframeIndices.erase(keyframeIndices.begin()+i);
+            all_vertices.erase(all_vertices.begin()+i);
+            break;
+        }
+    }
+    onFFDChange();
+}
+
 /**
  * Set the current timestamp. The mesh will deform correctly (based on it's fFD)
  * It will calculate new vertices and load them to the GPU.

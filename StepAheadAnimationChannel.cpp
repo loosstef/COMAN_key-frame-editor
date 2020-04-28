@@ -61,3 +61,13 @@ void StepAheadAnimationChannel::tellModelFFDChanged(FFD *ffd, int frameIndex) {
     mModel->applyFFD(frameIndex, ffd);
 //    mModel->onFFDChange();
 }
+
+void StepAheadAnimationChannel::removeFFD(int frameIndex) {
+    for(int i = 0; i < mFFFDFrameIndices.size(); ++i) {
+        if(mFFFDFrameIndices[i] == frameIndex) {
+            mFFFDFrameIndices.erase(mFFFDFrameIndices.begin()+i);
+            mFFDs.erase(mFFDs.begin()+i);
+            mModel->removeFFD(frameIndex);
+        }
+    }
+}

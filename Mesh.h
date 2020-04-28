@@ -40,6 +40,7 @@ public:
     void Draw(int frameIndex, GLint uniTexture);
     std::vector<Vertex>& getOrigVertices() { return orig_vertices; }
     void applyFFD(int frameIndex, FFD &ffd);
+    void removeFFD(int frameIndex);
     void setTime(int frameIndex, bool checkChanged = true);
     void onFFDChange();
 private:

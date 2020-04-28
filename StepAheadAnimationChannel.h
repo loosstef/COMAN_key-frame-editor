@@ -26,6 +26,8 @@ public:
     void setObject(Model* model);
     void addFFD(int frameIndex, FFD *ffd);
     FFD* getFFD(int frameIndex);
+    void removeFFD(int frameIndex);
+    std::vector<int>& getFFDIndices() { return mFFFDFrameIndices; }
     void setTransMat(glm::mat4 &mat);
     glm::mat4 getTransMat();
     void prepare(int frameIndex);

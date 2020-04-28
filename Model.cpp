@@ -211,6 +211,11 @@ void Model::applyFFD(int frameIndex, FFD *ffd) {
 //    all_frameIndices.push_back(frameIndex);
 }
 
+void Model::removeFFD(int frameIndex) {
+    for(unsigned int i = 0; i < meshes.size(); i++)
+        meshes[i].removeFFD(frameIndex);
+}
+
 void Model::onFFDChange() {
     for(unsigned int i = 0; i < meshes.size(); i++)
         meshes[i].onFFDChange();

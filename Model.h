@@ -21,6 +21,7 @@ public:
     void Draw(int frameIndex, GLint uniTexture/*Shader shader*/);
     void getModelDimensions(glm::vec3 &P0, glm::vec3 &S, glm::vec3 &T, glm::vec3 &U);
     void applyFFD(int frameIndex, FFD *ffd);
+    void removeFFD(int frameIndex);
     void onFFDChange();
 //    void setName(std::string name) { this->name = name; }
 //    std::string& getName() { return name; }

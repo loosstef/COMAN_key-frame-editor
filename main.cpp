@@ -246,7 +246,7 @@ int main() {
 
         // imgui windowing
         windows->render(mouse3D.picked.channel);
-//        ImGui::ShowDemoWindow();
+        ImGui::ShowDemoWindow();
 
         mouse3D.loop(scene, currMousePosX, currMousePosY);
 
