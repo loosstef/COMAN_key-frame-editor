@@ -20,6 +20,9 @@
 #include "Camera.h"
 #include "Scene.h"
 #include "Mouse3D.h"
+#include "CSkeleton.h"
+#include "CJoint.h"
+#include "CLink.h"
 
 const float ROT_SPEED = 0.15f;
 const float SCROLL_SENSITIVITY = 0.30f;
@@ -130,7 +133,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_SAMPLES, 4);
 
-    GLFWwindow* window = glfwCreateWindow(STANDARD_WINDOW_WIDTH, STANDARD_WINDOW_HEIGHT, "Hello Triangle", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(STANDARD_WINDOW_WIDTH, STANDARD_WINDOW_HEIGHT, "Project Of Stef Loos", NULL, NULL);
     if (!window) {
         fprintf(stderr, "ERROR: could not open window with GLFW3\n");
         glfwTerminate();
@@ -184,22 +187,25 @@ int main() {
     ImGui::StyleColorsDark();
 
     // INITIALIZING TEST DATA
-    StepAheadAnimationChannel saaChannel;
-    saaChannel.name = std::string("green_cube_channel");
-    scene.addSaaChannel(&saaChannel);
-    Model spongebob_model("models/spongebob.obj");
-    saaChannel.setObject(&spongebob_model);
-    LinearPath realPath;
-    saaChannel.setPath(&realPath);
-    realPath.addKeyframe(Keyframe(0, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(0.3f)));
-    FFD ffd_sb_0(spongebob_model, 2, 2, 2);
-    ffd_sb_0.setControlPoint(glm::tvec3<int>(0,1,0), glm::vec3(0, 1.5, 0));
-    FFD ffd_sb_200(spongebob_model, 2, 2, 2);
-    ffd_sb_200.setControlPoint(glm::tvec3<int>(1, 0, 1), glm::vec3(1.5, 0.2, 1.2));
-    saaChannel.addFFD(0, &ffd_sb_0);
-    saaChannel.addFFD(200, &ffd_sb_200);
-    FFD ffd_sb_400(spongebob_model, 2, 2, 2);
-    saaChannel.addFFD(400, &ffd_sb_400);
+//    StepAheadAnimationChannel saaChannel;
+//    saaChannel.name = std::string("green_cube_channel");
+//    scene.addSaaChannel(&saaChannel);
+//    Model spongebob_model("models/spongebob.obj");
+//    saaChannel.setObject(&spongebob_model);
+//    LinearPath realPath;
+//    saaChannel.setPath(&realPath);
+//    realPath.addKeyframe(Keyframe(0, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(0.3f)));
+//    FFD ffd_sb_0(spongebob_model, 2, 2, 2);
+//    ffd_sb_0.setControlPoint(glm::tvec3<int>(0,1,0), glm::vec3(0, 1.5, 0));
+//    FFD ffd_sb_200(spongebob_model, 2, 2, 2);
+//    ffd_sb_200.setControlPoint(glm::tvec3<int>(1, 0, 1), glm::vec3(1.5, 0.2, 1.2));
+//    saaChannel.addFFD(0, &ffd_sb_0);
+//    saaChannel.addFFD(200, &ffd_sb_200);
+//    FFD ffd_sb_400(spongebob_model, 2, 2, 2);
+//    saaChannel.addFFD(400, &ffd_sb_400);
+
+    CSkeleton skeleton(std::string("models/skeleton.skl"));
+//    CSkeleton skeleton("models/simple_skeleton.skl");
     // END OF INITIALIZATION OF DATA
 
     scene.getClock()->start();
@@ -231,6 +237,8 @@ int main() {
         double currMousePosX, currMousePosY;
         glfwGetCursorPos(window, &currMousePosX, &currMousePosY);
 
+        skeleton.render(scene.getRenderEngine()->getStandardShader());
+
 //        renderEngine.getEditorCamera().move(InputHandler::readMoveButtons_DEPRECATED(window, MOVE_SPEED));
 
         // mouse input
@@ -246,7 +254,7 @@ int main() {
 
         // imgui windowing
         windows->render(mouse3D.picked.channel);
-        ImGui::ShowDemoWindow();
+//        ImGui::ShowDemoWindow();
 
         mouse3D.loop(scene, currMousePosX, currMousePosY);
 

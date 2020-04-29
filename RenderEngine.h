@@ -12,7 +12,7 @@
 #include "StandardShader.h"
 
 const float CAMERA_FOV = 45.0f;
-const float CAMERA_NEAR_CLIPPING = 1.0f;
+const float CAMERA_NEAR_CLIPPING = 0.1f;
 const float CAMERA_FAR_CLIPPING = 50.0f;
 
 class Camera;
@@ -32,6 +32,7 @@ public:
     uint getWindowHeight() { return mWindowHeight; }
     uint getWindowWidth() { return mWindowWidth; }
     glm::mat4 getProjectionMatrix() { return mProjectionMatrix; }
+    StandardShader *getStandardShader() { return &mStandardShader; }
 private:
     void renderSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel, Picked picked);
 //    glm::mat4 calcTransMatOfSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel);

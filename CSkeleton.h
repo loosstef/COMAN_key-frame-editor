@@ -6,13 +6,21 @@
 #define ANTONGERDELAN_CSKELETON_H
 
 
-#include "CJoint.h"
+#include <string>
+#include "StandardShader.h"
+#include "Model.h"
+
+class CJoint;
 
 class CSkeleton {
 public:
-    CSkeleton(CJoint *rootJoint) { mRootJoint = rootJoint; }
+    CSkeleton(CJoint *joint);
+    CSkeleton(std::string filename);
+    void render(StandardShader *standardShader);
 private:
+    void renderJointAndChildren(StandardShader *standardShader, CJoint *joint);
     CJoint *mRootJoint;
+    Model mModel;
 };
 
 

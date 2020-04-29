@@ -3,12 +3,31 @@
 //
 
 #include "CJoint.h"
+#include "CLink.h"
+#include "StandardShader.h"
+#include <glm/gtc/matrix_transform.hpp>
 
-CJoint::CJoint(float linkOffset, float jointAngle, float minJointAngle, float maxJointAngle) {
+CJoint::CJoint(float linkOffset, float jointAngle, float minJointAngle, float maxJointAngle, int childrenCount)
+  : mModel("base_models/green_cube.obj")
+{
+    mParentLink = nullptr;
     mLinkOffset = linkOffset;
     mJointAngle = jointAngle;
     mMinJointAngle = minJointAngle;
     mMaxJointAngle = maxJointAngle;
+    mMaxChildrenCount = childrenCount;
+    mGlobalTransMat = glm::mat4(1.0f);
+}
+
+void CJoint::setGlobalTransMat(glm::mat4 transMat) {
+    mGlobalTransMat = transMat;
+    updateLocalTransMat();
+    for(int i = 0; i < mMaxChildrenCount; ++i) {
+        CJoint *child = mChildLinks[i]->child();
+        if(child != nullptr) {
+            child->setGlobalTransMat(mGlobalTransMat * mLocalTransMat);
+        }
+    }
 }
 
 /**
@@ -16,16 +35,68 @@ CJoint::CJoint(float linkOffset, float jointAngle, float minJointAngle, float ma
  * on the DH-variables locally set.
  */
 void CJoint::updateLocalTransMat() {
-    float rotZArray[16] = {
+    // TODO: fix this function
+    glm::mat4 rotZArray = {
             glm::cos(mJointAngle), glm::sin(mJointAngle), 0, 0,
             -glm::sin(mJointAngle), glm::cos(mJointAngle), 0, 0,
             0, 0, 1, 0,
             0, 0, 0, 1
     };
-    float transposeZArray[16] = {
+    glm::mat4 transposeZArray = {
             1, 0, 0, 0,
             0, 1, 0, 0,
             0, 0, 1, 0,
             0, 0, mLinkOffset, 1
     };
+    mLocalTransMat = transposeZArray * rotZArray;
+    if(mParentLink != nullptr) {
+        glm::mat4 rotXArray = {
+                1, 0, 0, 0,
+                0, glm::cos(mParentLink->linkTwist()), glm::sin(mParentLink->linkTwist()), 0,
+                0, -glm::sin(mParentLink->linkTwist()), glm::cos(mParentLink->linkTwist()), 0,
+                0, 0, 0, 1
+        };
+        glm::mat4 translateXArray = {
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                mParentLink->linkLength(), 0, 0, 1
+        };
+        mLocalTransMat = translateXArray * rotXArray * mLocalTransMat;
+    }
+}
+
+void CJoint::setParentLink(CLink *parentLink) {
+    mParentLink = parentLink;
+}
+
+void CJoint::addChildLink(CLink *childLink) {
+    mChildLinks.push_back(childLink);
+}
+
+bool CJoint::full() {
+    return mChildLinks.size() == mMaxChildrenCount;
+}
+
+CLink *CJoint::parent() {
+    return mParentLink;
+}
+
+void CJoint::renderAll_DEPRECTATED(StandardShader *standardShader) {
+    glm::mat4 scaleDown = glm::scale(glm::mat4(1.0f), glm::vec3(0.3f));
+    glm::mat4 transMat = mGlobalTransMat * mLocalTransMat * scaleDown;
+    standardShader->setMatrix(TRANSFORMATION_MATRIX, transMat);
+    mModel.Draw(0, standardShader->getUniLocTexture());
+    for(int i = 0; i < mMaxChildrenCount; ++i) {
+        CJoint *child = mChildLinks[i]->child();
+        if(child != nullptr) {
+            child->renderAll_DEPRECTATED(standardShader);
+        }
+    }
+}
+
+glm::vec3 CJoint::getGlobPos() {
+    glm::vec4 globPos = mGlobalTransMat * mLocalTransMat * glm::vec4(glm::vec3(0.0f), 1.0f);
+    float w = globPos.w;
+    return glm::vec3(globPos.x / w, globPos.y / w, globPos.z / w);
 }
