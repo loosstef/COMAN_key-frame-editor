@@ -27,6 +27,7 @@ public:
     CLink *childLink(int index) { return mChildLinks[index]; }
     void updateLocalTransMat();
     glm::mat4 transMat();
+    float offset() { return mLinkOffset; }
     // DEPRECATED FUNCTIONS
     void renderAll_DEPRECTATED(StandardShader *standardShader);
 private:

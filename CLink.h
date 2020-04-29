@@ -16,8 +16,8 @@ public:
     void setParent(CJoint *joint) { mParentJoint = joint; }
     CJoint *parent() { return mParentJoint; }
     CJoint *child() { return mChildJoint; }
-    void setChild(CJoint *childJoint) { mChildJoint = childJoint; }
-    float linkLength() { return mLinkLength; }
+    void setChild(CJoint *childJoint);
+    float linkLength() const { return mLinkLength; }
     float linkTwist() { return mLinkTwist; }
     void draw(StandardShader &shader);
 private:

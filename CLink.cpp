@@ -2,6 +2,7 @@
 // Created by stef on 30.03.20.
 //
 
+#include <glm/gtc/matrix_transform.hpp>
 #include "CLink.h"
 #include "CJoint.h"
 
@@ -54,4 +55,11 @@ void CLink::draw(StandardShader &shader) {
     glBindVertexArray(0);
 
     shader.setId(0);
+}
+
+void CLink::setChild(CJoint *childJoint) {
+    mChildJoint = childJoint;
+    float linkOffset = childJoint->offset();
+    mPoints[1].z = linkOffset;
+    setupLink();
 }
