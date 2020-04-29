@@ -6,6 +6,7 @@
 #define ANTONGERDELAN_CLINK_H
 
 #include <glm/vec3.hpp>
+#include "StandardShader.h"
 
 class CJoint;
 
@@ -18,12 +19,14 @@ public:
     void setChild(CJoint *childJoint) { mChildJoint = childJoint; }
     float linkLength() { return mLinkLength; }
     float linkTwist() { return mLinkTwist; }
+    void draw(StandardShader &shader);
 private:
     float mLinkLength;
     float mLinkTwist;
     CJoint *mParentJoint;
     CJoint *mChildJoint;
 
+    unsigned int VAO, VBO, EBO;
     glm::vec3 mPoints[2];
     int mIndices[2];
 

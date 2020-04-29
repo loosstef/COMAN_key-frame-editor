@@ -82,6 +82,7 @@ void CSkeleton::renderJointAndChildren(StandardShader *standardShader, CJoint *j
     for(int i = 0; i < joint->childCount(); ++i) {
         CLink *childLink = joint->childLink(i);
         if(childLink != nullptr) {
+            childLink->draw(*standardShader);
             renderJointAndChildren(standardShader, childLink->child());
         }
     }

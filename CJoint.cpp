@@ -100,3 +100,7 @@ glm::vec3 CJoint::getGlobPos() {
     float w = globPos.w;
     return glm::vec3(globPos.x / w, globPos.y / w, globPos.z / w);
 }
+
+glm::mat4 CJoint::transMat() {
+    return mGlobalTransMat * mLocalTransMat;
+}

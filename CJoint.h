@@ -26,6 +26,7 @@ public:
     int childCount() { return mMaxChildrenCount; }
     CLink *childLink(int index) { return mChildLinks[index]; }
     void updateLocalTransMat();
+    glm::mat4 transMat();
     // DEPRECATED FUNCTIONS
     void renderAll_DEPRECTATED(StandardShader *standardShader);
 private:
