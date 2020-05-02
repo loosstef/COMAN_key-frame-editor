@@ -8,6 +8,7 @@
 #include "TimelineWindow.h"
 #include "EditSAAChannelWindow.h"
 #include "../Picked.h"
+#include "EditJointWindow.h"
 
 class Clock;
 class Channel;
@@ -19,6 +20,7 @@ public:
 private:
     TimelineWindow timelineWindow;
     EditSAAChannelWindow editSaaChannelWindow;
+    EditJointWindow editJointWindow;
 };
 
 

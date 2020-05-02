@@ -15,10 +15,14 @@ WindowRenderEngine::WindowRenderEngine(Clock *clock) :
 
 void WindowRenderEngine::render(Picked picked) {
     Channel * pickedChannel = picked.channel;
+    CJoint *pickedJoint = picked.joint;
     timelineWindow.render();
     if(pickedChannel != nullptr) {
         if(pickedChannel->getType() == SAA) {
             editSaaChannelWindow.Render((StepAheadAnimationChannel*)pickedChannel);
         }
+    }
+    if(pickedJoint != nullptr) {
+        editJointWindow.Render(pickedJoint);
     }
 }

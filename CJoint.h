@@ -32,6 +32,11 @@ public:
     int getId() { return mId; }
     // DEPRECATED FUNCTIONS
     void renderAll_DEPRECTATED(StandardShader *standardShader);
+    // IMGUI FUNCTIONS
+//    float* ImGui_linkOffset() { return &mLinkOffset; }
+    float* ImGui_jointAngle() { return &mJointAngle; }
+    float* ImGui_minJointAngle() { return &mMinJointAngle; }
+    float* ImGui_maxJointAngle() { return &mMaxJointAngle; }
 private:
     int mId = -1;
     float mLinkOffset;
