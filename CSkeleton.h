@@ -21,8 +21,8 @@ public:
     int renderForPicking(StandardShader *shader);
 private:
     void renderJointAndChildren(StandardShader *standardShader, CJoint *joint);
-    int renderJoints(StandardShader *standardShader, CJoint *joint, int jointId);
-    void initIds(CJoint *joint, int jointId);
+    void renderJoints(StandardShader *standardShader, CJoint *joint);
+    int initIds(CJoint *joint, int jointId);
     CJoint *mRootJoint;
     Model mModel;
 };

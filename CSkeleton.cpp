@@ -64,6 +64,7 @@ CSkeleton::CSkeleton(std::string filename) : mModel("base_models/red_dot.obj") {
     }
     file.close();
     mRootJoint->setGlobalTransMat(glm::mat4(1.0f));
+    initIds(mRootJoint, 0);
 }
 
 CSkeleton::CSkeleton(CJoint *joint) : mModel("base_models/red_dot.obj") {
@@ -81,7 +82,7 @@ void CSkeleton::render(StandardShader *standardShader) {
 
 int CSkeleton::renderForPicking(StandardShader *shader) {
     mRootJoint->setGlobalTransMat(glm::mat4(1.0f));
-    renderJoints(shader, mRootJoint, 1);
+    renderJoints(shader, mRootJoint);
     shader->setId(0);
 }
 
@@ -102,24 +103,34 @@ void CSkeleton::renderJointAndChildren(StandardShader *standardShader, CJoint *j
     }
 }
 
-int CSkeleton::renderJoints(StandardShader *standardShader, CJoint *joint, int jointId) {
-    int lastId = jointId;
+void CSkeleton::renderJoints(StandardShader *standardShader, CJoint *joint) {
+//    int lastId = jointId;
     joint->updateLocalTransMat();
     glm::vec3 pos = joint->getGlobPos();
     glm::mat4 transMat = glm::translate(glm::mat4(1.0f), pos);
     transMat = glm::scale(transMat, glm::vec3(0.005f));
     standardShader->setMatrix(TRANSFORMATION_MATRIX, transMat);
-    standardShader->setId(jointId);
+//    standardShader->setId(jointId);
+    standardShader->setId(joint->getId()+1);
     mModel.Draw(0, standardShader->getUniLocTexture());
     for(int i = 0; i < joint->childCount(); ++i) {
         CLink *childLink = joint->childLink(i);
         if(childLink != nullptr) {
-            lastId = renderJoints(standardShader, childLink->child(), lastId+1);
+            renderJoints(standardShader, childLink->child());
+//            lastId = renderJoints(standardShader, childLink->child(), lastId+1);
         }
     }
-    return lastId;
+//    return lastId;
 }
 
-void CSkeleton::initIds(CJoint *joint, int jointId) {
 
+int CSkeleton::initIds(CJoint *joint, int jointId) {
+    joint->setId(jointId);
+    int lastId = jointId;
+    for(int i = 0; i < joint->childCount(); ++i) {
+        CLink *childLink = joint->childLink(i);
+        if(childLink != nullptr) {
+            lastId = initIds(childLink->child(), lastId+1);
+        }
+    }
 }
