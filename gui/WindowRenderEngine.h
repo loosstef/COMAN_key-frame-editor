@@ -7,7 +7,7 @@
 
 #include "TimelineWindow.h"
 #include "EditSAAChannelWindow.h"
-#include "../Picked.cpp"
+#include "../Picked.h"
 
 class Clock;
 class Channel;

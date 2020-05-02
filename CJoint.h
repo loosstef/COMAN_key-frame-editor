@@ -28,9 +28,12 @@ public:
     void updateLocalTransMat();
     glm::mat4 transMat();
     float offset() { return mLinkOffset; }
+    void setId(int id) { mId = id; }
+    int getId() { return mId; }
     // DEPRECATED FUNCTIONS
     void renderAll_DEPRECTATED(StandardShader *standardShader);
 private:
+    int mId = -1;
     float mLinkOffset;
     float mJointAngle;
     float mMinJointAngle;

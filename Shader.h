@@ -12,7 +12,7 @@
 class Shader {
 public:
     Shader(char *vsPath, char *fsPath);
-    GLint getUniLoc(char *name);
+    GLint getUniLoc(const char *name);
 private:
     GLint mProgram;
 };

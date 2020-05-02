@@ -20,6 +20,6 @@ Shader::Shader(char *vsPath, char *fsPath) {
     glUseProgram(mProgram);
 }
 
-GLint Shader::getUniLoc(char *name) {
+GLint Shader::getUniLoc(const char *name) {
     return glGetUniformLocation(mProgram, name);
 }

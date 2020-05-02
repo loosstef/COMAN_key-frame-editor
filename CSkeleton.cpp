@@ -7,6 +7,7 @@
 #include "CSkeleton.h"
 #include "CLink.h"
 #include "CJoint.h"
+#include "StandardShader.h"
 
 CSkeleton::CSkeleton(std::string filename) : mModel("base_models/red_dot.obj") {
     std::ifstream file(filename);
@@ -65,14 +66,27 @@ CSkeleton::CSkeleton(std::string filename) : mModel("base_models/red_dot.obj") {
     mRootJoint->setGlobalTransMat(glm::mat4(1.0f));
 }
 
+CSkeleton::CSkeleton(CJoint *joint) : mModel("base_models/red_dot.obj") {
+    mRootJoint = joint;
+    joint->setGlobalTransMat(glm::mat4(1.0f));
+}
+
 void CSkeleton::render(StandardShader *standardShader) {
+    // TODO: add parameter Picked and use it
     mRootJoint->setGlobalTransMat(glm::mat4(1.0f));
     renderJointAndChildren(standardShader, mRootJoint);
 //    mRootJoint->renderAll_DEPRECTATED(standardShader);
 
 }
 
+int CSkeleton::renderForPicking(StandardShader *shader) {
+    mRootJoint->setGlobalTransMat(glm::mat4(1.0f));
+    renderJoints(shader, mRootJoint, 1);
+    shader->setId(0);
+}
+
 void CSkeleton::renderJointAndChildren(StandardShader *standardShader, CJoint *joint) {
+    // TODO: use parameter picked
     joint->updateLocalTransMat();
     glm::vec3 pos = joint->getGlobPos();
     glm::mat4 transMat = glm::translate(glm::mat4(1.0f), pos);
@@ -88,7 +102,24 @@ void CSkeleton::renderJointAndChildren(StandardShader *standardShader, CJoint *j
     }
 }
 
-CSkeleton::CSkeleton(CJoint *joint) : mModel("base_models/red_dot.obj") {
-    mRootJoint = joint;
-    joint->setGlobalTransMat(glm::mat4(1.0f));
+int CSkeleton::renderJoints(StandardShader *standardShader, CJoint *joint, int jointId) {
+    int lastId = jointId;
+    joint->updateLocalTransMat();
+    glm::vec3 pos = joint->getGlobPos();
+    glm::mat4 transMat = glm::translate(glm::mat4(1.0f), pos);
+    transMat = glm::scale(transMat, glm::vec3(0.005f));
+    standardShader->setMatrix(TRANSFORMATION_MATRIX, transMat);
+    standardShader->setId(jointId);
+    mModel.Draw(0, standardShader->getUniLocTexture());
+    for(int i = 0; i < joint->childCount(); ++i) {
+        CLink *childLink = joint->childLink(i);
+        if(childLink != nullptr) {
+            lastId = renderJoints(standardShader, childLink->child(), lastId+1);
+        }
+    }
+    return lastId;
+}
+
+void CSkeleton::initIds(CJoint *joint, int jointId) {
+
 }

@@ -1,18 +1,26 @@
 //
-// Created by stef on 15.04.20.
+// Created by stef on 01.05.20.
 //
-#ifndef PROJECT_PICKED_CPP
-#define PROJECT_PICKED_CPP
 
-#include "FFD.h"
-#include "Channel.h"
+#include "Picked.h"
+#include "StepAheadAnimationChannel.h"
+#include "CSkeleton.h"
 
-struct Picked {
-    Picked(Channel *channel = nullptr, FFD *ffd = nullptr, int ctrlPtI = 0) :
-            channel(channel), ffd(ffd), controlPointIndex(ctrlPtI) {}
-    Channel *channel;
-    FFD *ffd;
-    int controlPointIndex;
-};
+Picked Picked::nothing() {
+    return {};
+}
 
-#endif
+Picked Picked::makeStepAheadChannel(StepAheadAnimationChannel *channel, FFD *ffd, int ctrlPtI) {
+    Picked val;
+    val.channel = channel;
+    val.ffd = ffd;
+    val.controlPointIndex = ctrlPtI;
+    return val;
+}
+
+Picked Picked::makeSkeleton(CSkeleton *skl, CJoint *joint) {
+    Picked val;
+    val.skeleton = skl;
+    val.joint = joint;
+    return val;
+}

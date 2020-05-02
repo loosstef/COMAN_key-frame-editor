@@ -22,9 +22,10 @@ void Mouse3D::mouse_button_callback(GLFWwindow *window, int button, int action, 
     if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
         double currMousePosX, currMousePosY;
         glfwGetCursorPos(window, &currMousePosX, &currMousePosY);
-        RenderEngine *renderEngine = scene.getRenderEngine();
+        RenderEngine &renderEngine = scene.getRenderEngine();
         Clock *clock = scene.getClock();
-        picked = renderEngine->pick(clock->getFrameIndex(), currMousePosX, currMousePosY, window);
+//        picked = renderEngine.pick_DEPRECATED(clock->getFrameIndex(), currMousePosX, currMousePosY, window);
+        picked = renderEngine.pick(scene, currMousePosX, currMousePosY, window);
         mouseWindowCoord = glm::vec2(currMousePosX, currMousePosY);
         // TODO: calculate 3d mouse coordinate
         if(picked.channel == nullptr) {
@@ -32,14 +33,14 @@ void Mouse3D::mouse_button_callback(GLFWwindow *window, int button, int action, 
         }
         if(picked.channel->getType() == SAA && picked.ffd != nullptr) {
             StepAheadAnimationChannel *pickedSaaChannel = (StepAheadAnimationChannel*)picked.channel;
-            int windowHeight = scene.getRenderEngine()->getWindowHeight();
+            int windowHeight = scene.getRenderEngine().getWindowHeight();
             glm::vec3 localAbsPosCtrlPoint = picked.ffd->getLocalAbsoluteLoc(picked.controlPointIndex);
-            glm::mat4 viewMat = scene.getRenderEngine()->getEditorCamera().getViewMatrix();
+            glm::mat4 viewMat = scene.getRenderEngine().getEditorCamera().getViewMatrix();
             glm::mat4 modelMat = pickedSaaChannel->getTransMat();
             glm::mat4 modelViewMat = viewMat * modelMat;
-            glm::mat4 projMat = scene.getRenderEngine()->getProjectionMatrix();
-            int width = scene.getRenderEngine()->getWindowWidth();
-            int height = scene.getRenderEngine()->getWindowHeight();
+            glm::mat4 projMat = scene.getRenderEngine().getProjectionMatrix();
+            int width = scene.getRenderEngine().getWindowWidth();
+            int height = scene.getRenderEngine().getWindowHeight();
             glm::vec4 viewport(0.0f, 0.0f, width, height);
             glm::vec3 mouseWindowPos = glm::project(localAbsPosCtrlPoint, modelViewMat, projMat, viewport);
             mouseWindowZ = mouseWindowPos.z;
@@ -55,14 +56,14 @@ void Mouse3D::mouse_button_callback(GLFWwindow *window, int button, int action, 
 void Mouse3D::loop(Scene &scene, double mouseX, double mouseY) {
     if(lMouseBtnDown && picked.ffd != nullptr) {
         StepAheadAnimationChannel *pickedSaaChannel = (StepAheadAnimationChannel*)picked.channel;
-        glm::mat4 viewMat = scene.getRenderEngine()->getEditorCamera().getViewMatrix();
+        glm::mat4 viewMat = scene.getRenderEngine().getEditorCamera().getViewMatrix();
         glm::mat4 modelMat = (pickedSaaChannel)->getTransMat();
         glm::mat4 modelViewMat = viewMat * modelMat;
-        glm::mat4 projMat = scene.getRenderEngine()->getProjectionMatrix();
-        int width = scene.getRenderEngine()->getWindowWidth();
-        int height = scene.getRenderEngine()->getWindowHeight();
+        glm::mat4 projMat = scene.getRenderEngine().getProjectionMatrix();
+        int width = scene.getRenderEngine().getWindowWidth();
+        int height = scene.getRenderEngine().getWindowHeight();
         glm::vec4 viewport(0.0f, 0.0f, width, height);
-        float windowHeight = scene.getRenderEngine()->getWindowHeight();
+        float windowHeight = scene.getRenderEngine().getWindowHeight();
         mouseSceneCoord = glm::unProject(glm::vec3(mouseX, windowHeight-mouseY, mouseWindowZ), modelViewMat, projMat, viewport);
         picked.ffd->setControlPointAbsCoord(picked.controlPointIndex, mouseSceneCoord);
         pickedSaaChannel->tellModelFFDChanged(picked.ffd, scene.getClock()->getFrameIndex());

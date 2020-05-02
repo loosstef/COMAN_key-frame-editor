@@ -33,7 +33,7 @@ add_executable(project main.cpp Logger.h Camera.cpp Camera.h old_code/Lights_DEP
         LinearPath.h Clock.cpp Clock.h gui/TimelineWindow.cpp gui/TimelineWindow.h gui/WindowRenderEngine.cpp
         gui/WindowRenderEngine.h Channel.cpp Channel.h gui/EditSAAChannelWindow.cpp gui/EditSAAChannelWindow.h
         Keyframe.cpp Keyframe.h Orientation.cpp Orientation.h
-        Mesh.cpp Mesh.h Model.cpp Model.h stb_image.h FFD.cpp FFD.h Picked.cpp LinInterp.cpp Shader.cpp Shader.h StandardShader.cpp StandardShader.h Mouse3D.cpp Mouse3D.h Scene.cpp Scene.h)
+        Mesh.cpp Mesh.h Model.cpp Model.h stb_image.h FFD.cpp FFD.h Picked.h LinInterp.cpp Shader.cpp Shader.h StandardShader.cpp StandardShader.h Mouse3D.cpp Mouse3D.h Scene.cpp Scene.h TransformStack.cpp TransformStack.h Picked.cpp)
 
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")

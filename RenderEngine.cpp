@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <vector>
 #include "RenderEngine.h"
 #include "Camera.h"
 #include "StepAheadAnimationChannel.h"
@@ -10,6 +11,8 @@
 #include "old_code/Object_DEPRECATED.h"
 #include "Orientation.h"
 #include "Path.h"
+#include "Scene.h"
+#include "CSkeleton.h"
 
 //char VERTEX_SHADER_FILENAME[] = "shaders/new_shader.vert";
 //char FRAGMENT_SHADER_FILENAME[] = "shaders/new_shader.frag";
@@ -17,7 +20,7 @@
 //char PICKING_FRAGMENT_SHADER_FILENAME[] = "shaders/color_picking_shader.frag";
 
 
-RenderEngine::RenderEngine() {
+RenderEngine::RenderEngine() : mTransformStack(this) {
     // load standard shaders
 //    GLuint vs = InputHandler::loadAndCompileShader(VERTEX_SHADER_FILENAME, GL_VERTEX_SHADER);
 //    GLuint fs = InputHandler::loadAndCompileShader(FRAGMENT_SHADER_FILENAME, GL_FRAGMENT_SHADER);
@@ -48,109 +51,120 @@ RenderEngine::RenderEngine() {
 }
 
 
-/**
- * Render the scene, given the current frame-index
- * @param frameIndex the frame-index
- */
-void RenderEngine::render(int frameIndex, Picked picked) {
-    // calculate camera matrix
+void RenderEngine::render(Scene &scene, Picked picked) {
+    // calculate & set camera matrix
     glm::mat4 viewMat = mEditorCamera->getViewMatrix();
     mStandardShader.setMatrix(VIEW_MATRIX, viewMat);
-//    glUniformMatrix4fv(mUniLocViewMat, 1, GL_FALSE, glm::value_ptr(viewMat));
-
-    // render objects
-//    for(StepAheadAnimationChannel *saaChannel : mStepAheadAnimationChannels) {
-//        renderSaaChannel(frameIndex, *saaChannel);
-//    }
-
-    for(int i = 0; i < mStepAheadAnimationChannels.size(); ++i) {
-        renderSaaChannel(frameIndex, *mStepAheadAnimationChannels[i], picked);
+    // current variables
+    int frameIndex = scene.getClock()->getFrameIndex();
+    // render step-ahead animation channels
+    std::vector<StepAheadAnimationChannel*> saaChannels = scene.getSaaChannels();
+    for(int i = 0; i < saaChannels.size(); ++i) {
+        renderSaaChannel(frameIndex, *saaChannels[i], picked);
     }
-
-    // TESTING CODE
-    // render loaded file
-//    GLint standardId = 150;
-//    glUniform1i(mUniLocObjId, standardId);
-//    glm::mat4 modelMat(1.0f);
-//    glUniformMatrix4fv(mUniLocTransMat, 1, GL_FALSE, glm::value_ptr(modelMat));
-//    GLint uniTexture = glGetUniformLocation(mStandardShaderProgram, "material.texture_diffuse1");
-//    mTestModel.Draw(uniTexture);
-//    standardId = 300;
-//    glUniform1i(mUniLocObjId, standardId);
+    // todo render skeletons
+    std::vector<CSkeleton*> &skeletons = scene.getSkeletons();
+    for(auto skeleton : skeletons) {
+        skeleton->render(&mStandardShader);
+    }
 }
 
-
-Picked RenderEngine::pick( int frameIndex, double mouseX, double mouseY, GLFWwindow *window) {
-    // reset render
+Picked RenderEngine::pick(Scene &scene, double mouseX, double mouseY, GLFWwindow *window) {
+    // prepare render variables & settings for picking
     glDisable(GL_MULTISAMPLE);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    // calculate camera matrix
+    // calculate & set camera matrix
     glm::mat4 viewMat = mEditorCamera->getViewMatrix();
     mStandardShader.setMatrix(VIEW_MATRIX, viewMat);
-//    glUniformMatrix4fv(mUniLocViewMat, 1, GL_FALSE, glm::value_ptr(viewMat));
+    // get variables
+    int frameIndex = scene.getClock()->getFrameIndex();
     // render objects based on id
+    // render saaChannels
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    for(int id = 1; id < mStepAheadAnimationChannels.size()+1; ++id) {
-        mStandardShader.setId(id);
-//        GLint realId = id;
-//        glUniform1i(mUniLocObjId, realId);
-        renderSaaChannel(frameIndex, *mStepAheadAnimationChannels[id-1], {});
+    std::vector<StepAheadAnimationChannel*> &saaChannels = scene.getSaaChannels();
+    int obj_id = 1;
+    for(auto *saaChannel : saaChannels) {
+        mStandardShader.setId(obj_id);
+        renderSaaChannel(frameIndex, *saaChannel, {});
+        ++obj_id;
     }
-
-    unsigned char data[4];
-    glReadBuffer(GL_BACK);
-    glReadPixels(floor(mouseX), mWindowHeight-floor(mouseY),1,1, GL_RGBA, GL_UNSIGNED_BYTE, data);
-
+    std::vector<CSkeleton*> skeletons = scene.getSkeletons();
+    for(auto *skeleton : skeletons) {
+        mStandardShader.setId(obj_id);
+        skeleton->render(&mStandardShader);
+        ++obj_id;
+    }
+    // TODO render skeletons
+    // read picked data and calc id
+    int id = derivePickedId(mouseX, mouseY);
+    // reset render options and variables
     mStandardShader.setId(0);
-//    GLint standardId = 0;
-//    glUniform1i(mUniLocObjId, standardId);
-
-    int id = (int)data[0] + (int)data[1] * 256 + (int)data[2] * 256 * 256;
-//    std::cout << id << std::endl;
-
     glEnable(GL_MULTISAMPLE);
-
     if(id == 0) {
+        // nothing picked
         return {};
     }
-
-    StepAheadAnimationChannel *pickedChannel = mStepAheadAnimationChannels[id-1];
-    FFD *ffd = pickedChannel->getFFD(frameIndex);
-    if(ffd == nullptr) {
-        return {pickedChannel};
+    // TODO check which type of channel was picked
+    if(id <= saaChannels.size()) {
+        StepAheadAnimationChannel *pickedChannel = saaChannels[id - 1];
+        FFD *ffd = pickedChannel->getFFD(frameIndex);
+        if(ffd == nullptr) {
+            return Picked::makeStepAheadChannel(pickedChannel);
+        }
+        // prepare render variables & settings for picking
+        glDisable(GL_MULTISAMPLE);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // render control points
+        renderForPicking(pickedChannel, scene);
+        //read picked data and derive id
+        int id_2 = derivePickedId(mouseX, mouseY);
+        // reset render variables and settings
+        mStandardShader.setId(0);
+        glEnable(GL_MULTISAMPLE);
+        // return picked control point index if picked one
+        if(id_2 == 0) {
+            return Picked::makeStepAheadChannel(pickedChannel);
+        }
+        return Picked::makeStepAheadChannel(pickedChannel, ffd, id_2-1);
     }
+    else {
+        // Picked skeleton
+        CSkeleton *pickedSkeleton = skeletons[id-saaChannels.size() - 1];
+        // prepare render variables & settings for picking
+        glDisable(GL_MULTISAMPLE);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // render joints for picking
+        pickedSkeleton->renderForPicking(&mStandardShader);
+        //read picked data and derive id
+        int id_2 = derivePickedId(mouseX, mouseY);
+        // reset render variables and settings
+        mStandardShader.setId(0);
+        glEnable(GL_MULTISAMPLE);
+        // return picked control point index if picked one
+//        if(id_2 == 0) {
+//            return Picked::makeStepAheadChannel(pickedChannel);
+//        }
+//        return Picked::makeStepAheadChannel(pickedChannel, ffd, id_2-1);
+        return Picked::nothing();
+    }
+}
 
-    glDisable(GL_MULTISAMPLE);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-//    glm::mat4 transformationMatrix = calcTransMatOfSaaChannel(frameIndex, *pickedChannel);
-    glm::mat4 transformationMatrix = pickedChannel->getTransMat();
+void RenderEngine::renderForPicking(StepAheadAnimationChannel *saaChannel, Scene &scene) {
+    int frameIndex = scene.getClock()->getFrameIndex();
+    FFD *ffd = saaChannel->getFFD(frameIndex);
+    glm::mat4 transformationMatrix = saaChannel->getTransMat();
     GLint uniLocTransMat = mStandardShader.getUniLoc("modelMatrix");
     GLint uniLocTexture = mStandardShader.getUniLocTexture();
     GLint uniLocObjId = mStandardShader.getUniLoc("id");
     ffd->pickControlPoints(transformationMatrix, uniLocTransMat, uniLocTexture, uniLocObjId, *mEditorCamera);
-
-    unsigned char data_2[4];
-    glReadBuffer(GL_BACK);
-    glReadPixels(floor(mouseX), mWindowHeight-floor(mouseY),1,1, GL_RGBA, GL_UNSIGNED_BYTE, data_2);
-
-    mStandardShader.setId(0);
-//    standardId = 0;
-//    glUniform1i(mUniLocObjId, standardId);
-
-    int id_2 = (int)data_2[0] + (int)data_2[1] * 256 + (int)data_2[2] * 256 * 256;
-
-    if(id_2 == 0) {
-        return {pickedChannel};
-    }
-    return {pickedChannel, ffd, id_2-1};
 }
 
 
 void RenderEngine::addSaaChannel(StepAheadAnimationChannel *saaChannel) {
-    mStepAheadAnimationChannels.push_back(saaChannel);
+    mStepAheadAnimationChannels_DEPRECATED.push_back(saaChannel);
 }
 
 
@@ -203,6 +217,14 @@ void RenderEngine::renderSaaChannel(int frameIndex, StepAheadAnimationChannel &s
         GLint uniLocTexture = mStandardShader.getUniLocTexture();
         ffd->renderControlPoints(transformationMatrix, uniLocTransMat, uniLocTexture, *mEditorCamera, ffdControlPointIndex);
     }
+}
+
+int RenderEngine::derivePickedId(double mouseX, double mouseY) {
+    unsigned char data_2[4];
+    glReadBuffer(GL_BACK);
+    glReadPixels(floor(mouseX), mWindowHeight-floor(mouseY),1,1, GL_RGBA, GL_UNSIGNED_BYTE, data_2);
+    int id_2 = (int)data_2[0] + (int)data_2[1] * 256 + (int)data_2[2] * 256 * 256;
+    return id_2;
 }
 
 //glm::mat4 RenderEngine::calcTransMatOfSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel) {

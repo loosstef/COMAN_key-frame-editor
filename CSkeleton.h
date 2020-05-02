@@ -7,18 +7,22 @@
 
 
 #include <string>
-#include "StandardShader.h"
 #include "Model.h"
+#include "Picked.h"
 
 class CJoint;
+class StandardShader;
 
 class CSkeleton {
 public:
     CSkeleton(CJoint *joint);
     CSkeleton(std::string filename);
     void render(StandardShader *standardShader);
+    int renderForPicking(StandardShader *shader);
 private:
     void renderJointAndChildren(StandardShader *standardShader, CJoint *joint);
+    int renderJoints(StandardShader *standardShader, CJoint *joint, int jointId);
+    void initIds(CJoint *joint, int jointId);
     CJoint *mRootJoint;
     Model mModel;
 };

@@ -8,8 +8,9 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <vector>
-#include "Picked.cpp"
+#include "Picked.h"
 #include "StandardShader.h"
+#include "TransformStack.h"
 
 const float CAMERA_FOV = 45.0f;
 const float CAMERA_NEAR_CLIPPING = 0.1f;
@@ -20,12 +21,13 @@ class StepAheadAnimationChannel;
 class Object_DEPRECATED;
 class Channel;
 class GLFWwindow;
+class Scene;
 
 class RenderEngine {
 public:
     RenderEngine();
-    void render(int frameIndex, Picked picked);
-    Picked pick(int frameIndex, double mouseX, double mouseY, GLFWwindow *window);
+    void render(Scene &scene, Picked picked);
+    Picked pick(Scene &scene, double mouseX, double mouseY, GLFWwindow *window);
     void addSaaChannel(StepAheadAnimationChannel *saaChannel);
     Camera& getEditorCamera();
     void onWindowSizeChange(uint width, uint height);
@@ -33,25 +35,21 @@ public:
     uint getWindowWidth() { return mWindowWidth; }
     glm::mat4 getProjectionMatrix() { return mProjectionMatrix; }
     StandardShader *getStandardShader() { return &mStandardShader; }
+    Shader* getShader() { return &mStandardShader; }
+    TransformStack& transformStack() { return mTransformStack; }
 private:
     void renderSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel, Picked picked);
-//    glm::mat4 calcTransMatOfSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel);
+    void renderForPicking(StepAheadAnimationChannel *saaChannel, Scene &scene);
+    int derivePickedId(double mouseX, double mouseY);
     StandardShader mStandardShader;
-//    GLint mUniLocTransMat;
-//    GLint mUniLocViewMat;
-//    GLint mUniLocProjMat;
-//    GLint mUniLocObjId;
-//    GLint mUniLocTexture;
-
     uint mWindowWidth = 1940;
     uint mWindowHeight = 1080;
     glm::mat4 mProjectionMatrix;
     Camera* mEditorCamera;
     Camera* mVirtualCamera;
-    std::vector<StepAheadAnimationChannel*> mStepAheadAnimationChannels;
-
-    // debug variable
-//    Model mTestModel;
+    TransformStack mTransformStack;
+    // deprectated variables
+    std::vector<StepAheadAnimationChannel*> mStepAheadAnimationChannels_DEPRECATED;
 };
 
 

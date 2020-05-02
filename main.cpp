@@ -48,13 +48,13 @@ WindowRenderEngine *windows;
 void glfw_window_size_callback(GLFWwindow* window, int width, int height) {
 //    g_gl_width = width;
 //    g_gl_height = height;
-    scene.getRenderEngine()->onWindowSizeChange(width, height);
+    scene.getRenderEngine().onWindowSizeChange(width, height);
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     if(!ImGui::GetIO().WantCaptureMouse) {
-        scene.getRenderEngine()->getEditorCamera().relativeMove(glm::vec3(0.0f, yoffset * SCROLL_SENSITIVITY, 0.0f));
+        scene.getRenderEngine().getEditorCamera().relativeMove(glm::vec3(0.0f, yoffset * SCROLL_SENSITIVITY, 0.0f));
     }
 }
 
@@ -177,7 +177,7 @@ int main() {
     scene.setRenderEngine(new RenderEngine());
     scene.setClock(new Clock());
     windows = new WindowRenderEngine(scene.getClock());
-    InputHandler inputHandler(window, scene.getRenderEngine());
+    InputHandler inputHandler(window, &scene.getRenderEngine());
 
     // imgui initialization
     IMGUI_CHECKVERSION();
@@ -205,7 +205,7 @@ int main() {
 //    saaChannel.addFFD(400, &ffd_sb_400);
 
     CSkeleton skeleton(std::string("models/skeleton.skl"));
-//    CSkeleton skeleton("models/simple_skeleton.skl");
+    scene.addSkeleton(&skeleton);
     // END OF INITIALIZATION OF DATA
 
     scene.getClock()->start();
@@ -233,11 +233,10 @@ int main() {
 //        mover.draw(uniTrans);
 //        cube.draw(uniTrans, model2);
 //        bSpline.draw(uniTrans);
-        scene.getRenderEngine()->render(scene.getClock()->getFrameIndex(), mouse3D.picked);
+//        scene.getRenderEngine().render_DEPRECATED(scene.getClock()->getFrameIndex(), mouse3D.picked);
+        scene.getRenderEngine().render(scene, mouse3D.picked);
         double currMousePosX, currMousePosY;
         glfwGetCursorPos(window, &currMousePosX, &currMousePosY);
-
-        skeleton.render(scene.getRenderEngine()->getStandardShader());
 
 //        renderEngine.getEditorCamera().move(InputHandler::readMoveButtons_DEPRECATED(window, MOVE_SPEED));
 
@@ -253,7 +252,7 @@ int main() {
         // put the stuff we've been drawing onto the display
 
         // imgui windowing
-        windows->render(mouse3D.picked.channel);
+        windows->render(mouse3D.picked);
 //        ImGui::ShowDemoWindow();
 
         mouse3D.loop(scene, currMousePosX, currMousePosY);
