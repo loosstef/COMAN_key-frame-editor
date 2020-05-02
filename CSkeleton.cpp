@@ -9,7 +9,10 @@
 #include "CJoint.h"
 #include "StandardShader.h"
 
-CSkeleton::CSkeleton(std::string filename) : mModel("base_models/red_dot.obj") {
+CSkeleton::CSkeleton(std::string filename)
+  : mModelRedDot("base_models/red_dot.obj"),
+    mModelOrangeDot("base_models/orange_dot.obj")
+  {
     std::ifstream file(filename);
     std::string line;
     mRootJoint = nullptr;
@@ -67,15 +70,21 @@ CSkeleton::CSkeleton(std::string filename) : mModel("base_models/red_dot.obj") {
     initIds(mRootJoint, 0);
 }
 
-CSkeleton::CSkeleton(CJoint *joint) : mModel("base_models/red_dot.obj") {
+CSkeleton::CSkeleton(CJoint *joint)
+  : mModelRedDot("base_models/red_dot.obj"),
+    mModelOrangeDot("base_models/orange_dot.obj")
+  {
     mRootJoint = joint;
     joint->setGlobalTransMat(glm::mat4(1.0f));
 }
 
-void CSkeleton::render(StandardShader *standardShader) {
-    // TODO: add parameter Picked and use it
+void CSkeleton::render(StandardShader *standardShader, Picked picked) {
     mRootJoint->setGlobalTransMat(glm::mat4(1.0f));
-    renderJointAndChildren(standardShader, mRootJoint);
+    int pickedId = -1;
+    if(picked.joint !=  nullptr) {
+        pickedId = picked.joint->getId();
+    }
+    renderJointAndChildren(standardShader, mRootJoint, pickedId);
 //    mRootJoint->renderAll_DEPRECTATED(standardShader);
 
 }
@@ -86,19 +95,23 @@ int CSkeleton::renderForPicking(StandardShader *shader) {
     shader->setId(0);
 }
 
-void CSkeleton::renderJointAndChildren(StandardShader *standardShader, CJoint *joint) {
-    // TODO: use parameter picked
+void CSkeleton::renderJointAndChildren(StandardShader *standardShader, CJoint *joint, int pickedIndex) {
     joint->updateLocalTransMat();
     glm::vec3 pos = joint->getGlobPos();
     glm::mat4 transMat = glm::translate(glm::mat4(1.0f), pos);
     transMat = glm::scale(transMat, glm::vec3(0.005f));
     standardShader->setMatrix(TRANSFORMATION_MATRIX, transMat);
-    mModel.Draw(0, standardShader->getUniLocTexture());
+    if(joint->getId() != pickedIndex) {
+        mModelRedDot.Draw(0, standardShader->getUniLocTexture());
+    }
+    else {
+        mModelOrangeDot.Draw(0, standardShader->getUniLocTexture());
+    }
     for(int i = 0; i < joint->childCount(); ++i) {
         CLink *childLink = joint->childLink(i);
         if(childLink != nullptr) {
             childLink->draw(*standardShader);
-            renderJointAndChildren(standardShader, childLink->child());
+            renderJointAndChildren(standardShader, childLink->child(), pickedIndex);
         }
     }
 }
@@ -112,7 +125,7 @@ void CSkeleton::renderJoints(StandardShader *standardShader, CJoint *joint) {
     standardShader->setMatrix(TRANSFORMATION_MATRIX, transMat);
 //    standardShader->setId(jointId);
     standardShader->setId(joint->getId()+1);
-    mModel.Draw(0, standardShader->getUniLocTexture());
+    mModelRedDot.Draw(0, standardShader->getUniLocTexture());
     for(int i = 0; i < joint->childCount(); ++i) {
         CLink *childLink = joint->childLink(i);
         if(childLink != nullptr) {
@@ -133,4 +146,33 @@ int CSkeleton::initIds(CJoint *joint, int jointId) {
             lastId = initIds(childLink->child(), lastId+1);
         }
     }
+    return lastId;
+}
+
+CJoint *CSkeleton::getJoint(int id) {
+    return getJoint(id, mRootJoint);
+}
+
+CJoint *CSkeleton::getJoint(int id, CJoint *rootJoint) {
+    // check if root-joint isn't a nullptr
+    if(rootJoint == nullptr) {
+        return nullptr;
+    }
+    // check if root-joint has given id
+    if(rootJoint->getId() == id) {
+        return rootJoint;
+    }
+    // search for joint in children
+    for(int i = 0; i < rootJoint->childCount(); ++i) {
+        CLink *childLink = rootJoint->childLink(i);
+        if(childLink != nullptr) {
+            CJoint *finding = getJoint(id, childLink->child());
+            if(finding != nullptr) {
+                // found joint
+                return finding;
+            }
+        }
+    }
+    // not found beneath given joint
+    return nullptr;
 }

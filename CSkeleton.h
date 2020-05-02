@@ -17,14 +17,17 @@ class CSkeleton {
 public:
     CSkeleton(CJoint *joint);
     CSkeleton(std::string filename);
-    void render(StandardShader *standardShader);
+    void render(StandardShader *standardShader, Picked picked);
     int renderForPicking(StandardShader *shader);
+    CJoint *getJoint(int id);
 private:
-    void renderJointAndChildren(StandardShader *standardShader, CJoint *joint);
+    void renderJointAndChildren(StandardShader *standardShader, CJoint *joint, int pickedIndex);
     void renderJoints(StandardShader *standardShader, CJoint *joint);
     int initIds(CJoint *joint, int jointId);
+    CJoint *getJoint(int id, CJoint *rootJoint);
     CJoint *mRootJoint;
-    Model mModel;
+    Model mModelRedDot;
+    Model mModelOrangeDot;
 };
 
 

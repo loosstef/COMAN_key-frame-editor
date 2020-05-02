@@ -65,7 +65,7 @@ void RenderEngine::render(Scene &scene, Picked picked) {
     // todo render skeletons
     std::vector<CSkeleton*> &skeletons = scene.getSkeletons();
     for(auto skeleton : skeletons) {
-        skeleton->render(&mStandardShader);
+        skeleton->render(&mStandardShader, picked);
     }
 }
 
@@ -92,7 +92,7 @@ Picked RenderEngine::pick(Scene &scene, double mouseX, double mouseY, GLFWwindow
     std::vector<CSkeleton*> skeletons = scene.getSkeletons();
     for(auto *skeleton : skeletons) {
         mStandardShader.setId(obj_id);
-        skeleton->render(&mStandardShader);
+        skeleton->render(&mStandardShader, Picked::nothing());
         ++obj_id;
     }
     // TODO render skeletons
@@ -144,11 +144,11 @@ Picked RenderEngine::pick(Scene &scene, double mouseX, double mouseY, GLFWwindow
         mStandardShader.setId(0);
         glEnable(GL_MULTISAMPLE);
         // return picked control point index if picked one
-//        if(id_2 == 0) {
-//            return Picked::makeStepAheadChannel(pickedChannel);
-//        }
-//        return Picked::makeStepAheadChannel(pickedChannel, ffd, id_2-1);
-        return Picked::nothing();
+        if(id_2 == 0) {
+            return Picked::makeSkeleton(pickedSkeleton);
+        }
+        CJoint *pickedJoint = pickedSkeleton->getJoint(id_2-1);
+        return Picked::makeSkeleton(pickedSkeleton, pickedJoint);
     }
 }
 
