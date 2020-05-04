@@ -20,11 +20,13 @@ public:
     void render(StandardShader *standardShader, Picked picked);
     int renderForPicking(StandardShader *shader);
     CJoint *getJoint(int id);
+    void inverseKinematic(CJoint *joint, glm::vec3 newPos);
 private:
     void renderJointAndChildren(StandardShader *standardShader, CJoint *joint, int pickedIndex);
     void renderJoints(StandardShader *standardShader, CJoint *joint);
     int initIds(CJoint *joint, int jointId);
     CJoint *getJoint(int id, CJoint *rootJoint);
+    glm::vec3 calcDifferential(CJoint *endJoint, CJoint *rotJoint);
     CJoint *mRootJoint;
     Model mModelRedDot;
     Model mModelOrangeDot;

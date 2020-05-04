@@ -12,7 +12,9 @@ CJoint::CJoint(float linkOffset, float jointAngle, float minJointAngle, float ma
 {
     mParentLink = nullptr;
     mLinkOffset = linkOffset;
-    mJointAngle = jointAngle;
+    mJointAngles.push_back(jointAngle);
+    mFrameIndices.push_back(0);
+    mJointAngle_DEPRECATED = jointAngle;
     mMinJointAngle = minJointAngle;
     mMaxJointAngle = maxJointAngle;
     mMaxChildrenCount = childrenCount;
@@ -37,8 +39,8 @@ void CJoint::setGlobalTransMat(glm::mat4 transMat) {
 void CJoint::updateLocalTransMat() {
     // TODO: fix this function
     glm::mat4 rotZArray = {
-            glm::cos(mJointAngle), glm::sin(mJointAngle), 0, 0,
-            -glm::sin(mJointAngle), glm::cos(mJointAngle), 0, 0,
+            glm::cos(mJointAngle_DEPRECATED), glm::sin(mJointAngle_DEPRECATED), 0, 0,
+            -glm::sin(mJointAngle_DEPRECATED), glm::cos(mJointAngle_DEPRECATED), 0, 0,
             0, 0, 1, 0,
             0, 0, 0, 1
     };
@@ -103,4 +105,18 @@ glm::vec3 CJoint::getGlobPos() {
 
 glm::mat4 CJoint::transMat() {
     return mGlobalTransMat * mLocalTransMat;
+}
+
+glm::vec3 CJoint::getRotAxis() {
+    return mGlobalTransMat * mLocalTransMat * glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+}
+
+void CJoint::setJointAngle(float jointAngle) {
+    mJointAngle_DEPRECATED = jointAngle;
+    if(mJointAngle_DEPRECATED < mMinJointAngle) {
+        mJointAngle_DEPRECATED = mMinJointAngle;
+    }
+    else if(mJointAngle_DEPRECATED > mMaxJointAngle) {
+        mJointAngle_DEPRECATED = mMaxJointAngle;
+    }
 }

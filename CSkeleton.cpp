@@ -176,3 +176,48 @@ CJoint *CSkeleton::getJoint(int id, CJoint *rootJoint) {
     // not found beneath given joint
     return nullptr;
 }
+
+void CSkeleton::inverseKinematic(CJoint *joint, glm::vec3 newPos) {
+    const float CONVERGENCE_THRESHOLD = 0.1f;
+    const float MAX_LOOPS = 10;
+    const float ROT_FACTOR = 0.1f;
+    // check if joint has parents;
+    if(joint->parent() == nullptr) {
+        return;
+    }
+    CJoint *rotJoint = joint->parent()->parent();
+    int nLoops = 0;
+    while((joint->getGlobPos() - newPos).length() > CONVERGENCE_THRESHOLD && nLoops < MAX_LOOPS) {
+        if(rotJoint == nullptr) {
+            rotJoint = joint->parent()->parent();
+            ++nLoops;
+        }
+        glm::vec3 diffPos = calcDifferential(joint, rotJoint);
+        glm::vec3 shouldBeDiff = joint->getGlobPos() - newPos;
+        float jointRot = glm::dot(diffPos, shouldBeDiff) * ROT_FACTOR;
+        rotJoint->setJointAngle(rotJoint->getJointAngle() - jointRot);
+        rotJoint->updateLocalTransMat();
+        if(rotJoint->parent() != nullptr) {
+            rotJoint = rotJoint->parent()->parent();
+            ++nLoops;
+        }
+        else {
+            rotJoint = joint->parent()->parent();
+        }
+    }
+}
+
+glm::vec3 CSkeleton::calcDifferential(CJoint *endJoint, CJoint *rotJoint) {
+//    const float MINIMAL_ROT = 0.01f;
+//    glm::vec3 origPos = endJoint->getGlobPos();
+//    rotJoint->setJointAngle(rotJoint->getJointAngle()+MINIMAL_ROT);
+//    rotJoint->updateLocalTransMat();
+//    glm::vec3 endPos = endJoint->getGlobPos();
+//    rotJoint->setJointAngle(rotJoint->getJointAngle()-MINIMAL_ROT);
+//    rotJoint->updateLocalTransMat();
+//    return (endPos-origPos) / MINIMAL_ROT;
+    glm::vec3 rotAxis = rotJoint->getRotAxis();
+    glm::vec3 arm = endJoint->getGlobPos() - rotJoint->getGlobPos();
+    glm::vec3 diff = glm::cross(rotAxis, arm);
+    return diff;
+}

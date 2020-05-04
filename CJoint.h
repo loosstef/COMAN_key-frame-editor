@@ -9,6 +9,7 @@
 #include <glm/glm.hpp>
 #include <glm/detail/type_mat.hpp>
 #include <vector>
+#include <vector>
 #include "Model.h"
 
 class CLink;
@@ -30,17 +31,22 @@ public:
     float offset() { return mLinkOffset; }
     void setId(int id) { mId = id; }
     int getId() { return mId; }
+    float getJointAngle() { return mJointAngle_DEPRECATED; }
+    void setJointAngle(float jointAngle);
+    glm::vec3 getRotAxis();
     // DEPRECATED FUNCTIONS
     void renderAll_DEPRECTATED(StandardShader *standardShader);
     // IMGUI FUNCTIONS
 //    float* ImGui_linkOffset() { return &mLinkOffset; }
-    float* ImGui_jointAngle() { return &mJointAngle; }
+    float* ImGui_jointAngle() { return &mJointAngle_DEPRECATED; }
     float* ImGui_minJointAngle() { return &mMinJointAngle; }
     float* ImGui_maxJointAngle() { return &mMaxJointAngle; }
 private:
     int mId = -1;
     float mLinkOffset;
-    float mJointAngle;
+    float mJointAngle_DEPRECATED;
+    std::vector<float> mJointAngles;
+    std::vector<int> mFrameIndices;
     float mMinJointAngle;
     float mMaxJointAngle;
     int mMaxChildrenCount;
