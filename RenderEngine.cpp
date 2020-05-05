@@ -62,9 +62,9 @@ void RenderEngine::render(Scene &scene, Picked picked) {
     for(int i = 0; i < saaChannels.size(); ++i) {
         renderSaaChannel(frameIndex, *saaChannels[i], picked);
     }
-    // todo render skeletons
     std::vector<CSkeleton*> &skeletons = scene.getSkeletons();
     for(auto skeleton : skeletons) {
+        skeleton->setTime(frameIndex);
         skeleton->render(&mStandardShader, picked);
     }
 }
