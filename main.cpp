@@ -23,6 +23,7 @@
 #include "CSkeleton.h"
 #include "CJoint.h"
 #include "CLink.h"
+#include "LSystem.h"
 
 const float ROT_SPEED = 0.15f;
 const float SCROLL_SENSITIVITY = 0.30f;
@@ -204,8 +205,10 @@ int main() {
 //    FFD ffd_sb_400(spongebob_model, 2, 2, 2);
 //    saaChannel.addFFD(400, &ffd_sb_400);
 
-    CSkeleton skeleton(std::string("models/skeleton.skl"));
-    scene.addSkeleton(&skeleton);
+//    CSkeleton skeleton(std::string("models/skeleton.skl"));
+//    scene.addSkeleton(&skeleton);
+
+    LSystem lSystem(3);
     // END OF INITIALIZATION OF DATA
 
     scene.getClock()->start();
