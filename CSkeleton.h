@@ -21,6 +21,7 @@ public:
     int renderForPicking(StandardShader *shader);
     CJoint *getJoint(int id);
     void inverseKinematic(CJoint *joint, glm::vec3 newPos);
+    void setTime(int frameIndex);
 private:
     void renderJointAndChildren(StandardShader *standardShader, CJoint *joint, int pickedIndex);
     void renderJoints(StandardShader *standardShader, CJoint *joint);
@@ -30,6 +31,7 @@ private:
     CJoint *mRootJoint;
     Model mModelRedDot;
     Model mModelOrangeDot;
+    int mCurrFrame = 0;
 };
 
 

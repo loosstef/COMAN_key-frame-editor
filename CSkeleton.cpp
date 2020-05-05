@@ -195,14 +195,14 @@ void CSkeleton::inverseKinematic(CJoint *joint, glm::vec3 newPos) {
         glm::vec3 diffPos = calcDifferential(joint, rotJoint);
         glm::vec3 shouldBeDiff = joint->getGlobPos() - newPos;
         float jointRot = glm::dot(diffPos, shouldBeDiff) * ROT_FACTOR;
-        rotJoint->setJointAngle(rotJoint->getJointAngle() - jointRot);
+        rotJoint->setJointAngle(rotJoint->getCurrJointAngle() - jointRot, mCurrFrame);
         rotJoint->updateLocalTransMat();
         if(rotJoint->parent() != nullptr) {
             rotJoint = rotJoint->parent()->parent();
-            ++nLoops;
         }
         else {
             rotJoint = joint->parent()->parent();
+            ++nLoops;
         }
     }
 }
@@ -210,14 +210,21 @@ void CSkeleton::inverseKinematic(CJoint *joint, glm::vec3 newPos) {
 glm::vec3 CSkeleton::calcDifferential(CJoint *endJoint, CJoint *rotJoint) {
 //    const float MINIMAL_ROT = 0.01f;
 //    glm::vec3 origPos = endJoint->getGlobPos();
-//    rotJoint->setJointAngle(rotJoint->getJointAngle()+MINIMAL_ROT);
+//    rotJoint->setJointAngle(rotJoint->calcJointAngle()+MINIMAL_ROT);
 //    rotJoint->updateLocalTransMat();
 //    glm::vec3 endPos = endJoint->getGlobPos();
-//    rotJoint->setJointAngle(rotJoint->getJointAngle()-MINIMAL_ROT);
+//    rotJoint->setJointAngle(rotJoint->calcJointAngle()-MINIMAL_ROT);
 //    rotJoint->updateLocalTransMat();
 //    return (endPos-origPos) / MINIMAL_ROT;
     glm::vec3 rotAxis = rotJoint->getRotAxis();
     glm::vec3 arm = endJoint->getGlobPos() - rotJoint->getGlobPos();
     glm::vec3 diff = glm::cross(rotAxis, arm);
     return diff;
+}
+
+void CSkeleton::setTime(int frameIndex) {
+    if(mCurrFrame != frameIndex) {
+        mRootJoint->setTime(frameIndex);
+        mCurrFrame = frameIndex;
+    }
 }

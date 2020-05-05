@@ -31,20 +31,22 @@ public:
     float offset() { return mLinkOffset; }
     void setId(int id) { mId = id; }
     int getId() { return mId; }
-    float getJointAngle() { return mJointAngle_DEPRECATED; }
-    void setJointAngle(float jointAngle);
+    float getCurrJointAngle() { return mCurrJointAngle; }
+    void setJointAngle(float jointAngle, int frameIndex);
     glm::vec3 getRotAxis();
+    void setTime(int frameIndex);
     // DEPRECATED FUNCTIONS
     void renderAll_DEPRECTATED(StandardShader *standardShader);
     // IMGUI FUNCTIONS
 //    float* ImGui_linkOffset() { return &mLinkOffset; }
-    float* ImGui_jointAngle() { return &mJointAngle_DEPRECATED; }
+    float* ImGui_jointAngle() { return &mCurrJointAngle; }
     float* ImGui_minJointAngle() { return &mMinJointAngle; }
     float* ImGui_maxJointAngle() { return &mMaxJointAngle; }
 private:
+    float calcJointAngle(int frameIndex);
     int mId = -1;
     float mLinkOffset;
-    float mJointAngle_DEPRECATED;
+    float mCurrJointAngle;
     std::vector<float> mJointAngles;
     std::vector<int> mFrameIndices;
     float mMinJointAngle;

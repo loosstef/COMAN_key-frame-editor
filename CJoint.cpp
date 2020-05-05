@@ -14,7 +14,7 @@ CJoint::CJoint(float linkOffset, float jointAngle, float minJointAngle, float ma
     mLinkOffset = linkOffset;
     mJointAngles.push_back(jointAngle);
     mFrameIndices.push_back(0);
-    mJointAngle_DEPRECATED = jointAngle;
+    mCurrJointAngle = jointAngle;
     mMinJointAngle = minJointAngle;
     mMaxJointAngle = maxJointAngle;
     mMaxChildrenCount = childrenCount;
@@ -39,8 +39,8 @@ void CJoint::setGlobalTransMat(glm::mat4 transMat) {
 void CJoint::updateLocalTransMat() {
     // TODO: fix this function
     glm::mat4 rotZArray = {
-            glm::cos(mJointAngle_DEPRECATED), glm::sin(mJointAngle_DEPRECATED), 0, 0,
-            -glm::sin(mJointAngle_DEPRECATED), glm::cos(mJointAngle_DEPRECATED), 0, 0,
+            glm::cos(mCurrJointAngle), glm::sin(mCurrJointAngle), 0, 0,
+            -glm::sin(mCurrJointAngle), glm::cos(mCurrJointAngle), 0, 0,
             0, 0, 1, 0,
             0, 0, 0, 1
     };
@@ -111,12 +111,68 @@ glm::vec3 CJoint::getRotAxis() {
     return mGlobalTransMat * mLocalTransMat * glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
 }
 
-void CJoint::setJointAngle(float jointAngle) {
-    mJointAngle_DEPRECATED = jointAngle;
-    if(mJointAngle_DEPRECATED < mMinJointAngle) {
-        mJointAngle_DEPRECATED = mMinJointAngle;
+void CJoint::setJointAngle(float jointAngle, int frameIndex) {
+//    mJointAngle_DEPRECATED = jointAngle;
+    if(jointAngle < mMinJointAngle)
+        jointAngle = mMinJointAngle;
+    else if(jointAngle > mMaxJointAngle)
+        jointAngle = mMaxJointAngle;
+
+    for(int i = 0; i < mFrameIndices.size(); ++i) {
+        if(mFrameIndices[i] == frameIndex) {
+            mJointAngles[i] = jointAngle;
+            mCurrJointAngle = jointAngle;
+            return;
+        }
     }
-    else if(mJointAngle_DEPRECATED > mMaxJointAngle) {
-        mJointAngle_DEPRECATED = mMaxJointAngle;
+    mJointAngles.push_back(jointAngle);
+    mFrameIndices.push_back(frameIndex);
+    mCurrJointAngle = jointAngle;
+}
+
+float CJoint::calcJointAngle(int frameIndex) {
+    if(mFrameIndices.size() == 1) {
+        return mJointAngles[0];
+    }
+    int lowerIndex = -1;
+    int lowerFrameIndex = -1;
+    int higherIndex = -1;
+    int higherFrameIndex = std::numeric_limits<int>::max();
+    for(int i = 0; i < mFrameIndices.size(); ++i) {
+        if(mFrameIndices[i] == frameIndex) {
+            return mJointAngles[i];
+        }
+        if(mFrameIndices[i] > lowerFrameIndex && mFrameIndices[i] < frameIndex) {
+            lowerIndex = i;
+            lowerFrameIndex = mFrameIndices[i];
+        }
+        else if(mFrameIndices[i] < higherFrameIndex && mFrameIndices[i] > frameIndex) {
+            higherIndex = i;
+            higherFrameIndex = mFrameIndices[i];
+        }
+    }
+    if(lowerIndex == -1) {
+        return mJointAngles[higherIndex];
+    }
+    else if(higherIndex == -1) {
+        return mJointAngles[lowerIndex];
+    }
+    // averaging
+    float earlyAngle = mJointAngles[lowerIndex];
+    float laterAngle = mJointAngles[higherIndex];
+    float factor = (float)(frameIndex-lowerFrameIndex) / (float)(higherFrameIndex-lowerFrameIndex);
+    float currAngle = earlyAngle + (factor * (laterAngle-earlyAngle));
+    mCurrJointAngle = currAngle;
+    return currAngle;
+}
+
+void CJoint::setTime(int frameIndex) {
+    mCurrJointAngle = calcJointAngle(frameIndex);
+    for(int i = 0; i < mMaxChildrenCount; ++i) {
+        if(mChildLinks[i] != nullptr) {
+            if(mChildLinks[i]->child() != nullptr) {
+                mChildLinks[i]->child()->setTime(frameIndex);
+            }
+        }
     }
 }

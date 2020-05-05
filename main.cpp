@@ -255,6 +255,8 @@ int main() {
         windows->render(mouse3D.picked);
 //        ImGui::ShowDemoWindow();
 
+        skeleton.setTime(scene.getClock()->getFrameIndex());
+
         mouse3D.loop(scene, currMousePosX, currMousePosY);
 
         // imgui rendering
