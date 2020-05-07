@@ -12,3 +12,7 @@ void Scene::addSaaChannel(StepAheadAnimationChannel *saaChannel) {
 void Scene::addSkeleton(CSkeleton *skeleton) {
     skeletons.push_back(skeleton);
 }
+
+void Scene::add(Plant *plant) {
+    plants.push_back(plant);
+}

@@ -8,6 +8,7 @@
 
 #include "RenderEngine.h"
 #include "Clock.h"
+#include "Plant.h"
 
 class CSkeleton;
 
@@ -21,11 +22,14 @@ public:
     void addSaaChannel(StepAheadAnimationChannel *saaChannel);
     std::vector<CSkeleton*>& getSkeletons() { return skeletons; }
     void addSkeleton(CSkeleton *skeleton);
+    void add(Plant *plant);
+    std::vector<Plant*>& getPlants() { return plants; }
 private:
     RenderEngine *renderEngine = nullptr;
     Clock *clock;
     std::vector<StepAheadAnimationChannel*> saaChannels;
     std::vector<CSkeleton*> skeletons;
+    std::vector<Plant*> plants;
 };
 
 

@@ -67,6 +67,10 @@ void RenderEngine::render(Scene &scene, Picked picked) {
         skeleton->setTime(frameIndex);
         skeleton->render(&mStandardShader, picked);
     }
+    std::vector<Plant*> &plants = scene.getPlants();
+    for(auto plant : plants) {
+        plant->draw(*this, mStandardShader);
+    }
 }
 
 Picked RenderEngine::pick(Scene &scene, double mouseX, double mouseY, GLFWwindow *window) {

@@ -25,7 +25,7 @@ void LSystem::addRule(std::string rule) {
         std::cerr << "ERROR: rule doesn't contain an arrow" << std::endl;
         exit(1);
     }
-    std::string rightPart = rule.substr(posOfArrow+1, posOfColon);
+    std::string rightPart = rule.substr(posOfArrow+1, posOfColon-(posOfArrow+1));
     // check if left part already in ruleset, else add it
     if(mProdRules.count(leftPart) < 1) {
         mProdRules.insert(std::pair<char, std::vector<ProdRuleRight>>(leftPart, {}));
@@ -61,7 +61,7 @@ std::string LSystem::produceChar(char ch) {
     float p = rand() / (float)RAND_MAX;
     for(int i = 0; i < prodRulesRight.size(); ++i) {
         ProdRuleRight prodRuleRight = prodRulesRight[i];
-        if(prodRuleRight.chance > p) {
+        if(p > prodRuleRight.chance) {
             p -= prodRuleRight.chance;
         }
         else {
