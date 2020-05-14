@@ -16,10 +16,12 @@ const float MAX_HORIZONTAL_CAM_ROT = 180;
 /**
  * Constructor
  */
-Camera::Camera() {
+Camera::Camera(int windowWidth, int windowHeight) {
     mPos = glm::vec3(1.2f, 1.2f, 1.2f);
     setRotXSafe(-45.0f);
     setRotYSafe(45.0f);
+    // set projection matrix
+    mProjectionMatrix = genProjectionMatrix(45.0f, windowWidth, windowHeight, 0.01f, 40.0f);
 }
 
 
@@ -103,4 +105,13 @@ void Camera::setRotYSafe(float rotY) {
     else {
         mRotY = rotY;
     }
+}
+
+glm::mat4 Camera::genProjectionMatrix(float fov, int windowWidth, int windowHeight, float nearClipping, float farClipping) {
+    return glm::perspective(
+            glm::radians(fov),
+            ((float)windowWidth) / ((float)windowHeight),
+            nearClipping,
+            farClipping
+    );
 }

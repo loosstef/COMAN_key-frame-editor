@@ -35,19 +35,25 @@ public:
     uint getWindowWidth() { return mWindowWidth; }
     glm::mat4 getProjectionMatrix() { return mProjectionMatrix; }
     StandardShader *getStandardShader() { return &mStandardShader; }
-    Shader* getShader() { return &mStandardShader; }
+    Shader* getShader() { return mCurrShader; }
     TransformStack& transformStack() { return mTransformStack; }
+    void useShader(Shader &shader);
 private:
     void renderSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel, Picked picked);
     void renderForPicking(StepAheadAnimationChannel *saaChannel, Scene &scene);
     int derivePickedId(double mouseX, double mouseY);
-    StandardShader mStandardShader;
     uint mWindowWidth = 1940;
     uint mWindowHeight = 1080;
     glm::mat4 mProjectionMatrix;
+    TransformStack mTransformStack;
+    // cameras
+    Camera *mCurrCamera;
     Camera* mEditorCamera;
     Camera* mVirtualCamera;
-    TransformStack mTransformStack;
+    // shaders
+    Shader *mCurrShader;
+    StandardShader mStandardShader;
+    Shader mSkyBoxShader;
     // deprectated variables
     std::vector<StepAheadAnimationChannel*> mStepAheadAnimationChannels_DEPRECATED;
 };

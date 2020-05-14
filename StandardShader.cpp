@@ -6,8 +6,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "StandardShader.h"
 
-char VERTEX_SHADER_FILENAME[] = "shaders/new_shader.vert";
-char FRAGMENT_SHADER_FILENAME[] = "shaders/new_shader.frag";
+char VERTEX_SHADER_FILENAME[] = "shaders/standard.vert";
+char FRAGMENT_SHADER_FILENAME[] = "shaders/standard.frag";
 
 char PROJECTION_MATRIX_VAR_NAME[] = "projectionMatrix";
 char VIEW_MATRIX_VAR_NAME[] = "viewMatrix";
@@ -15,8 +15,9 @@ char TRANSFORMATION_MATRIX_VAR_NAME[] = "modelMatrix";
 char ID_VAR_NAME[] = "id";
 char TEXTURE_VAR_NAME[] = "texture_diffuse1";
 
-StandardShader::StandardShader() : Shader(VERTEX_SHADER_FILENAME, FRAGMENT_SHADER_FILENAME) {
-
+StandardShader::StandardShader()
+   : Shader(VERTEX_SHADER_FILENAME, FRAGMENT_SHADER_FILENAME, "standard")
+{
 }
 
 void StandardShader::setMatrix(MatrixType matType, glm::mat4 &mat) {

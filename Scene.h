@@ -11,6 +11,7 @@
 #include "Plant.h"
 
 class CSkeleton;
+class SkyBox;
 
 class Scene {
 public:
@@ -24,12 +25,15 @@ public:
     void addSkeleton(CSkeleton *skeleton);
     void add(Plant *plant);
     std::vector<Plant*>& getPlants() { return plants; }
+    void setSkyBox(std::vector<std::string> &faces);
+    SkyBox *getSkyBox() { return skyBox; }
 private:
     RenderEngine *renderEngine = nullptr;
     Clock *clock;
     std::vector<StepAheadAnimationChannel*> saaChannels;
     std::vector<CSkeleton*> skeletons;
     std::vector<Plant*> plants;
+    SkyBox *skyBox = nullptr;
 };
 
 

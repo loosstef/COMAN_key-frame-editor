@@ -13,14 +13,17 @@
 #include "Path.h"
 #include "Scene.h"
 #include "CSkeleton.h"
+#include "SkyBox.h"
 
-//char VERTEX_SHADER_FILENAME[] = "shaders/new_shader.vert";
-//char FRAGMENT_SHADER_FILENAME[] = "shaders/new_shader.frag";
+//char VERTEX_SHADER_FILENAME[] = "shaders/standard.vert";
+//char FRAGMENT_SHADER_FILENAME[] = "shaders/standard.frag";
 //char PICKING_VERTEX_SHADER_FILENAME[] = "shaders/color_picking_shader.vert";
 //char PICKING_FRAGMENT_SHADER_FILENAME[] = "shaders/color_picking_shader.frag";
 
 
-RenderEngine::RenderEngine() : mTransformStack(this) {
+RenderEngine::RenderEngine() : mTransformStack(this),
+    mSkyBoxShader("shaders/skybox.vert", "shaders/skybox.frag", "skybox")
+{
     // load standard shaders
 //    GLuint vs = InputHandler::loadAndCompileShader(VERTEX_SHADER_FILENAME, GL_VERTEX_SHADER);
 //    GLuint fs = InputHandler::loadAndCompileShader(FRAGMENT_SHADER_FILENAME, GL_FRAGMENT_SHADER);
@@ -38,7 +41,8 @@ RenderEngine::RenderEngine() : mTransformStack(this) {
 //    GLint standardId = 0;
 //    glUniform1i(mUniLocObjId, standardId);
     // create new camera
-    mEditorCamera = new Camera();
+    mEditorCamera = new Camera(mWindowWidth, mWindowHeight);
+    mCurrCamera = mEditorCamera;
     // generate and load projection matrix
     mProjectionMatrix = glm::perspective(
             glm::radians(CAMERA_FOV),
@@ -48,13 +52,18 @@ RenderEngine::RenderEngine() : mTransformStack(this) {
     );
     mStandardShader.setMatrix(PROJECTION_MATRIX, mProjectionMatrix);
 //    glUniformMatrix4fv(mUniLocProjMat, 1, GL_FALSE, glm::value_ptr(mProjectionMatrix));
+    useShader(mStandardShader);
 }
 
 
 void RenderEngine::render(Scene &scene, Picked picked) {
+    useShader(mStandardShader);
     // calculate & set camera matrix
     glm::mat4 viewMat = mEditorCamera->getViewMatrix();
     mStandardShader.setMatrix(VIEW_MATRIX, viewMat);
+    // set projection matrix
+    glm::mat4 projMat = mCurrCamera->getProjectionMatrix();
+    mStandardShader.setMatrix(PROJECTION_MATRIX, projMat);
     // current variables
     int frameIndex = scene.getClock()->getFrameIndex();
     // render step-ahead animation channels
@@ -71,6 +80,11 @@ void RenderEngine::render(Scene &scene, Picked picked) {
     for(auto plant : plants) {
         plant->draw(*this, mStandardShader);
     }
+    if(scene.getSkyBox() != nullptr) {
+        useShader(mSkyBoxShader);
+        scene.getSkyBox()->draw(scene);
+    }
+
 }
 
 Picked RenderEngine::pick(Scene &scene, double mouseX, double mouseY, GLFWwindow *window) {
@@ -229,6 +243,11 @@ int RenderEngine::derivePickedId(double mouseX, double mouseY) {
     glReadPixels(floor(mouseX), mWindowHeight-floor(mouseY),1,1, GL_RGBA, GL_UNSIGNED_BYTE, data_2);
     int id_2 = (int)data_2[0] + (int)data_2[1] * 256 + (int)data_2[2] * 256 * 256;
     return id_2;
+}
+
+void RenderEngine::useShader(Shader &shader) {
+    mCurrShader = &shader;
+    shader.use();
 }
 
 //glm::mat4 RenderEngine::calcTransMatOfSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel) {

@@ -3,6 +3,7 @@
 //
 
 #include "Scene.h"
+#include "SkyBox.h"
 
 void Scene::addSaaChannel(StepAheadAnimationChannel *saaChannel) {
     saaChannels.push_back(saaChannel);
@@ -15,4 +16,11 @@ void Scene::addSkeleton(CSkeleton *skeleton) {
 
 void Scene::add(Plant *plant) {
     plants.push_back(plant);
+}
+
+void Scene::setSkyBox(std::vector<std::string> &faces) {
+    if(skyBox != nullptr) {
+        delete skyBox;
+    }
+    skyBox = new SkyBox(faces);
 }

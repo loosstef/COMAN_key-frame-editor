@@ -11,8 +11,13 @@
 
 class Shader {
 public:
-    Shader(char *vsPath, char *fsPath);
+    Shader(char *vsPath, char *fsPath, std::string name);
     GLint getUniLoc(const char *name);
+    void use();
+    void setMat4(std::string varName, glm::mat4 mat);
+    std::string getName() { return mName; }
+protected:
+    const std::string mName;
 private:
     GLint mProgram;
 };

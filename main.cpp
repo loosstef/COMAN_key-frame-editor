@@ -25,6 +25,8 @@
 #include "CLink.h"
 #include "LSystem.h"
 #include "Plant.h"
+#include "Explosion.h"
+#include "SkyBox.h"
 
 const float ROT_SPEED = 0.15f;
 const float SCROLL_SENSITIVITY = 0.30f;
@@ -209,16 +211,29 @@ int main() {
 //    CSkeleton skeleton(std::string("models/skeleton.skl"));
 //    scene.addSkeleton(&skeleton);
 
-    LSystem lSystem(4);
-    lSystem.addRule("F->F[+F]F[-F]F:1.0");
-    std::string plantStructure = lSystem.produce("F");
-    Plant plant(plantStructure);
-    scene.add(&plant);
-
-    StepAheadAnimationChannel saaChannelRedDot;
-    Model redDot("base_models/red_dot.obj");
-    saaChannelRedDot.setObject(&redDot);
+//    LSystem lSystem(3);
+//    lSystem.addRule("F->F[+F]F[-RF]F:1.0");
+//    std::string plantStructure = lSystem.produce("F");
+//    Plant plant(plantStructure);
+//    scene.add(&plant);
+//
+//    StepAheadAnimationChannel saaChannelRedDot;
+//    Model redDot("base_models/red_dot.obj");
+//    saaChannelRedDot.setObject(&redDot);
 //    scene.addSaaChannel(&saaChannelRedDot);
+
+//    Model redDot("base_models/red_dot.obj");
+//    Explosion explosion(scene, redDot, 100);
+
+    std::vector<std::string> faces {
+        "models/skybox/right.jpg",
+        "models/skybox/left.jpg",
+        "models/skybox/top.jpg",
+        "models/skybox/bottom.jpg",
+        "models/skybox/front.jpg",
+        "models/skybox/back.jpg"
+    };
+//    scene.setSkyBox(faces);
     // END OF INITIALIZATION OF DATA
 
     scene.getClock()->start();
@@ -248,7 +263,9 @@ int main() {
 //        bSpline.draw(uniTrans);
 //        scene.getRenderEngine().render_DEPRECATED(scene.getClock()->getFrameIndex(), mouse3D.picked);
         scene.getRenderEngine().render(scene, mouse3D.picked);
-//        plant.draw(scene.getRenderEngine());
+
+//        explosion.draw(scene);
+
         double currMousePosX, currMousePosY;
         glfwGetCursorPos(window, &currMousePosX, &currMousePosY);
 

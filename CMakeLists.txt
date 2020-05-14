@@ -11,12 +11,14 @@ find_package(assimp REQUIRED)
 
 include_directories(${GLEW_INCLUDE_DIRS} ${ASSIMP_INCLUDE_DIRS})
 
-configure_file(shaders/simple_shader.vert shaders/simple_shader.vert COPYONLY)
-configure_file(shaders/simple_shader.frag shaders/simple_shader.frag COPYONLY)
+configure_file(shaders/deprecated/simple_shader.vert shaders/deprecated/simple_shader.vert COPYONLY)
+configure_file(shaders/deprecated/simple_shader.frag shaders/deprecated/simple_shader.frag COPYONLY)
 #configure_file(shaders/color_picking_shader.vert shaders/color_picking_shader.vert COPYONLY)
 #configure_file(shaders/color_picking_shader.frag shaders/color_picking_shader.frag COPYONLY)
-configure_file(shaders/new_shader.vert shaders/new_shader.vert COPYONLY)
-configure_file(shaders/new_shader.frag shaders/new_shader.frag COPYONLY)
+configure_file(shaders/standard.vert shaders/standard.vert COPYONLY)
+configure_file(shaders/standard.frag shaders/standard.frag COPYONLY)
+configure_file(shaders/skybox.vert shaders/skybox.vert COPYONLY)
+configure_file(shaders/skybox.frag shaders/skybox.frag COPYONLY)
 file(COPY models DESTINATION .)
 file(COPY base_models DESTINATION .)
 
@@ -33,7 +35,7 @@ add_executable(project main.cpp Logger.h Camera.cpp Camera.h old_code/Lights_DEP
         LinearPath.h Clock.cpp Clock.h gui/TimelineWindow.cpp gui/TimelineWindow.h gui/WindowRenderEngine.cpp
         gui/WindowRenderEngine.h Channel.cpp Channel.h gui/EditSAAChannelWindow.cpp gui/EditSAAChannelWindow.h
         Keyframe.cpp Keyframe.h Orientation.cpp Orientation.h
-        Mesh.cpp Mesh.h Model.cpp Model.h stb_image.h FFD.cpp FFD.h Picked.h LinInterp.cpp Shader.cpp Shader.h StandardShader.cpp StandardShader.h Mouse3D.cpp Mouse3D.h Scene.cpp Scene.h TransformStack.cpp TransformStack.h Picked.cpp gui/EditJointWindow.cpp gui/EditJointWindow.h LSystem.cpp LSystem.h Plant.cpp Plant.h Branch.cpp Branch.h)
+        Mesh.cpp Mesh.h Model.cpp Model.h stb_image.h FFD.cpp FFD.h Picked.h LinInterp.cpp Shader.cpp Shader.h StandardShader.cpp StandardShader.h Mouse3D.cpp Mouse3D.h Scene.cpp Scene.h TransformStack.cpp TransformStack.h Picked.cpp gui/EditJointWindow.cpp gui/EditJointWindow.h LSystem.cpp LSystem.h Plant.cpp Plant.h Branch.cpp Branch.h ParticleSystem.cpp ParticleSystem.h Particle.cpp Particle.h Explosion.cpp Explosion.h old_code/SkyBox_DEPRECATED.cpp old_code/SkyBox_DEPRECATED.h SkyBox.cpp SkyBox.h)
 
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")
