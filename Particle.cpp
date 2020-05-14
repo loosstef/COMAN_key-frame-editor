@@ -17,7 +17,7 @@ Particle::Particle(glm::mat4 baseTransMat, int firstFrame, int lastFrame, glm::v
 }
 
 void Particle::draw(int frameIndex, Model &model, Scene &scene) {
-    Shader *shader = scene.getRenderEngine().shader();
+    Shader *shader = scene.renderEngine().shader();
     if(shader->getName().compare("standard")!=0) {
         std::cerr << "Wrong shader set when trying to render particle" << std::endl;
     }

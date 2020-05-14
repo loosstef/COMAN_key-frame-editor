@@ -5,22 +5,37 @@
 #include "Scene.h"
 #include "SkyBox.h"
 
-void Scene::addSaaChannel(StepAheadAnimationChannel *saaChannel) {
-    saaChannels.push_back(saaChannel);
-//    renderEngine->addSaaChannel(saaChannel);
+void Scene::init(RenderEngine *re, Clock *clock) {
+    mRenderEngine = re;
+    mClock = clock;
 }
 
-void Scene::addSkeleton(CSkeleton *skeleton) {
-    skeletons.push_back(skeleton);
+Scene::~Scene() {
+    delete mRenderEngine;
+    delete mClock;
+    delete mSkyBox;
+}
+
+void Scene::add(StepAheadAnimationChannel *saaChannel) {
+    mSaaChannels.push_back(saaChannel);
+//    renderEngine->add(saaChannel);
+}
+
+void Scene::add(CSkeleton *skeleton) {
+    mSkeletons.push_back(skeleton);
 }
 
 void Scene::add(Plant *plant) {
-    plants.push_back(plant);
+    mPlants.push_back(plant);
+}
+
+void Scene::add(Camera *camera) {
+    mCameras.push_back(camera);
 }
 
 void Scene::setSkyBox(std::vector<std::string> &faces) {
-    if(skyBox != nullptr) {
-        delete skyBox;
+    if(mSkyBox != nullptr) {
+        delete mSkyBox;
     }
-    skyBox = new SkyBox(faces);
+    mSkyBox = new SkyBox(faces);
 }

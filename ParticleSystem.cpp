@@ -15,7 +15,7 @@ ParticleSystem::ParticleSystem(Scene &scene, Model &model)
 
 void ParticleSystem::draw(Scene &scene) {
     // generate more frames if not generated yet
-    int currFrameIndex = scene.getClock()->getFrameIndex();
+    int currFrameIndex = scene.clock()->getFrameIndex();
     while(currFrameIndex > mGenTill) {
         generate(mGenTill+1, mGenTill+100);
         mGenTill += 100;
@@ -24,6 +24,6 @@ void ParticleSystem::draw(Scene &scene) {
     for(auto *particle : mParticles) {
         glm::mat4 transMat(1.0f);
         transMat = glm::scale(transMat, glm::vec3(0.1f));
-        particle->draw(scene.getClock()->getFrameIndex(), mModel, scene);
+        particle->draw(scene.clock()->getFrameIndex(), mModel, scene);
     }
 }

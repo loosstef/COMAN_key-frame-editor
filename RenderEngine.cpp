@@ -57,27 +57,27 @@ void RenderEngine::render(Scene &scene, Picked picked) {
     glm::mat4 projMat = mCurrCamera->getProjectionMatrix();
     mStandardShader.setMatrix(PROJECTION_MATRIX, projMat);
     // current variables
-    int frameIndex = scene.getClock()->getFrameIndex();
+    int frameIndex = scene.clock()->getFrameIndex();
     // render step-ahead animation channels
-    std::vector<StepAheadAnimationChannel*> saaChannels = scene.getSaaChannels();
+    std::vector<StepAheadAnimationChannel*> saaChannels = scene.saaChannels();
     for(int i = 0; i < saaChannels.size(); ++i) {
         renderSaaChannel(frameIndex, *saaChannels[i], picked);
     }
     // render skeletons
-    std::vector<CSkeleton*> &skeletons = scene.getSkeletons();
+    std::vector<CSkeleton*> &skeletons = scene.skeletons();
     for(auto skeleton : skeletons) {
         skeleton->setTime(frameIndex);
         skeleton->render(&mStandardShader, picked);
     }
     // render plants
-    std::vector<Plant*> &plants = scene.getPlants();
+    std::vector<Plant*> &plants = scene.plants();
     for(auto plant : plants) {
         plant->draw(*this, mStandardShader);
     }
     // render skybox
-    if(scene.getSkyBox() != nullptr) {
+    if(scene.skyBox() != nullptr) {
         useShader(mSkyBoxShader);
-        scene.getSkyBox()->draw(scene);
+        scene.skyBox()->draw(scene);
     }
 
 }
@@ -96,18 +96,18 @@ Picked RenderEngine::pick(Scene &scene, double mouseX, double mouseY, GLFWwindow
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // get variables
-    int frameIndex = scene.getClock()->getFrameIndex();
+    int frameIndex = scene.clock()->getFrameIndex();
     // render objects based on id
     // render saaChannels
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    std::vector<StepAheadAnimationChannel*> &saaChannels = scene.getSaaChannels();
+    std::vector<StepAheadAnimationChannel*> &saaChannels = scene.saaChannels();
     int obj_id = 1;
     for(auto *saaChannel : saaChannels) {
         mStandardShader.setId(obj_id);
         renderSaaChannel(frameIndex, *saaChannel, {});
         ++obj_id;
     }
-    std::vector<CSkeleton*> skeletons = scene.getSkeletons();
+    std::vector<CSkeleton*> skeletons = scene.skeletons();
     for(auto *skeleton : skeletons) {
         mStandardShader.setId(obj_id);
         skeleton->render(&mStandardShader, Picked::nothing());
@@ -170,7 +170,7 @@ Picked RenderEngine::pick(Scene &scene, double mouseX, double mouseY, GLFWwindow
 }
 
 void RenderEngine::renderForPicking(StepAheadAnimationChannel *saaChannel, Scene &scene) {
-    int frameIndex = scene.getClock()->getFrameIndex();
+    int frameIndex = scene.clock()->getFrameIndex();
     FFD *ffd = saaChannel->getFFD(frameIndex);
     glm::mat4 transformationMatrix = saaChannel->getTransMat();
     GLint uniLocTransMat = mStandardShader.getUniLoc("modelMatrix");

@@ -15,25 +15,33 @@ class SkyBox;
 
 class Scene {
 public:
-    RenderEngine& getRenderEngine() { return *renderEngine; }
-    void setRenderEngine(RenderEngine *re) { renderEngine = re; }
-    Clock* getClock() { return clock; }
-    void setClock(Clock *c) { clock = c; }
-    std::vector<StepAheadAnimationChannel*>& getSaaChannels() { return saaChannels; }
-    void addSaaChannel(StepAheadAnimationChannel *saaChannel);
-    std::vector<CSkeleton*>& getSkeletons() { return skeletons; }
-    void addSkeleton(CSkeleton *skeleton);
-    void add(Plant *plant);
-    std::vector<Plant*>& getPlants() { return plants; }
+    // destructor
+    ~Scene();
+    // init function
+    void init(RenderEngine *re = new RenderEngine(), Clock *clock = new Clock());
+    // setters
     void setSkyBox(std::vector<std::string> &faces);
-    SkyBox *getSkyBox() { return skyBox; }
+    // getters
+    RenderEngine& renderEngine() { return *mRenderEngine; }
+    Clock* clock() { return mClock; }
+    std::vector<StepAheadAnimationChannel*>& saaChannels() { return mSaaChannels; }
+    std::vector<CSkeleton*>& skeletons() { return mSkeletons; }
+    std::vector<Plant*>& plants() { return mPlants; }
+    SkyBox *skyBox() { return mSkyBox; }
+    std::vector<Camera*>& cameras() { return mCameras; }
+    // add scene objects
+    void add(StepAheadAnimationChannel *saaChannel);
+    void add(CSkeleton *skeleton);
+    void add(Plant *plant);
+    void add(Camera *camera);
 private:
-    RenderEngine *renderEngine = nullptr;
-    Clock *clock;
-    std::vector<StepAheadAnimationChannel*> saaChannels;
-    std::vector<CSkeleton*> skeletons;
-    std::vector<Plant*> plants;
-    SkyBox *skyBox = nullptr;
+    RenderEngine *mRenderEngine = nullptr;
+    Clock *mClock = nullptr;
+    std::vector<StepAheadAnimationChannel*> mSaaChannels;
+    std::vector<CSkeleton*> mSkeletons;
+    std::vector<Plant*> mPlants;
+    SkyBox *mSkyBox = nullptr;
+    std::vector<Camera*> mCameras;
 };
 
 

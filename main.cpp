@@ -28,19 +28,11 @@
 #include "Explosion.h"
 #include "SkyBox.h"
 
-const float ROT_SPEED = 0.15f;
+//const float ROT_SPEED = 0.15f;
 const float SCROLL_SENSITIVITY = 0.30f;
 const int cursorMode = GLFW_CURSOR_NORMAL;
 const int STANDARD_WINDOW_WIDTH = 1940;
 const int STANDARD_WINDOW_HEIGHT = 1080;
-
-//char VERTEX_SHADER_FILENAME[] = "shaders/simple_shader.vert";
-//char FRAGMENT_SHADER_FILENAME[] = "shaders/simple_shader.frag";
-
-// keep track of window size for things like the viewport and the mouse cursor
-//int g_gl_width = 1940;
-//int g_gl_height = 1080;
-
 
 // global variables
 Scene scene;
@@ -50,15 +42,13 @@ WindowRenderEngine *windows;
 
 // callback functions
 void glfw_window_size_callback(GLFWwindow* window, int width, int height) {
-//    g_gl_width = width;
-//    g_gl_height = height;
-    scene.getRenderEngine().onWindowSizeChange(width, height);
+    scene.renderEngine().onWindowSizeChange(width, height);
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     if(!ImGui::GetIO().WantCaptureMouse) {
-        scene.getRenderEngine().editorCamera().relativeMove(glm::vec3(0.0f, yoffset * SCROLL_SENSITIVITY, 0.0f));
+        scene.renderEngine().editorCamera().relativeMove(glm::vec3(0.0f, yoffset * SCROLL_SENSITIVITY, 0.0f));
     }
 }
 
@@ -78,10 +68,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
     // pause or play scene
     if(key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
-        if(scene.getClock()->isRunning())
-            scene.getClock()->pause();
+        if(scene.clock()->isRunning())
+            scene.clock()->pause();
         else
-            scene.getClock()->start();
+            scene.clock()->start();
     }
 
     // jump back in time 1 or 10 frames
@@ -89,7 +79,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         int frameJumpSize = 1;
         if(GLFW_PRESS == glfwGetKey(window, GLFW_KEY_LEFT_CONTROL))
             frameJumpSize = 10;
-        scene.getClock()->setFrameIndex(scene.getClock()->getFrameIndex()-frameJumpSize);
+        scene.clock()->setFrameIndex(scene.clock()->getFrameIndex() - frameJumpSize);
     }
 
     // jump forward in time 1 or 10 frames
@@ -97,7 +87,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         int frameJumpSize = 1;
         if(GLFW_PRESS == glfwGetKey(window, GLFW_KEY_LEFT_CONTROL))
             frameJumpSize = 10;
-        scene.getClock()->setFrameIndex(scene.getClock()->getFrameIndex()+frameJumpSize);
+        scene.clock()->setFrameIndex(scene.clock()->getFrameIndex() + frameJumpSize);
     }
 }
 
@@ -178,10 +168,9 @@ int main() {
     glDepthFunc(GL_LESS); // depth-testing interprets a smaller valueParametric as "closer"
 
     // init global variables
-    scene.setRenderEngine(new RenderEngine());
-    scene.setClock(new Clock());
-    windows = new WindowRenderEngine(scene.getClock());
-    InputHandler inputHandler(window, &scene.getRenderEngine());
+    scene.init();
+    windows = new WindowRenderEngine(scene.clock());
+    InputHandler inputHandler(window, &scene.renderEngine());
 
     // imgui initialization
     IMGUI_CHECKVERSION();
@@ -193,7 +182,7 @@ int main() {
     // INITIALIZING TEST DATA
     StepAheadAnimationChannel saaChannel;
     saaChannel.name = std::string("green_cube_channel");
-    scene.addSaaChannel(&saaChannel);
+    scene.add(&saaChannel);
     Model spongebob_model("models/spongebob.obj");
     saaChannel.setObject(&spongebob_model);
     LinearPath realPath;
@@ -209,7 +198,7 @@ int main() {
     saaChannel.addFFD(400, &ffd_sb_400);
 
 //    CSkeleton skeleton(std::string("models/skeleton.skl"));
-//    scene.addSkeleton(&skeleton);
+//    scene.add(&skeleton);
 
 //    LSystem lSystem(3);
 //    lSystem.addRule("F->F[+F]F[-RF]F:1.0");
@@ -220,7 +209,7 @@ int main() {
 //    StepAheadAnimationChannel saaChannelRedDot;
 //    Model redDot("base_models/red_dot.obj");
 //    saaChannelRedDot.setObject(&redDot);
-//    scene.addSaaChannel(&saaChannelRedDot);
+//    scene.add(&saaChannelRedDot);
 
 //    Model redDot("base_models/red_dot.obj");
 //    Explosion explosion(scene, redDot, 100);
@@ -236,7 +225,7 @@ int main() {
 //    scene.setSkyBox(faces);
     // END OF INITIALIZATION OF DATA
 
-    scene.getClock()->start();
+    scene.clock()->start();
 
     while(!glfwWindowShouldClose(window)) {
         _update_fps_counter(window);
@@ -262,7 +251,7 @@ int main() {
 //        cube.draw(uniTrans, model2);
 //        bSpline.draw(uniTrans);
 //        scene.getRenderEngine().render_DEPRECATED(scene.getClock()->getFrameIndex(), mouse3D.picked);
-        scene.getRenderEngine().render(scene, mouse3D.picked);
+        scene.renderEngine().render(scene, mouse3D.picked);
 
 //        explosion.draw(scene);
 
