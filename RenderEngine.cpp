@@ -49,8 +49,6 @@ RenderEngine::RenderEngine() : mTransformStack(this),
 
 void RenderEngine::render(Scene &scene, Picked picked) {
     // clear buffers
-    glClearColor(0.6f, 0.6f, 0.8f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     useShader(mStandardShader);
     // calculate & set camera matrix
     glm::mat4 viewMat = mCurrCamera->getViewMatrix();

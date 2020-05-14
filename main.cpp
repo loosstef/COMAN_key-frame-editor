@@ -251,8 +251,8 @@ int main() {
         glViewport(0, 0, windowWidth, windowHeight);
 
         // wipe the drawing surface clear
-//        glClearColor(0.6f, 0.6f, 0.8f, 1.0f);
-//        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClearColor(0.6f, 0.6f, 0.8f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // update and load view matrix
 //        view = nav.getViewMatrix();
 //        glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
