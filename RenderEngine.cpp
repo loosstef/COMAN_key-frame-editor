@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <vector>
+#include "assert.h"
 #include "RenderEngine.h"
 #include "Camera.h"
 #include "StepAheadAnimationChannel.h"
@@ -15,6 +16,7 @@
 #include "CSkeleton.h"
 #include "SkyBox.h"
 
+
 //char VERTEX_SHADER_FILENAME[] = "shaders/standard.vert";
 //char FRAGMENT_SHADER_FILENAME[] = "shaders/standard.frag";
 //char PICKING_VERTEX_SHADER_FILENAME[] = "shaders/color_picking_shader.vert";
@@ -24,42 +26,34 @@
 RenderEngine::RenderEngine() : mTransformStack(this),
     mSkyBoxShader("shaders/skybox.vert", "shaders/skybox.frag", "skybox")
 {
-    // load standard shaders
-//    GLuint vs = InputHandler::loadAndCompileShader(VERTEX_SHADER_FILENAME, GL_VERTEX_SHADER);
-//    GLuint fs = InputHandler::loadAndCompileShader(FRAGMENT_SHADER_FILENAME, GL_FRAGMENT_SHADER);
-//    mStandardShaderProgram = glCreateProgram();
-//    glAttachShader(mStandardShaderProgram, fs);
-//    glAttachShader(mStandardShaderProgram, vs);
-//    glLinkProgram(mStandardShaderProgram);
-//    glUseProgram(mStandardShaderProgram);
-//    mUniLocProjMat = mStandardShader.getUniLoc("projectionMatrix");
-//    mUniLocTransMat = mStandardShader.getUniLoc("modelMatrix");
-//    mUniLocViewMat = mStandardShader.getUniLoc("viewMatrix");
-//    mUniLocObjId = mStandardShader.getUniLoc("id");
-//    mUniLocTexture = mStandardShader.getUniLoc("texture_diffuse1");
+    // set standard values of member variables
+    mWindowWidth = 1940;
+    mWindowHeight = 1080;
+    // set id of standard shader to 0
     mStandardShader.setId(0);
-//    GLint standardId = 0;
-//    glUniform1i(mUniLocObjId, standardId);
     // create new camera
     mEditorCamera = new Camera(mWindowWidth, mWindowHeight);
     mCurrCamera = mEditorCamera;
     // generate and load projection matrix
-    mProjectionMatrix = glm::perspective(
-            glm::radians(CAMERA_FOV),
-            ((float)mWindowWidth) / ((float)mWindowHeight),
-            CAMERA_NEAR_CLIPPING,
-            CAMERA_FAR_CLIPPING
-    );
-    mStandardShader.setMatrix(PROJECTION_MATRIX, mProjectionMatrix);
-//    glUniformMatrix4fv(mUniLocProjMat, 1, GL_FALSE, glm::value_ptr(mProjectionMatrix));
+//    mProjectionMatrix = glm::perspective(
+//            glm::radians(CAMERA_FOV),
+//            ((float)mWindowWidth) / ((float)mWindowHeight),
+//            CAMERA_NEAR_CLIPPING,
+//            CAMERA_FAR_CLIPPING
+//    );
+    glm::mat4 projMat = mCurrCamera->getProjectionMatrix();
+    mStandardShader.setMatrix(PROJECTION_MATRIX, projMat);
     useShader(mStandardShader);
 }
 
 
 void RenderEngine::render(Scene &scene, Picked picked) {
+    // clear buffers
+    glClearColor(0.6f, 0.6f, 0.8f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     useShader(mStandardShader);
     // calculate & set camera matrix
-    glm::mat4 viewMat = mEditorCamera->getViewMatrix();
+    glm::mat4 viewMat = mCurrCamera->getViewMatrix();
     mStandardShader.setMatrix(VIEW_MATRIX, viewMat);
     // set projection matrix
     glm::mat4 projMat = mCurrCamera->getProjectionMatrix();
@@ -71,15 +65,18 @@ void RenderEngine::render(Scene &scene, Picked picked) {
     for(int i = 0; i < saaChannels.size(); ++i) {
         renderSaaChannel(frameIndex, *saaChannels[i], picked);
     }
+    // render skeletons
     std::vector<CSkeleton*> &skeletons = scene.getSkeletons();
     for(auto skeleton : skeletons) {
         skeleton->setTime(frameIndex);
         skeleton->render(&mStandardShader, picked);
     }
+    // render plants
     std::vector<Plant*> &plants = scene.getPlants();
     for(auto plant : plants) {
         plant->draw(*this, mStandardShader);
     }
+    // render skybox
     if(scene.getSkyBox() != nullptr) {
         useShader(mSkyBoxShader);
         scene.getSkyBox()->draw(scene);
@@ -88,13 +85,18 @@ void RenderEngine::render(Scene &scene, Picked picked) {
 }
 
 Picked RenderEngine::pick(Scene &scene, double mouseX, double mouseY, GLFWwindow *window) {
+    /*// use standard shader
+    useShader(mStandardShader);
+    // calculate & set camera matrix
+    glm::mat4 viewMat = mCurrCamera->getViewMatrix();
+    mStandardShader.setMatrix(VIEW_MATRIX, viewMat);
+    // set projection matrix
+    glm::mat4 projMat = mCurrCamera->getProjectionMatrix();
+    mStandardShader.setMatrix(PROJECTION_MATRIX, projMat);
     // prepare render variables & settings for picking
     glDisable(GL_MULTISAMPLE);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    // calculate & set camera matrix
-    glm::mat4 viewMat = mEditorCamera->getViewMatrix();
-    mStandardShader.setMatrix(VIEW_MATRIX, viewMat);
     // get variables
     int frameIndex = scene.getClock()->getFrameIndex();
     // render objects based on id
@@ -113,7 +115,6 @@ Picked RenderEngine::pick(Scene &scene, double mouseX, double mouseY, GLFWwindow
         skeleton->render(&mStandardShader, Picked::nothing());
         ++obj_id;
     }
-    // TODO render skeletons
     // read picked data and calc id
     int id = derivePickedId(mouseX, mouseY);
     // reset render options and variables
@@ -167,7 +168,8 @@ Picked RenderEngine::pick(Scene &scene, double mouseX, double mouseY, GLFWwindow
         }
         CJoint *pickedJoint = pickedSkeleton->getJoint(id_2-1);
         return Picked::makeSkeleton(pickedSkeleton, pickedJoint);
-    }
+    }*/
+    return Picked::nothing();
 }
 
 void RenderEngine::renderForPicking(StepAheadAnimationChannel *saaChannel, Scene &scene) {
@@ -181,51 +183,44 @@ void RenderEngine::renderForPicking(StepAheadAnimationChannel *saaChannel, Scene
 }
 
 
-void RenderEngine::addSaaChannel(StepAheadAnimationChannel *saaChannel) {
-    mStepAheadAnimationChannels_DEPRECATED.push_back(saaChannel);
-}
-
-
-Camera &RenderEngine::getEditorCamera() {
+Camera &RenderEngine::editorCamera() {
     return *mEditorCamera;
 }
 
 void RenderEngine::onWindowSizeChange(uint width, uint height) {
     mWindowWidth = width;
     mWindowHeight = height;
-
-    mProjectionMatrix = glm::perspective(
-            glm::radians(45.0f),
-            ((float)mWindowWidth) / ((float)mWindowHeight),
-            CAMERA_NEAR_CLIPPING,
-            CAMERA_FAR_CLIPPING
-    );
-    mStandardShader.setMatrix(PROJECTION_MATRIX, mProjectionMatrix);
+    mEditorCamera->setWindowSize(width, height);
+    // TODO: resize all extra cameras
+//    mVirtualCamera->setWindowSize(width, height);
+//    mProjectionMatrix = glm::perspective(
+//            glm::radians(45.0f),
+//            ((float)mWindowWidth) / ((float)mWindowHeight),
+//            CAMERA_NEAR_CLIPPING,
+//            CAMERA_FAR_CLIPPING
+//    );
+//    mStandardShader.setMatrix(PROJECTION_MATRIX, mProjectionMatrix);
 //    glUniformMatrix4fv(mUniLocProjMat, 1, GL_FALSE, glm::value_ptr(mProjectionMatrix));
 }
 
 
 void RenderEngine::renderSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel, Picked picked) {
-//    Path *path = saaChannel.getPath();
+    // retrieve model and ffd
     Model *model = saaChannel.getModel();
     FFD *ffd = saaChannel.getFFD(frameIndex);
+    // check if saa-channel contains model
     if(model == nullptr) {
+        std::cerr << "Error: tried to render step-ahead animation channel but didn't contain a model. Skipped render." << std::endl;
         return;
     }
-    // determine transformation matrix
-//    glm::mat4 transformationMatrix(1.0f);
-//    if(path != nullptr) {
-//        Orientation orientation = path->orientation(frameIndex);
-//        glm::mat4 rotMat = glm::toMat4(orientation.rotation);
-//        glm::mat4 transMat = glm::translate(glm::mat4(1.0f), orientation.position);
-//        transformationMatrix = glm::scale(transMat*rotMat, orientation.scale);
-//    }
-//    glm::mat4 transformationMatrix = calcTransMatOfSaaChannel(frameIndex, saaChannel);
+    // prepare channel based on current frame index
     saaChannel.prepare(frameIndex);
+    // retrieve and set transformation matrix
     glm::mat4 transformationMatrix = saaChannel.getTransMat();
     mStandardShader.setMatrix(TRANSFORMATION_MATRIX, transformationMatrix);
-//    glUniformMatrix4fv(mUniLocTransMat, 1, GL_FALSE, glm::value_ptr(transformationMatrix));
-    model->Draw(frameIndex, /*mUniLocTexture*/mStandardShader.getUniLocTexture());
+    // draw model
+    model->draw(frameIndex, mStandardShader.getUniLocTexture());
+    // draw ffd if exists
     if(ffd != nullptr) {
         int ffdControlPointIndex = -1;
         if(picked.ffd != nullptr) {
@@ -248,6 +243,20 @@ int RenderEngine::derivePickedId(double mouseX, double mouseY) {
 void RenderEngine::useShader(Shader &shader) {
     mCurrShader = &shader;
     shader.use();
+}
+
+void RenderEngine::useCamera(Camera &camera) {
+    mCurrCamera = &camera;
+}
+
+Camera &RenderEngine::camera() {
+    assert(mCurrCamera != nullptr);
+    return *mCurrCamera;
+}
+
+Shader *RenderEngine::shader() {
+    assert(mCurrShader != nullptr);
+    return mCurrShader;
 }
 
 //glm::mat4 RenderEngine::calcTransMatOfSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel) {

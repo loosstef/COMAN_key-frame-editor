@@ -83,7 +83,7 @@ void InputHandler::handleMouse() {
         double diffY = currMousePosY - mLastMousePosY;
         double rotX = diffX*MOUSE_SENSITIVITY_ROTATION;
         double rotY = diffY*MOUSE_SENSITIVITY_ROTATION;
-        mRenderEngine->getEditorCamera().rot(rotX, rotY);
+        mRenderEngine->editorCamera().rot(rotX, rotY);
     }
 
     // handle middle mouse button (for movement)
@@ -93,7 +93,7 @@ void InputHandler::handleMouse() {
         double diffY = currMousePosY - mLastMousePosY;
         double moveSideways = diffX * MOUSE_SENSITIVITY_MOVEMENT;
         double moveForward = diffY * MOUSE_SENSITIVITY_MOVEMENT;
-        mRenderEngine->getEditorCamera().relativeMove(glm::vec3(-moveSideways, 0.0f, moveForward));
+        mRenderEngine->editorCamera().relativeMove(glm::vec3(-moveSideways, 0.0f, moveForward));
     }
 
     mLastMousePosX = currMousePosX;

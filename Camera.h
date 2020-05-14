@@ -16,6 +16,7 @@ public:
     void rot(float horAngle, float verAngle);
     void move(glm::vec3 movement);
     void relativeMove(glm::vec3 movement);
+    void setWindowSize(int width, int height);
     // getters
     glm::vec3 getPos() { return mPos; }
     glm::mat4 getProjectionMatrix() { return mProjectionMatrix; }
@@ -28,6 +29,12 @@ private:
     void setRotXSafe(float rotX);
     void setRotYSafe(float rotY);
     glm::mat4 genProjectionMatrix(float fov, int windowWidth, int windowHeight, float nearClipping, float farClipping);
+    // camera settings
+    float mFOV;
+    int mWindowWidth;
+    int mWindowHeight;
+    float mNearClipping;
+    float mfarClipping;
 
     glm::vec3 mPos;
     float mRotX, mRotY;

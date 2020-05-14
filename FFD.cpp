@@ -54,9 +54,9 @@ void FFD::renderControlPoints(glm::mat4 transMat, GLint uniLocTransMat, GLint un
                 transformationMatrix = glm::scale(transformationMatrix, glm::vec3(camDist*CONTROL_POINT_SIZE));
                 glUniformMatrix4fv(uniLocTransMat, 1, GL_FALSE, glm::value_ptr(transformationMatrix));
                 if(dotID == pickedDot) {
-                    orangeDot.Draw(0, uniLocTexture);
+                    orangeDot.draw(0, uniLocTexture);
                 } else {
-                    redDot.Draw(0, uniLocTexture);
+                    redDot.draw(0, uniLocTexture);
                 }
                 ++dotID;
             }
@@ -80,7 +80,7 @@ void FFD::pickControlPoints(glm::mat4 transMat, GLint uniLocTransMat, GLint uniL
                 transformationMatrix = glm::scale(transformationMatrix, glm::vec3(camDist*CONTROL_POINT_SIZE));
                 glUniformMatrix4fv(uniLocTransMat, 1, GL_FALSE, glm::value_ptr(transformationMatrix));
                 glUniform1i(uniLocObjId, id);
-                redDot.Draw(0, uniLocTexture);
+                redDot.draw(0, uniLocTexture);
                 ++id;
             }
         }

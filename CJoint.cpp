@@ -88,7 +88,7 @@ void CJoint::renderAll_DEPRECTATED(StandardShader *standardShader) {
     glm::mat4 scaleDown = glm::scale(glm::mat4(1.0f), glm::vec3(0.3f));
     glm::mat4 transMat = mGlobalTransMat * mLocalTransMat * scaleDown;
     standardShader->setMatrix(TRANSFORMATION_MATRIX, transMat);
-    mModel.Draw(0, standardShader->getUniLocTexture());
+    mModel.draw(0, standardShader->getUniLocTexture());
     for(int i = 0; i < mMaxChildrenCount; ++i) {
         CJoint *child = mChildLinks[i]->child();
         if(child != nullptr) {

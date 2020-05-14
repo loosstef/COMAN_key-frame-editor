@@ -25,37 +25,46 @@ class Scene;
 
 class RenderEngine {
 public:
+    // constructor
     RenderEngine();
+    // render
     void render(Scene &scene, Picked picked);
     Picked pick(Scene &scene, double mouseX, double mouseY, GLFWwindow *window);
-    void addSaaChannel(StepAheadAnimationChannel *saaChannel);
-    Camera& getEditorCamera();
-    void onWindowSizeChange(uint width, uint height);
-    uint getWindowHeight() { return mWindowHeight; }
-    uint getWindowWidth() { return mWindowWidth; }
-    glm::mat4 getProjectionMatrix() { return mProjectionMatrix; }
-    StandardShader *getStandardShader() { return &mStandardShader; }
-    Shader* getShader() { return mCurrShader; }
+    // getters
+    Camera& editorCamera();
+    Camera& camera();
+    Shader* shader();
+    uint getWindowHeight() const { return mWindowHeight; }
+    uint getWindowWidth() const { return mWindowWidth; }
+//    glm::mat4 getProjectionMatrix() { return mProjectionMatrix; }
     TransformStack& transformStack() { return mTransformStack; }
-    void useShader(Shader &shader);
+    // events
+    void onWindowSizeChange(uint width, uint height);
+    // DEPRECATED
+//    StandardShader *getStandardShader_DEPRECATED() { return &mStandardShader; }
 private:
+    // set state
+    void useShader(Shader &shader);
+    void useCamera(Camera &camera);
+    // render
     void renderSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel, Picked picked);
     void renderForPicking(StepAheadAnimationChannel *saaChannel, Scene &scene);
     int derivePickedId(double mouseX, double mouseY);
-    uint mWindowWidth = 1940;
-    uint mWindowHeight = 1080;
-    glm::mat4 mProjectionMatrix;
+    // member variables
+    uint mWindowWidth;
+    uint mWindowHeight;
+//    glm::mat4 mProjectionMatrix;
     TransformStack mTransformStack;
     // cameras
     Camera *mCurrCamera;
-    Camera* mEditorCamera;
-    Camera* mVirtualCamera;
+    Camera *mEditorCamera;
+    Camera *mVirtualCamera;
     // shaders
     Shader *mCurrShader;
     StandardShader mStandardShader;
     Shader mSkyBoxShader;
     // deprectated variables
-    std::vector<StepAheadAnimationChannel*> mStepAheadAnimationChannels_DEPRECATED;
+//    std::vector<StepAheadAnimationChannel*> mStepAheadAnimationChannels_DEPRECATED;
 };
 
 

@@ -102,10 +102,10 @@ void CSkeleton::renderJointAndChildren(StandardShader *standardShader, CJoint *j
     transMat = glm::scale(transMat, glm::vec3(0.005f));
     standardShader->setMatrix(TRANSFORMATION_MATRIX, transMat);
     if(joint->getId() != pickedIndex) {
-        mModelRedDot.Draw(0, standardShader->getUniLocTexture());
+        mModelRedDot.draw(0, standardShader->getUniLocTexture());
     }
     else {
-        mModelOrangeDot.Draw(0, standardShader->getUniLocTexture());
+        mModelOrangeDot.draw(0, standardShader->getUniLocTexture());
     }
     for(int i = 0; i < joint->childCount(); ++i) {
         CLink *childLink = joint->childLink(i);
@@ -125,7 +125,7 @@ void CSkeleton::renderJoints(StandardShader *standardShader, CJoint *joint) {
     standardShader->setMatrix(TRANSFORMATION_MATRIX, transMat);
 //    standardShader->setId(jointId);
     standardShader->setId(joint->getId()+1);
-    mModelRedDot.Draw(0, standardShader->getUniLocTexture());
+    mModelRedDot.draw(0, standardShader->getUniLocTexture());
     for(int i = 0; i < joint->childCount(); ++i) {
         CLink *childLink = joint->childLink(i);
         if(childLink != nullptr) {

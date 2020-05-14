@@ -23,7 +23,7 @@ TransformStack::TransformStack(RenderEngine *renderEngine)
 void TransformStack::push(glm::mat4 transMat) {
     glm::mat4 newTopMat = mStack.top() * transMat;
     mStack.push(newTopMat);
-    Shader *shader = mRenderEngine->getShader();
+    Shader *shader = mRenderEngine->shader();
     GLint uniLocTransMat = shader->getUniLoc(TRANSFORMATION_MATRIX_VAR_NAME);
     glUniformMatrix4fv(uniLocTransMat, 1, GL_FALSE, glm::value_ptr(newTopMat));
 }

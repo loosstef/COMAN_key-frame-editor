@@ -9,19 +9,27 @@
 #include <glm/gtx/string_cast.hpp>
 
 
-const float MAX_VERTICAL_CAM_ROT = 90;
-const float MAX_HORIZONTAL_CAM_ROT = 180;
+const float MAX_VERTICAL_CAM_ROT = 89.5;
+const float MAX_HORIZONTAL_CAM_ROT = 179.5;
 
 
 /**
  * Constructor
  */
 Camera::Camera(int windowWidth, int windowHeight) {
+    // set standard values
     mPos = glm::vec3(1.2f, 1.2f, 1.2f);
+    mFOV = 45.0f;
+    mWindowWidth = windowWidth;
+    mWindowHeight = windowHeight;
+    mNearClipping = 0.01f;
+    mfarClipping = 40.0f;
+
     setRotXSafe(-45.0f);
     setRotYSafe(45.0f);
     // set projection matrix
-    mProjectionMatrix = genProjectionMatrix(45.0f, windowWidth, windowHeight, 0.01f, 40.0f);
+    mProjectionMatrix = genProjectionMatrix(mFOV, windowWidth, windowHeight, mNearClipping, mfarClipping);
+    std::cout << glm::to_string(mProjectionMatrix)  << std::endl;
 }
 
 
@@ -114,4 +122,10 @@ glm::mat4 Camera::genProjectionMatrix(float fov, int windowWidth, int windowHeig
             nearClipping,
             farClipping
     );
+}
+
+void Camera::setWindowSize(int width, int height) {
+    mWindowWidth = width;
+    mWindowHeight = height;
+    mProjectionMatrix = genProjectionMatrix(mFOV, width, height, mNearClipping, mfarClipping);
 }

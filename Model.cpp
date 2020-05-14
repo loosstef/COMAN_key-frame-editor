@@ -14,7 +14,7 @@ Model::Model(char *path) {
     loadModel(path);
 }
 
-void Model::Draw(int frameIndex, GLint uniTexture) {
+void Model::draw(int frameIndex, GLint uniTexture) {
     for(unsigned int i = 0; i < meshes.size(); i++)
         meshes[i].Draw(frameIndex, uniTexture);
 //    for(int i = 0; i < all_frameIndices.size(); ++i) {

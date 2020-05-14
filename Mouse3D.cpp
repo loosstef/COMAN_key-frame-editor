@@ -32,10 +32,10 @@ void Mouse3D::mouse_button_callback(GLFWwindow *window, int button, int action, 
             StepAheadAnimationChannel *pickedSaaChannel = (StepAheadAnimationChannel*)picked.channel;
             int windowHeight = scene.getRenderEngine().getWindowHeight();
             glm::vec3 localAbsPosCtrlPoint = picked.ffd->getLocalAbsoluteLoc(picked.controlPointIndex);
-            glm::mat4 viewMat = scene.getRenderEngine().getEditorCamera().getViewMatrix();
+            glm::mat4 viewMat = scene.getRenderEngine().editorCamera().getViewMatrix();
             glm::mat4 modelMat = pickedSaaChannel->getTransMat();
             glm::mat4 modelViewMat = viewMat * modelMat;
-            glm::mat4 projMat = scene.getRenderEngine().getProjectionMatrix();
+            glm::mat4 projMat = scene.getRenderEngine().camera().getProjectionMatrix();   //getProjectionMatrix();
             int width = scene.getRenderEngine().getWindowWidth();
             int height = scene.getRenderEngine().getWindowHeight();
             glm::vec4 viewport(0.0f, 0.0f, width, height);
@@ -51,9 +51,9 @@ void Mouse3D::mouse_button_callback(GLFWwindow *window, int button, int action, 
             CSkeleton *skeleton = picked.skeleton;
             int windowHeight = scene.getRenderEngine().getWindowHeight();
             glm::vec3 localAbsPosCtrlPoint = joint->getGlobPos();
-            glm::mat4 viewMat = scene.getRenderEngine().getEditorCamera().getViewMatrix();
+            glm::mat4 viewMat = scene.getRenderEngine().editorCamera().getViewMatrix();
             glm::mat4 modelViewMat = viewMat;
-            glm::mat4 projMat = scene.getRenderEngine().getProjectionMatrix();
+            glm::mat4 projMat = scene.getRenderEngine().camera().getProjectionMatrix();  // getProjectionMatrix();
             int width = scene.getRenderEngine().getWindowWidth();
             int height = scene.getRenderEngine().getWindowHeight();
             glm::vec4 viewport(0.0f, 0.0f, width, height);
@@ -68,10 +68,10 @@ void Mouse3D::mouse_button_callback(GLFWwindow *window, int button, int action, 
 void Mouse3D::loop(Scene &scene, double mouseX, double mouseY) {
     if(lMouseBtnDown && picked.ffd != nullptr) {
         StepAheadAnimationChannel *pickedSaaChannel = (StepAheadAnimationChannel*)picked.channel;
-        glm::mat4 viewMat = scene.getRenderEngine().getEditorCamera().getViewMatrix();
+        glm::mat4 viewMat = scene.getRenderEngine().editorCamera().getViewMatrix();
         glm::mat4 modelMat = (pickedSaaChannel)->getTransMat();
         glm::mat4 modelViewMat = viewMat * modelMat;
-        glm::mat4 projMat = scene.getRenderEngine().getProjectionMatrix();
+        glm::mat4 projMat = scene.getRenderEngine().camera().getProjectionMatrix();  // getProjectionMatrix();
         int width = scene.getRenderEngine().getWindowWidth();
         int height = scene.getRenderEngine().getWindowHeight();
         glm::vec4 viewport(0.0f, 0.0f, width, height);
@@ -85,9 +85,9 @@ void Mouse3D::loop(Scene &scene, double mouseX, double mouseY) {
         CSkeleton *skeleton = picked.skeleton;
         int windowHeight = scene.getRenderEngine().getWindowHeight();
 //        glm::vec3 localAbsPosCtrlPoint = joint->getGlobPos();
-        glm::mat4 viewMat = scene.getRenderEngine().getEditorCamera().getViewMatrix();
+        glm::mat4 viewMat = scene.getRenderEngine().editorCamera().getViewMatrix();
         glm::mat4 modelViewMat = viewMat;
-        glm::mat4 projMat = scene.getRenderEngine().getProjectionMatrix();
+        glm::mat4 projMat = scene.getRenderEngine().camera().getProjectionMatrix();  // getProjectionMatrix();
         int width = scene.getRenderEngine().getWindowWidth();
         int height = scene.getRenderEngine().getWindowHeight();
         glm::vec4 viewport(0.0f, 0.0f, width, height);

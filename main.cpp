@@ -58,7 +58,7 @@ void glfw_window_size_callback(GLFWwindow* window, int width, int height) {
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     if(!ImGui::GetIO().WantCaptureMouse) {
-        scene.getRenderEngine().getEditorCamera().relativeMove(glm::vec3(0.0f, yoffset * SCROLL_SENSITIVITY, 0.0f));
+        scene.getRenderEngine().editorCamera().relativeMove(glm::vec3(0.0f, yoffset * SCROLL_SENSITIVITY, 0.0f));
     }
 }
 
@@ -191,22 +191,22 @@ int main() {
     ImGui::StyleColorsDark();
 
     // INITIALIZING TEST DATA
-//    StepAheadAnimationChannel saaChannel;
-//    saaChannel.name = std::string("green_cube_channel");
-//    scene.addSaaChannel(&saaChannel);
-//    Model spongebob_model("models/spongebob.obj");
-//    saaChannel.setObject(&spongebob_model);
-//    LinearPath realPath;
-//    saaChannel.setPath(&realPath);
-//    realPath.addKeyframe(Keyframe(0, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(0.3f)));
-//    FFD ffd_sb_0(spongebob_model, 2, 2, 2);
-//    ffd_sb_0.setControlPoint(glm::tvec3<int>(0,1,0), glm::vec3(0, 1.5, 0));
-//    FFD ffd_sb_200(spongebob_model, 2, 2, 2);
-//    ffd_sb_200.setControlPoint(glm::tvec3<int>(1, 0, 1), glm::vec3(1.5, 0.2, 1.2));
-//    saaChannel.addFFD(0, &ffd_sb_0);
-//    saaChannel.addFFD(200, &ffd_sb_200);
-//    FFD ffd_sb_400(spongebob_model, 2, 2, 2);
-//    saaChannel.addFFD(400, &ffd_sb_400);
+    StepAheadAnimationChannel saaChannel;
+    saaChannel.name = std::string("green_cube_channel");
+    scene.addSaaChannel(&saaChannel);
+    Model spongebob_model("models/spongebob.obj");
+    saaChannel.setObject(&spongebob_model);
+    LinearPath realPath;
+    saaChannel.setPath(&realPath);
+    realPath.addKeyframe(Keyframe(0, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(0.3f)));
+    FFD ffd_sb_0(spongebob_model, 2, 2, 2);
+    ffd_sb_0.setControlPoint(glm::tvec3<int>(0,1,0), glm::vec3(0, 1.5, 0));
+    FFD ffd_sb_200(spongebob_model, 2, 2, 2);
+    ffd_sb_200.setControlPoint(glm::tvec3<int>(1, 0, 1), glm::vec3(1.5, 0.2, 1.2));
+    saaChannel.addFFD(0, &ffd_sb_0);
+    saaChannel.addFFD(200, &ffd_sb_200);
+    FFD ffd_sb_400(spongebob_model, 2, 2, 2);
+    saaChannel.addFFD(400, &ffd_sb_400);
 
 //    CSkeleton skeleton(std::string("models/skeleton.skl"));
 //    scene.addSkeleton(&skeleton);
@@ -251,8 +251,8 @@ int main() {
         glViewport(0, 0, windowWidth, windowHeight);
 
         // wipe the drawing surface clear
-        glClearColor(0.6f, 0.6f, 0.8f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//        glClearColor(0.6f, 0.6f, 0.8f, 1.0f);
+//        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // update and load view matrix
 //        view = nav.getViewMatrix();
 //        glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));

@@ -3,6 +3,7 @@
 //
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
 #include "Particle.h"
 #include "Scene.h"
 #include "Model.h"
@@ -16,12 +17,18 @@ Particle::Particle(glm::mat4 baseTransMat, int firstFrame, int lastFrame, glm::v
 }
 
 void Particle::draw(int frameIndex, Model &model, Scene &scene) {
+    Shader *shader = scene.getRenderEngine().shader();
+    if(shader->getName().compare("standard")!=0) {
+        std::cerr << "Wrong shader set when trying to render particle" << std::endl;
+    }
+    StandardShader *standardShader = (StandardShader*) shader;
     // check if particle should be drawn
     if(frameIndex < mFirstFrameIndex || frameIndex > mLastFrameIndex) {
         return;
     }
     glm::mat4 currTransMat = glm::translate(glm::mat4(1.0f), mMoveVec*(float)(frameIndex-mFirstFrameIndex)) * mBaseTransMat;
     // TODO: update to use stack
-    scene.getRenderEngine().getStandardShader()->setMatrix(TRANSFORMATION_MATRIX, currTransMat);
-    model.Draw(frameIndex, scene.getRenderEngine().getStandardShader()->getUniLocTexture());
+
+    standardShader->setMatrix(TRANSFORMATION_MATRIX, currTransMat);
+    model.draw(frameIndex, standardShader->getUniLocTexture());
 }
