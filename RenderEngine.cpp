@@ -85,7 +85,7 @@ void RenderEngine::render(Scene &scene, Picked picked) {
 }
 
 Picked RenderEngine::pick(Scene &scene, double mouseX, double mouseY, GLFWwindow *window) {
-    /*// use standard shader
+    // use standard shader
     useShader(mStandardShader);
     // calculate & set camera matrix
     glm::mat4 viewMat = mCurrCamera->getViewMatrix();
@@ -168,8 +168,7 @@ Picked RenderEngine::pick(Scene &scene, double mouseX, double mouseY, GLFWwindow
         }
         CJoint *pickedJoint = pickedSkeleton->getJoint(id_2-1);
         return Picked::makeSkeleton(pickedSkeleton, pickedJoint);
-    }*/
-    return Picked::nothing();
+    }
 }
 
 void RenderEngine::renderForPicking(StepAheadAnimationChannel *saaChannel, Scene &scene) {
