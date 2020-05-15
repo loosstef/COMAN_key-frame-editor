@@ -14,9 +14,10 @@ class Scene;
 
 class Camera {
 public:
-    Camera(int windowWidth, int windowHeight);
+    Camera(int windowWidth, int windowHeight, std::string name);
     // update camera parameters
     void setWindowSize(int width, int height);
+    void setName(std::string name) { mName = name; }
     // re-orientate camera
     void move(glm::vec3 movement);
     void relativeMove(glm::vec3 movement);
@@ -28,7 +29,9 @@ public:
     glm::vec3 getPos() { return mPos; }
     glm::mat4 getProjectionMatrix() { return mProjectionMatrix; }
     glm::mat4 getViewMatrix();
+    std::string name() const { return mName; }
 private:
+    std::string mName;
     glm::vec3 calcGlobPos(glm::vec3 pos);
     void rotHor(float angle);
     void rotVert(float angle);

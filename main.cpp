@@ -48,7 +48,7 @@ void glfw_window_size_callback(GLFWwindow* window, int width, int height) {
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     if(!ImGui::GetIO().WantCaptureMouse) {
-        scene.renderEngine().editorCamera().relativeMove(glm::vec3(0.0f, yoffset * SCROLL_SENSITIVITY, 0.0f));
+        scene.renderEngine().editorCamera().relativeMove(glm::vec3(0.0f, 0.0f, yoffset * SCROLL_SENSITIVITY));
     }
 }
 
@@ -222,7 +222,11 @@ int main() {
         "models/skybox/front.jpg",
         "models/skybox/back.jpg"
     };
-    scene.setSkyBox(faces);
+//    scene.setSkyBox(faces);
+
+    Camera cam1(scene.renderEngine().getWindowWidth(), scene.renderEngine().getWindowHeight(), "cam1");
+    scene.add(&cam1);
+
     // END OF INITIALIZATION OF DATA
 
     scene.clock()->start();

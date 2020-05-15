@@ -17,14 +17,15 @@ const float MAX_HORIZONTAL_CAM_ROT = 179.5;
 /**
  * Constructor
  */
-Camera::Camera(int windowWidth, int windowHeight) : mModel("base_models/camera.obj") {
+Camera::Camera(int windowWidth, int windowHeight, std::string name) : mModel("base_models/camera.obj") {
     // set standard values
-    mPos = glm::vec3(1.2f, 1.2f, 1.2f);
+    mName = name;
+    mPos = glm::vec3(2.0f, 2.0f, 2.0f);
     mFOV = 45.0f;
     mWindowWidth = windowWidth;
     mWindowHeight = windowHeight;
     mNearClipping = 0.01f;
-    mfarClipping = 40.0f;
+    mfarClipping = 200.0f;
     mTransMat = glm::mat4(1.0f);
 
     setRotXSafe(-45.0f);
@@ -61,11 +62,13 @@ void Camera::move(glm::vec3 movement) {
 
 
 void Camera::relativeMove(glm::vec3 movement) {
-    glm::mat4 rotMat = glm::rotate(glm::mat4(1.0f), glm::radians(mRotY), glm::vec3(0.0f, 1.0f, 0.0f));
-    rotMat = glm::rotate(rotMat, glm::radians(mRotX), glm::vec3(1.0f, 0.0f, 0.0f));
-    rotMat = glm::rotate(rotMat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    glm::vec3 absMoveVec = rotMat * glm::vec4(movement, 1.0f);
-    mPos += absMoveVec;
+//    glm::mat4 rotMat = glm::rotate(glm::mat4(1.0f), glm::radians(mRotY), glm::vec3(0.0f, 1.0f, 0.0f));
+//    rotMat = glm::rotate(rotMat, glm::radians(mRotX), glm::vec3(1.0f, 0.0f, 0.0f));
+//    rotMat = glm::rotate(rotMat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+//    glm::vec3 absMoveVec = rotMat * glm::vec4(movement, 1.0f);
+    glm::vec3 absNewPos = (glm::vec3)(mTransMat * glm::vec4(movement, 1.0f));
+//    mPos += absMoveVec;
+    mPos = absNewPos;
     mTransMat = calcTransMat(mPos, mRotX, mRotY);
 }
 
@@ -154,6 +157,7 @@ void Camera::draw(Scene &scene) {
     // draw the camera-model
     StandardShader *standardShader = (StandardShader*) shader;
     standardShader->setMatrix(TRANSFORMATION_MATRIX, mTransMat);
+//    standardShader->setId(0);
     mModel.draw(0, standardShader->getUniLocTexture());
 }
 

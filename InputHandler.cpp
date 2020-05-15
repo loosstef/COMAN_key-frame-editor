@@ -91,9 +91,9 @@ void InputHandler::handleMouse() {
     if(middleBtnState == GLFW_PRESS) {
         double diffX = currMousePosX - mLastMousePosX;
         double diffY = currMousePosY - mLastMousePosY;
-        double moveSideways = diffX * MOUSE_SENSITIVITY_MOVEMENT;
-        double moveForward = diffY * MOUSE_SENSITIVITY_MOVEMENT;
-        mRenderEngine->editorCamera().relativeMove(glm::vec3(-moveSideways, 0.0f, moveForward));
+        double moveSideways = -diffX * MOUSE_SENSITIVITY_MOVEMENT;
+        double moveVertical = diffY * MOUSE_SENSITIVITY_MOVEMENT;
+        mRenderEngine->editorCamera().relativeMove(glm::vec3(moveSideways, moveVertical, 0.0f));
     }
 
     mLastMousePosX = currMousePosX;

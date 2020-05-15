@@ -32,7 +32,7 @@ RenderEngine::RenderEngine() : mTransformStack(this),
     // set id of standard shader to 0
     mStandardShader.setId(0);
     // create new camera
-    mEditorCamera = new Camera(mWindowWidth, mWindowHeight);
+    mEditorCamera = new Camera(mWindowWidth, mWindowHeight, "editor cam");
     mCurrCamera = mEditorCamera;
     // generate and load projection matrix
 //    mProjectionMatrix = glm::perspective(
@@ -73,6 +73,11 @@ void RenderEngine::render(Scene &scene, Picked picked) {
     std::vector<Plant*> &plants = scene.plants();
     for(auto plant : plants) {
         plant->draw(*this, mStandardShader);
+    }
+    // render camera
+    std::vector<Camera*> &cameras = scene.cameras();
+    for(auto camera : cameras) {
+        camera->draw(scene);
     }
     // render skybox
     if(scene.skyBox() != nullptr) {
