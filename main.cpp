@@ -222,7 +222,7 @@ int main() {
         "models/skybox/front.jpg",
         "models/skybox/back.jpg"
     };
-//    scene.setSkyBox(faces);
+    scene.setSkyBox(faces);
     // END OF INITIALIZATION OF DATA
 
     scene.clock()->start();

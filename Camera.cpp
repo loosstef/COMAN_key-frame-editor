@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "Camera.h"
+#include "Scene.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/string_cast.hpp>
@@ -16,7 +17,7 @@ const float MAX_HORIZONTAL_CAM_ROT = 179.5;
 /**
  * Constructor
  */
-Camera::Camera(int windowWidth, int windowHeight) {
+Camera::Camera(int windowWidth, int windowHeight) : mModel("base_models/camera.obj") {
     // set standard values
     mPos = glm::vec3(1.2f, 1.2f, 1.2f);
     mFOV = 45.0f;
@@ -24,6 +25,7 @@ Camera::Camera(int windowWidth, int windowHeight) {
     mWindowHeight = windowHeight;
     mNearClipping = 0.01f;
     mfarClipping = 40.0f;
+    mTransMat = glm::mat4(1.0f);
 
     setRotXSafe(-45.0f);
     setRotYSafe(45.0f);
@@ -101,6 +103,7 @@ void Camera::setRotXSafe(float rotX) {
     else {
         mRotX = rotX;
     }
+    mTransMat = calcTransMat(mPos, mRotX, mRotY);
 }
 
 void Camera::setRotYSafe(float rotY) {
@@ -113,6 +116,7 @@ void Camera::setRotYSafe(float rotY) {
     else {
         mRotY = rotY;
     }
+    mTransMat = calcTransMat(mPos, mRotX, mRotY);
 }
 
 glm::mat4 Camera::genProjectionMatrix(float fov, int windowWidth, int windowHeight, float nearClipping, float farClipping) {
@@ -128,4 +132,24 @@ void Camera::setWindowSize(int width, int height) {
     mWindowWidth = width;
     mWindowHeight = height;
     mProjectionMatrix = genProjectionMatrix(mFOV, width, height, mNearClipping, mfarClipping);
+}
+
+glm::mat4 Camera::calcTransMat(glm::vec3 pos, float rotX, float rotY) {
+    glm::mat4 transMat = glm::translate(glm::mat4(1.0f), pos);
+    transMat = glm::rotate(transMat, glm::radians(rotY), glm::vec3(0.0f, 1.0f, 0.0f));
+    transMat = glm::rotate(transMat, glm::radians(rotX), glm::vec3(1.0f, 0.0f, 0.0f));
+    return transMat;
+}
+
+void Camera::draw(Scene &scene) {
+    Shader *shader = scene.renderEngine().shader();
+    // check if render-engine is using correct shader
+    if(shader->getName().compare("standard") != 0) {
+        std::cerr << "[Warning] Camera model not drawn. Using wrong shader." << std::endl;
+        return;
+    }
+    // draw the camera-model
+    StandardShader *standardShader = (StandardShader*) shader;
+    standardShader->setMatrix(TRANSFORMATION_MATRIX, mTransMat);
+    mModel.draw(0, standardShader->getUniLocTexture());
 }

@@ -8,6 +8,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "Model.h"
+
+class Scene;
 
 class Camera {
 public:
@@ -17,6 +20,8 @@ public:
     void move(glm::vec3 movement);
     void relativeMove(glm::vec3 movement);
     void setWindowSize(int width, int height);
+    // drawing camera
+    void draw(Scene &scene);
     // getters
     glm::vec3 getPos() { return mPos; }
     glm::mat4 getProjectionMatrix() { return mProjectionMatrix; }
@@ -29,12 +34,16 @@ private:
     void setRotXSafe(float rotX);
     void setRotYSafe(float rotY);
     glm::mat4 genProjectionMatrix(float fov, int windowWidth, int windowHeight, float nearClipping, float farClipping);
+    static glm::mat4 calcTransMat(glm::vec3 pos, float rotX, float rotY);
     // camera settings
     float mFOV;
     int mWindowWidth;
     int mWindowHeight;
     float mNearClipping;
     float mfarClipping;
+    // drawing
+    Model mModel;
+    glm::mat4 mTransMat;
 
     glm::vec3 mPos;
     float mRotX, mRotY;
