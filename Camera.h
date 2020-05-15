@@ -15,18 +15,21 @@ class Scene;
 class Camera {
 public:
     Camera(int windowWidth, int windowHeight);
-    glm::mat4 getViewMatrix();
-    void rot(float horAngle, float verAngle);
+    // update camera parameters
+    void setWindowSize(int width, int height);
+    // re-orientate camera
     void move(glm::vec3 movement);
     void relativeMove(glm::vec3 movement);
-    void setWindowSize(int width, int height);
-    // drawing camera
+    void rot(float horAngle, float verAngle);
+    void setTransformationMatrix(glm::mat4 transMat);
+    // drawing
     void draw(Scene &scene);
     // getters
     glm::vec3 getPos() { return mPos; }
     glm::mat4 getProjectionMatrix() { return mProjectionMatrix; }
+    glm::mat4 getViewMatrix();
 private:
-    glm::vec3 calcViewDir();
+    glm::vec3 calcGlobPos(glm::vec3 pos);
     void rotHor(float angle);
     void rotVert(float angle);
     float getRotX() { return mRotX; }
