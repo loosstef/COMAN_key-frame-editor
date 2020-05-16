@@ -149,7 +149,7 @@ glm::mat4 Camera::calcTransMat(glm::vec3 pos, float rotX, float rotY) {
 void Camera::draw(Scene &scene) {
     Shader *shader = scene.renderEngine().shader();
     // check if render-engine is using correct shader
-    if(shader->getName().compare("standard") != 0) {
+    if(shader->name().compare("standard") != 0) {
         std::cerr << "[Warning] Camera model not drawn. Using wrong shader." << std::endl;
         return;
     }
