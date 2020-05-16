@@ -100,7 +100,7 @@ unsigned int SkyBox::loadCubemap(std::vector<std::string> faces) {
         }
         else
         {
-            std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
+            std::cerr << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
             stbi_image_free(data);
             exit(1);
         }

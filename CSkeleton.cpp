@@ -179,7 +179,7 @@ CJoint *CSkeleton::getJoint(int id, CJoint *rootJoint) {
 
 void CSkeleton::inverseKinematic(CJoint *joint, glm::vec3 newPos) {
     const float CONVERGENCE_THRESHOLD = 0.1f;
-    const float MAX_LOOPS = 10;
+    const int MAX_LOOPS = 10;
     const float ROT_FACTOR = 0.1f;
     // check if joint has parents;
     if(joint->parent() == nullptr) {

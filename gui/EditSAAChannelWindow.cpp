@@ -39,7 +39,6 @@ void EditSAAChannelWindow::Render(StepAheadAnimationChannel *saaChannel) {
         }
         ImGui::EndTabBar();
     }
-//    std::cout << ImGui::GetWindowSize().x << std::endl;
     ImGui::End();
 }
 

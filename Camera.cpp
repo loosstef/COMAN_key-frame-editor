@@ -32,7 +32,6 @@ Camera::Camera(int windowWidth, int windowHeight, std::string name) : mModel("ba
     setRotYSafe(45.0f);
     // set projection matrix
     mProjectionMatrix = genProjectionMatrix(mFOV, windowWidth, windowHeight, mNearClipping, mfarClipping);
-    std::cout << glm::to_string(mProjectionMatrix)  << std::endl;
 }
 
 
