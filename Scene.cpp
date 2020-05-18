@@ -4,6 +4,7 @@
 
 #include "Scene.h"
 #include "SkyBox.h"
+#include "Camera.h"
 
 void Scene::init(RenderEngine *re, Clock *clock) {
     mRenderEngine = re;
@@ -38,4 +39,11 @@ void Scene::setSkyBox(std::vector<std::string> &faces) {
         delete mSkyBox;
     }
     mSkyBox = new SkyBox(faces);
+}
+
+void Scene::update() {
+    int currFrame = mClock->getFrameIndex();
+    for(auto *camera : mCameras) {
+        camera->update(currFrame);
+    }
 }

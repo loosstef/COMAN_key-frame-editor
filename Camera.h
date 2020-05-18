@@ -9,6 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Model.h"
+#include "BSplinePath.h"
 
 class Scene;
 
@@ -23,6 +24,8 @@ public:
     void relativeMove(glm::vec3 movement);
     void rot(float horAngle, float verAngle);
     void setTransformationMatrix(glm::mat4 transMat);
+    // set path
+    void setPath(BSplinePath *path);
     // drawing
     void draw(Scene &scene);
     // getters
@@ -30,6 +33,8 @@ public:
     glm::mat4 getProjectionMatrix() { return mProjectionMatrix; }
     glm::mat4 getViewMatrix();
     std::string name() const { return mName; }
+    // update camera
+    void update(int frameIndex);
 private:
     std::string mName;
     glm::vec3 calcGlobPos(glm::vec3 pos);
@@ -50,6 +55,7 @@ private:
     // drawing
     Model mModel;
     glm::mat4 mTransMat;
+    BSplinePath *mPath = nullptr;
 
     glm::vec3 mPos;
     float mRotX, mRotY;

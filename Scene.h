@@ -34,6 +34,8 @@ public:
     void add(CSkeleton *skeleton);
     void add(Plant *plant);
     void add(Camera *camera);
+    // update all elements dependant of time
+    void update();
 private:
     RenderEngine *mRenderEngine = nullptr;
     Clock *mClock = nullptr;

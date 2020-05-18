@@ -37,7 +37,7 @@ Camera::Camera(int windowWidth, int windowHeight, std::string name) : mModel("ba
 
 glm::mat4 Camera::getViewMatrix() {
     glm::mat4 viewMatrix = glm::lookAt(
-            mPos,
+            calcGlobPos(glm::vec3(0.0f)),
             calcGlobPos(glm::vec3(0.0f, 0.0f, -1.0f)),
             glm::vec3(0.0f, 1.0f, 0.0f)
             );
@@ -162,4 +162,14 @@ void Camera::draw(Scene &scene) {
 
 void Camera::setTransformationMatrix(glm::mat4 transMat) {
     mTransMat = transMat;
+}
+
+void Camera::update(int frameIndex) {
+    if(mPath != nullptr) {
+        mTransMat = mPath->orientation(frameIndex);
+    }
+}
+
+void Camera::setPath(BSplinePath *path) {
+    mPath = path;
 }

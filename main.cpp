@@ -27,6 +27,7 @@
 #include "Plant.h"
 #include "Explosion.h"
 #include "SkyBox.h"
+#include "BSpline.h"
 
 //const float ROT_SPEED = 0.15f;
 const float SCROLL_SENSITIVITY = 0.30f;
@@ -48,7 +49,7 @@ void glfw_window_size_callback(GLFWwindow* window, int width, int height) {
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     if(!ImGui::GetIO().WantCaptureMouse) {
-        scene.renderEngine().editorCamera().relativeMove(glm::vec3(0.0f, 0.0f, yoffset * SCROLL_SENSITIVITY));
+        scene.renderEngine().editorCamera().relativeMove(glm::vec3(0.0f, 0.0f, -yoffset * SCROLL_SENSITIVITY));
     }
 }
 
@@ -225,6 +226,13 @@ int main() {
 //    scene.setSkyBox(faces);
 
     Camera cam1(scene.renderEngine().getWindowWidth(), scene.renderEngine().getWindowHeight(), "cam1");
+    BSplinePath bSplinePath;
+    BSpline bSpline(glm::vec3(2.0f), std::vector<glm::vec3>(), glm::vec3(4.0f));
+    bSpline.populateArcLengthTable(100);
+    bSplinePath.add(&bSpline, std::pair<int, int>(0, 400));
+    bSplinePath.add(glm::vec3(-45.0f, 45.0f, 0.0f), 0);
+    bSplinePath.add(glm::vec3(0.0f, 0.0f, 180.0f), 200);
+    cam1.setPath(&bSplinePath);
     scene.add(&cam1);
 
     // END OF INITIALIZATION OF DATA
@@ -255,6 +263,7 @@ int main() {
 //        cube.draw(uniTrans, model2);
 //        bSpline.draw(uniTrans);
 //        scene.getRenderEngine().render_DEPRECATED(scene.getClock()->getFrameIndex(), mouse3D.picked);
+        scene.update();
         scene.renderEngine().render(scene, mouse3D.picked);
 
 //        explosion.draw(scene);
