@@ -30,13 +30,14 @@ public:
     // render
     void render(Scene &scene, Picked picked);
     Picked pick(Scene &scene, double mouseX, double mouseY, GLFWwindow *window);
+    // set camera
+    void useCamera(Camera &camera);
     // getters
     Camera& editorCamera();
     Camera& camera();
     Shader* shader();
     uint getWindowHeight() const { return mWindowHeight; }
     uint getWindowWidth() const { return mWindowWidth; }
-//    glm::mat4 getProjectionMatrix() { return mProjectionMatrix; }
     TransformStack& transformStack() { return mTransformStack; }
     // events
     void onWindowSizeChange(uint width, uint height);
@@ -45,7 +46,6 @@ public:
 private:
     // set state
     void useShader(Shader &shader);
-    void useCamera(Camera &camera);
     // render
     void renderSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel, Picked picked);
     void renderForPicking(StepAheadAnimationChannel *saaChannel, Scene &scene);

@@ -39,7 +39,7 @@ glm::mat4 Camera::getViewMatrix() {
     glm::mat4 viewMatrix = glm::lookAt(
             calcGlobPos(glm::vec3(0.0f)),
             calcGlobPos(glm::vec3(0.0f, 0.0f, -1.0f)),
-            glm::vec3(0.0f, 1.0f, 0.0f)
+            calcGlobPos(glm::vec3(0.0f, 1.0f, 0.0f)) - calcGlobPos(glm::vec3(0.0f))
             );
     return viewMatrix;
 }

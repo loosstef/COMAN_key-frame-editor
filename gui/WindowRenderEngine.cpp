@@ -5,10 +5,12 @@
 #include "WindowRenderEngine.h"
 #include "../Channel.h"
 #include "../StepAheadAnimationChannel.h"
+#include "../Scene.h"
 
-WindowRenderEngine::WindowRenderEngine(Clock *clock) :
-    timelineWindow(clock),
-    editSaaChannelWindow(clock)
+WindowRenderEngine::WindowRenderEngine(Scene &scene) :
+    timelineWindow(scene.clock()),
+    editSaaChannelWindow(scene.clock()),
+    renderEngineWindow(scene)
 {
 
 }
@@ -16,6 +18,7 @@ WindowRenderEngine::WindowRenderEngine(Clock *clock) :
 void WindowRenderEngine::render(Picked picked) {
     Channel * pickedChannel = picked.channel;
     CJoint *pickedJoint = picked.joint;
+    renderEngineWindow.render();
     timelineWindow.render();
     if(pickedChannel != nullptr) {
         if(pickedChannel->getType() == SAA) {

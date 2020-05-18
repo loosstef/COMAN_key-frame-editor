@@ -170,7 +170,7 @@ int main() {
 
     // init global variables
     scene.init();
-    windows = new WindowRenderEngine(scene.clock());
+    windows = new WindowRenderEngine(scene);
     InputHandler inputHandler(window, &scene.renderEngine());
 
     // imgui initialization
