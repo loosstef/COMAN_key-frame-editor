@@ -10,7 +10,8 @@
 WindowRenderEngine::WindowRenderEngine(Scene &scene) :
     timelineWindow(scene.clock()),
     editSaaChannelWindow(scene.clock()),
-    renderEngineWindow(scene)
+    renderEngineWindow(scene),
+    mainMenuBar(scene, *this)
 {
 
 }
@@ -18,8 +19,13 @@ WindowRenderEngine::WindowRenderEngine(Scene &scene) :
 void WindowRenderEngine::render(Picked picked) {
     Channel * pickedChannel = picked.channel;
     CJoint *pickedJoint = picked.joint;
-    renderEngineWindow.render();
-    timelineWindow.render();
+    mainMenuBar.render();
+    if(showRenderEngineWindow) {
+        renderEngineWindow.render();
+    }
+    if(showTimeLineWindow) {
+        timelineWindow.render();
+    }
     if(pickedChannel != nullptr) {
         if(pickedChannel->getType() == SAA) {
             editSaaChannelWindow.Render((StepAheadAnimationChannel*)pickedChannel);

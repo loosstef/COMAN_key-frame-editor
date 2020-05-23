@@ -36,6 +36,10 @@ public:
     void add(Camera *camera);
     // update all elements dependant of time
     void update();
+    // load & save
+    void save(std::string path);
+    void load(std::string path);
+    void reset();
 private:
     RenderEngine *mRenderEngine = nullptr;
     Clock *mClock = nullptr;

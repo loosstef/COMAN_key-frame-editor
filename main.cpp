@@ -215,14 +215,14 @@ int main() {
 //    Model redDot("base_models/red_dot.obj");
 //    Explosion explosion(scene, redDot, 100);
 
-    std::vector<std::string> faces {
-        "models/skybox/right.jpg",
-        "models/skybox/left.jpg",
-        "models/skybox/top.jpg",
-        "models/skybox/bottom.jpg",
-        "models/skybox/front.jpg",
-        "models/skybox/back.jpg"
-    };
+//    std::vector<std::string> faces {
+//        "models/skybox/right.jpg",
+//        "models/skybox/left.jpg",
+//        "models/skybox/top.jpg",
+//        "models/skybox/bottom.jpg",
+//        "models/skybox/front.jpg",
+//        "models/skybox/back.jpg"
+//    };
 //    scene.setSkyBox(faces);
 
     Camera cam1(scene.renderEngine().getWindowWidth(), scene.renderEngine().getWindowHeight(), "cam1");
@@ -238,6 +238,11 @@ int main() {
     // END OF INITIALIZATION OF DATA
 
     scene.clock()->start();
+
+    // TESTING SAVING
+//    scene.save("save_file.json");
+//    scene.load("save_file.json");
+    // END OF TESTING SAVING
 
     while(!glfwWindowShouldClose(window)) {
         _update_fps_counter(window);

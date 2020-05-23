@@ -10,6 +10,7 @@
 #include "../Picked.h"
 #include "EditJointWindow.h"
 #include "RenderEngineWindow.h"
+#include "MainMenuBar.h"
 
 class Clock;
 class Channel;
@@ -19,11 +20,14 @@ class WindowRenderEngine {
 public:
     WindowRenderEngine(Scene &scene);
     void render(Picked picked);
+    bool showTimeLineWindow = true;
+    bool showRenderEngineWindow = true;
 private:
     TimelineWindow timelineWindow;
     EditSAAChannelWindow editSaaChannelWindow;
     EditJointWindow editJointWindow;
     RenderEngineWindow renderEngineWindow;
+    MainMenuBar mainMenuBar;
 };
 
 

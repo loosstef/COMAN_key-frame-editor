@@ -10,6 +10,19 @@
 
 
 SkyBox::SkyBox(std::vector<std::string> faces) {
+   init(faces);
+}
+
+SkyBox::SkyBox(nlohmann::json j) {
+    init(j["faces"].get<std::vector<std::string>>());
+}
+
+/**
+ * The real constructor
+ * @param faces
+ */
+void SkyBox::init(std::vector<std::string> faces) {
+    mFaces = faces;
     mTextureID = loadCubemap(faces);
     std::vector<float> vertices({
         // positions
@@ -125,4 +138,10 @@ unsigned int SkyBox::loadToGPU(std::vector<float> &vertices) {
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     return skyboxVAO;
+}
+
+nlohmann::json SkyBox::to_json() {
+    nlohmann::json j;
+    j["faces"] = mFaces;
+    return j;
 }

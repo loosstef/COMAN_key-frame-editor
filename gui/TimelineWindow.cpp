@@ -16,7 +16,7 @@ void TimelineWindow::render() {
     ImGuiWindowFlags window_flags = 0;
     window_flags |= ImGuiWindowFlags_NoTitleBar;
     window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
-    ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
+    ImGui::SetNextWindowPos(ImVec2(10, 30), ImGuiCond_Always);
     ImGui::Begin("Timeline", NULL, window_flags);
         if(mClock->isRunning()) {
             if(ImGui::Button("Pause"))
