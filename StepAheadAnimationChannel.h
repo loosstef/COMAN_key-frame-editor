@@ -10,6 +10,8 @@
 #include <string>
 #include <glm/glm.hpp>
 #include "Channel.h"
+#include "vendor/nlohmann/json.hpp"
+#include "LinearPath.h"
 
 class Object_DEPRECATED;
 class Path;
@@ -20,7 +22,7 @@ class StepAheadAnimationChannel : public Channel {
 public:
     StepAheadAnimationChannel() : mTransMat(1.0f) {}
     ChannelType getType() override { return SAA; }
-    void setPath(Path* path);
+    void setPath(LinearPath* path);
     Path* getPath() { return mPath; }
     Model* getModel() { return mModel; }
     void setObject(Model* model);
@@ -32,10 +34,11 @@ public:
     glm::mat4 getTransMat();
     void prepare(int frameIndex);
     void tellModelFFDChanged(FFD *ffd, int frameIndex);
+    nlohmann::json to_json();
     std::string name;
 private:
     Model *mModel;
-    Path* mPath = nullptr;
+    LinearPath* mPath = nullptr;
     std::vector<FFD*> mFFDs;
     std::vector<int> mFFFDFrameIndices;
     glm::mat4 mTransMat;

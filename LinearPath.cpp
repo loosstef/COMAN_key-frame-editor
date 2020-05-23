@@ -168,3 +168,17 @@ glm::quat LinearPath::linearInterpolateRotation(glm::vec3 &rot1, glm::vec3 &rot2
 //    glm::vec3 interpEuler = glm::eulerAngles(interpQuat);
     return interpQuat;
 }
+
+nlohmann::json LinearPath::to_json() {
+    nlohmann::json j_keyframes = nlohmann::json::array();
+    for(auto keyframe : mKeyframes) {
+        nlohmann::json j_keyframe = {
+                {"frame_index", keyframe.getFrameIndex()},
+                {"position", {keyframe.getPos().x, keyframe.getPos().y, keyframe.getPos().z}},
+                {"rotation", {keyframe.getRot().x, keyframe.getRot().y, keyframe.getRot().z}},
+                {"scale", {keyframe.getScale().x, keyframe.getScale().y, keyframe.getScale().z}}
+        };
+        j_keyframes.push_back(j_keyframe);
+    }
+    return j_keyframes;
+}

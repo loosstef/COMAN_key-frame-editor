@@ -27,6 +27,7 @@ public:
     glm::vec3 getLocalAbsoluteLoc(glm::tvec3<int> index);
     glm::vec3 getLocalAbsoluteLoc(int index);
 //    void setFrameIndex(int frameIndex);
+    nlohmann::json to_json();
 private:
     glm::tvec3<int> flatIndexToFullIndex(int index);
     glm::vec3 absToRelCoords(glm::vec3 coords);

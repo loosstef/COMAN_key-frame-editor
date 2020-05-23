@@ -13,7 +13,7 @@
 #include "FFD.h"
 
 
-void StepAheadAnimationChannel::setPath(Path *path) {
+void StepAheadAnimationChannel::setPath(LinearPath *path) {
     mPath = path;
 }
 
@@ -70,4 +70,16 @@ void StepAheadAnimationChannel::removeFFD(int frameIndex) {
             mModel->removeFFD(frameIndex);
         }
     }
+}
+
+nlohmann::json StepAheadAnimationChannel::to_json() {
+    nlohmann::json j;
+    j["model_filename"] = mModel->getPath();
+    j["keyframes"] = mPath->to_json();
+    nlohmann::json j_FFDs = nlohmann::json::array();
+    for(auto &FFD : mFFDs) {
+        j_FFDs.push_back(FFD->to_json());
+    }
+    j["FFDs"] = j_FFDs;
+    return j;
 }

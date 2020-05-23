@@ -11,6 +11,7 @@
 #include "FFD.h"
 
 Model::Model(char *path) {
+    mPath = path;
     loadModel(path);
 }
 

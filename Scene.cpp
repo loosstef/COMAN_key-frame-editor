@@ -7,6 +7,7 @@
 #include "SkyBox.h"
 #include "Camera.h"
 #include "vendor/nlohmann/json.hpp"
+#include "StepAheadAnimationChannel.h"
 
 void Scene::init(RenderEngine *re, Clock *clock) {
     mRenderEngine = re;
@@ -52,8 +53,17 @@ void Scene::update() {
 
 void Scene::save(std::string path) {
     nlohmann::json j;
+    // save skybox
     if(mSkyBox != nullptr)
         j["skybox"] = mSkyBox->to_json();
+    // save step ahead animations
+    if(!mSaaChannels.empty()) {
+        nlohmann::json j_saaChannels = nlohmann::json::array();
+        for(auto &saaChannel : mSaaChannels) {
+            j_saaChannels.push_back(saaChannel->to_json());
+        }
+        j["step_ahead_animation_channels"] = j_saaChannels;
+    }
     std::fstream file(path, std::fstream::out);
     file << j;
     file.close();

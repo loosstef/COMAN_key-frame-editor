@@ -8,6 +8,7 @@
 #include <list>
 #include "Path.h"
 #include "Keyframe.h"
+#include "vendor/nlohmann/json.hpp"
 
 class LinearPath : public Path {
 public:
@@ -15,6 +16,7 @@ public:
     bool hasKeyframe(uint frameIndex) override;
     std::list<Keyframe>* getKeyFrames() override { return &mKeyframes; }
     Orientation orientation(int frameIndex) override;
+    nlohmann::json to_json();
     // DEPRECATED FUNCTIONS
     Keyframe getKeyframe_DEPRECATED(uint frameIndex) override;
 private:
