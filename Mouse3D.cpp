@@ -10,6 +10,8 @@
 #include "RenderEngine.h"
 #include "Camera.h"
 #include "CSkeleton.h"
+#include "FFD.h"
+#include "CJoint.h"
 
 void Mouse3D::mouse_button_callback(GLFWwindow *window, int button, int action, int mods, Scene &scene) {
     // set mouse state variables

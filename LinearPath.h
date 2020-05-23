@@ -7,6 +7,7 @@
 
 #include <list>
 #include "Path.h"
+#include "Keyframe.h"
 
 class LinearPath : public Path {
 public:

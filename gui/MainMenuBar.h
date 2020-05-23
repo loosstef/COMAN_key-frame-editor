@@ -20,6 +20,7 @@ private:
     void showLoadFile();
     void showSaveFile();
     void showAddSkyboxPopup();
+    void showAddSaaChannelPopup();
 };
 
 

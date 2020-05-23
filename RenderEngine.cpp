@@ -15,6 +15,7 @@
 #include "Scene.h"
 #include "CSkeleton.h"
 #include "SkyBox.h"
+#include "FFD.h"
 
 
 //char VERTEX_SHADER_FILENAME[] = "shaders/standard.vert";

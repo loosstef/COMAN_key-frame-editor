@@ -181,22 +181,22 @@ int main() {
     ImGui::StyleColorsDark();
 
     // INITIALIZING TEST DATA
-    StepAheadAnimationChannel saaChannel;
-    saaChannel.name = std::string("green_cube_channel");
-    scene.add(&saaChannel);
-    Model spongebob_model("models/spongebob.obj");
-    saaChannel.setObject(&spongebob_model);
-    LinearPath realPath;
-    saaChannel.setPath(&realPath);
-    realPath.addKeyframe(Keyframe(0, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(0.3f)));
-    FFD ffd_sb_0(spongebob_model, 2, 2, 2);
-    ffd_sb_0.setControlPoint(glm::tvec3<int>(0,1,0), glm::vec3(0, 1.5, 0));
-    FFD ffd_sb_200(spongebob_model, 2, 2, 2);
-    ffd_sb_200.setControlPoint(glm::tvec3<int>(1, 0, 1), glm::vec3(1.5, 0.2, 1.2));
-    saaChannel.addFFD(0, &ffd_sb_0);
-    saaChannel.addFFD(200, &ffd_sb_200);
-    FFD ffd_sb_400(spongebob_model, 2, 2, 2);
-    saaChannel.addFFD(400, &ffd_sb_400);
+//    StepAheadAnimationChannel saaChannel;
+//    saaChannel.name = std::string("green_cube_channel");
+//    scene.add(&saaChannel);
+//    Model spongebob_model("models/spongebob.obj");
+//    saaChannel.setObject(&spongebob_model);
+//    LinearPath realPath;
+//    saaChannel.setPath(&realPath);
+//    realPath.addKeyframe(Keyframe(0, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(0.3f)));
+//    FFD ffd_sb_0(spongebob_model, 2, 2, 2);
+//    ffd_sb_0.setControlPoint(glm::tvec3<int>(0,1,0), glm::vec3(0, 1.5, 0));
+//    FFD ffd_sb_200(spongebob_model, 2, 2, 2);
+//    ffd_sb_200.setControlPoint(glm::tvec3<int>(1, 0, 1), glm::vec3(1.5, 0.2, 1.2));
+//    saaChannel.addFFD(0, &ffd_sb_0);
+//    saaChannel.addFFD(200, &ffd_sb_200);
+//    FFD ffd_sb_400(spongebob_model, 2, 2, 2);
+//    saaChannel.addFFD(400, &ffd_sb_400);
 
 //    CSkeleton skeleton(std::string("models/skeleton.skl"));
 //    scene.add(&skeleton);

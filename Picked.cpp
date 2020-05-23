@@ -5,6 +5,8 @@
 #include "Picked.h"
 #include "StepAheadAnimationChannel.h"
 #include "CSkeleton.h"
+#include "FFD.h"
+#include "CJoint.h"
 
 Picked Picked::nothing() {
     return {};

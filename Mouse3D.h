@@ -6,6 +6,8 @@
 #define PROJECT_MOUSE3D_H
 
 #include <GLFW/glfw3.h>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
 #include "Picked.h"
 
 class Scene;

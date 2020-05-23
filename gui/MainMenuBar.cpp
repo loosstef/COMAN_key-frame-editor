@@ -6,6 +6,8 @@
 #include "WindowRenderEngine.h"
 #include "../Scene.h"
 #include "../vendor/imgui/imgui.h"
+#include "../LinearPath.h"
+#include "../Model.h"
 
 MainMenuBar::MainMenuBar(Scene &scene, WindowRenderEngine &wre) : mScene(scene), mWRE(wre) {
 }
@@ -20,6 +22,7 @@ void MainMenuBar::showFileMenu() {
     bool shouldOpenLoadScenePopup = false;
     bool shouldOpenSaveScenePopup = false;
     bool shouldOpenSkyboxPopup = false;
+    bool shouldOpenSaaChannelPopup = false;
     if (ImGui::BeginMainMenuBar())
     {
         if (ImGui::BeginMenu("File"))
@@ -37,6 +40,9 @@ void MainMenuBar::showFileMenu() {
             if (ImGui::MenuItem("skybox")) {
                 shouldOpenSkyboxPopup = true;
             }
+            if(ImGui::MenuItem("step ahead animation")) {
+                shouldOpenSaaChannelPopup = true;
+            }
             ImGui::EndMenu();
         }
         ImGui::EndMainMenuBar();
@@ -53,9 +59,14 @@ void MainMenuBar::showFileMenu() {
         ImGui::OpenPopup("new skybox");
         shouldOpenSkyboxPopup = false;
     }
+    if(shouldOpenSaaChannelPopup && !ImGui::IsPopupOpen("add step ahead animation")) {
+        ImGui::OpenPopup("add step ahead animation");
+        shouldOpenSaaChannelPopup = false;
+    }
     showLoadFile();
     showSaveFile();
     showAddSkyboxPopup();
+    showAddSaaChannelPopup();
 }
 
 
@@ -133,6 +144,34 @@ void MainMenuBar::showAddSkyboxPopup() {
         ImGui::EndPopup();
     }
 }
+
+void MainMenuBar::showAddSaaChannelPopup() {
+    StepAheadAnimationChannel *saaChannel = new StepAheadAnimationChannel();
+    const int PATH_BUFFER_SIZE = 512;
+    static char channelName[PATH_BUFFER_SIZE] = "Step ahead animation";
+    static char path[PATH_BUFFER_SIZE] = "models/spongebob.obj";
+    if (ImGui::BeginPopupModal("add step ahead animation", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        ImGui::InputText("name", channelName, PATH_BUFFER_SIZE);
+        ImGui::InputText("path", path, PATH_BUFFER_SIZE);
+        // cancel btn
+        if (ImGui::Button("Cancel")) {
+            delete saaChannel;
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::SameLine();
+        // load btn
+        if (ImGui::Button("Save")) {
+            saaChannel->name = channelName;
+            saaChannel->setObject(new Model(path));
+            mScene.add(saaChannel);
+            saaChannel->setPath(new LinearPath());
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+    }
+}
+
 
 void MainMenuBar::showViewMenu() {
     if (ImGui::BeginMainMenuBar())

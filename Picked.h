@@ -4,12 +4,13 @@
 #ifndef PROJECT_PICKED_H
 #define PROJECT_PICKED_H
 
-#include "FFD.h"
-#include "Channel.h"
-#include "CJoint.h"
+//#include "Channel.h"
 
 class StepAheadAnimationChannel;
 class CSkeleton;
+class FFD;
+class CJoint;
+class Channel;
 
 class Picked {
 public:
