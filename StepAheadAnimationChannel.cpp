@@ -15,9 +15,13 @@
 
 StepAheadAnimationChannel::StepAheadAnimationChannel(nlohmann::json j) {
     mModel = new Model(j["model_filename"].get<std::string>().data());
-    for(nlohmann::json j_ffd : j["FFDs"]) {
-        mFFDs.push_back(new FFD(j_ffd));
+    for(int i = 0; i < j["FFDs"].size(); ++i) {
+        addFFD(j["FFD_frame_index"][i], new FFD(j["FFDs"][i]));
     }
+//    for(nlohmann::json j_ffd : j["FFDs"]) {
+//        mFFDs.push_back(new FFD(j_ffd));
+//    }
+    mPath = new LinearPath(j["keyframes"]);
 }
 
 void StepAheadAnimationChannel::setPath(LinearPath *path) {
@@ -88,5 +92,10 @@ nlohmann::json StepAheadAnimationChannel::to_json() {
         j_FFDs.push_back(*FFD);
     }
     j["FFDs"] = j_FFDs;
+    nlohmann::json j_ffdFrameIndex = nlohmann::json::array();
+    for(auto &ffdFrameIndex : mFFFDFrameIndices) {
+        j_ffdFrameIndex.push_back(ffdFrameIndex);
+    }
+    j["FFD_frame_index"] = j_ffdFrameIndex;
     return j;
 }

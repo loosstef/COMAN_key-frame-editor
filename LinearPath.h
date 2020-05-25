@@ -12,6 +12,8 @@
 
 class LinearPath : public Path {
 public:
+    LinearPath() {}
+    explicit LinearPath(nlohmann::json j);
     void addKeyframe(Keyframe newKeyframe) override;
     bool hasKeyframe(uint frameIndex) override;
     std::list<Keyframe>* getKeyFrames() override { return &mKeyframes; }

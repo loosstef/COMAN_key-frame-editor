@@ -10,7 +10,7 @@
 
 class Keyframe {
 public:
-    Keyframe(int frameIndex, glm::vec3 pos = glm::vec3(0.0f), glm::vec3 rot = glm::vec3(0.0f), glm::vec3 scale = glm::vec3(1.0f));
+    Keyframe(int frameIndex = 0, glm::vec3 pos = glm::vec3(0.0f), glm::vec3 rot = glm::vec3(0.0f), glm::vec3 scale = glm::vec3(1.0f));
     // getters & setters
     void setFrameIndex(int frameIndex) { mFrameIndex = frameIndex; }
     int& getFrameIndex() { return mFrameIndex; }

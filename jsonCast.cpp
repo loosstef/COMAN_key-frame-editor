@@ -5,6 +5,7 @@
 
 #include "jsonCast.h"
 #include "FFD.h"
+#include "Keyframe.h"
 
 
 namespace glm {
@@ -27,6 +28,14 @@ void to_json(nlohmann::json &j, const FFD &ffd) {
     j["control_points"] = ffd.getControlPointsJson();
 }
 
-void from_json(const nlohmann::json &j, FFD &ffd) {
-    ffd.init(j);
+
+void from_json(const nlohmann::json &j, Keyframe &kf) {
+    int frameIndex = j["frame_index"].get<int>();
+    glm::vec3 pos = j["position"];
+    glm::vec3 rot = j["rotation"];
+    glm::vec3 scale = j["scale"];
+    kf.setFrameIndex(frameIndex);
+    kf.setPos(pos);
+    kf.setRot(rot);
+    kf.setScale(scale);
 }

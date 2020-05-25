@@ -8,7 +8,14 @@
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include "jsonCast.h"
 
+LinearPath::LinearPath(nlohmann::json j) {
+    for(nlohmann::json j_keyframe : j) {
+        Keyframe keyframe = j_keyframe;
+        addKeyframe(keyframe);
+    }
+}
 
 void LinearPath::addKeyframe(Keyframe newKeyframe) {
     for(auto it = mKeyframes.begin(); it != mKeyframes.end(); it++) {
