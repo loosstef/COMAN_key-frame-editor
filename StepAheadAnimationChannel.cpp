@@ -18,9 +18,6 @@ StepAheadAnimationChannel::StepAheadAnimationChannel(nlohmann::json j) {
     for(int i = 0; i < j["FFDs"].size(); ++i) {
         addFFD(j["FFD_frame_index"][i], new FFD(j["FFDs"][i]));
     }
-//    for(nlohmann::json j_ffd : j["FFDs"]) {
-//        mFFDs.push_back(new FFD(j_ffd));
-//    }
     mPath = new LinearPath(j["keyframes"]);
 }
 

@@ -8,6 +8,7 @@
 #include "../vendor/imgui/imgui.h"
 #include "../LinearPath.h"
 #include "../Model.h"
+#include "../CSkeleton.h"
 
 MainMenuBar::MainMenuBar(Scene &scene, WindowRenderEngine &wre) : mScene(scene), mWRE(wre) {
 }
@@ -23,6 +24,7 @@ void MainMenuBar::showFileMenu() {
     bool shouldOpenSaveScenePopup = false;
     bool shouldOpenSkyboxPopup = false;
     bool shouldOpenSaaChannelPopup = false;
+    bool shouldOpenSkeletonPopup = false;
     if (ImGui::BeginMainMenuBar())
     {
         if (ImGui::BeginMenu("File"))
@@ -42,6 +44,9 @@ void MainMenuBar::showFileMenu() {
             }
             if(ImGui::MenuItem("step ahead animation")) {
                 shouldOpenSaaChannelPopup = true;
+            }
+            if(ImGui::MenuItem("skeleton")) {
+                shouldOpenSkeletonPopup = true;
             }
             ImGui::EndMenu();
         }
@@ -63,10 +68,15 @@ void MainMenuBar::showFileMenu() {
         ImGui::OpenPopup("add step ahead animation");
         shouldOpenSaaChannelPopup = false;
     }
+    if(shouldOpenSkeletonPopup && !ImGui::IsPopupOpen("add skeleton")) {
+        ImGui::OpenPopup("add skeleton");
+        shouldOpenSkeletonPopup = false;
+    }
     showLoadFile();
     showSaveFile();
     showAddSkyboxPopup();
     showAddSaaChannelPopup();
+    showAddSkeletonPopup();
 }
 
 
@@ -161,11 +171,34 @@ void MainMenuBar::showAddSaaChannelPopup() {
         }
         ImGui::SameLine();
         // load btn
-        if (ImGui::Button("Save")) {
+        if (ImGui::Button("Create")) {
             saaChannel->name = channelName;
             saaChannel->setObject(new Model(path));
             mScene.add(saaChannel);
             saaChannel->setPath(new LinearPath());
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+    }
+}
+
+void MainMenuBar::showAddSkeletonPopup() {
+    const int PATH_BUFFER_SIZE = 512;
+//    static char channelName[PATH_BUFFER_SIZE] = "skeleton";
+    static char path[PATH_BUFFER_SIZE] = "models/skeleton.skl";
+    if (ImGui::BeginPopupModal("add skeleton", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+//        ImGui::InputText("name", channelName, PATH_BUFFER_SIZE);
+        ImGui::InputText("path", path, PATH_BUFFER_SIZE);
+        // cancel btn
+        if (ImGui::Button("Cancel")) {
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::SameLine();
+        // load btn
+        if (ImGui::Button("Load")) {
+            CSkeleton *skeleton = new CSkeleton(path);
+            mScene.add(skeleton);
             ImGui::CloseCurrentPopup();
         }
         ImGui::EndPopup();

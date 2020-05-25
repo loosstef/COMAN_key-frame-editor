@@ -21,6 +21,7 @@ private:
     void showSaveFile();
     void showAddSkyboxPopup();
     void showAddSaaChannelPopup();
+    void showAddSkeletonPopup();
 };
 
 
