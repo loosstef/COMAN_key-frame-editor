@@ -7,10 +7,12 @@
 #include "FFD.h"
 #include "Camera.h"
 #include "Keyframe.h"
+#include "jsonCast.h"
 
 const float CONTROL_POINT_SIZE = 0.005;
 std::string RED_DOT_MODEL_LOCATION("base_models/red_dot.obj");
 std::string ORANGE_DOT_MODEL_LOCATION("base_models/orange_dot.obj");
+
 
 FFD::FFD(Model &model, int l, int m, int n) :
 redDot(&RED_DOT_MODEL_LOCATION[0]),
@@ -37,6 +39,33 @@ orangeDot(&ORANGE_DOT_MODEL_LOCATION[0])
     }
 //    allControlPoints.push_back(controlPoints);
 //    frameIndices.push_back(0);
+}
+
+FFD::FFD(nlohmann::json j) :
+    redDot(&RED_DOT_MODEL_LOCATION[0]),
+    orangeDot(&ORANGE_DOT_MODEL_LOCATION[0])
+{
+    init(j);
+}
+
+
+void FFD::init(const nlohmann::json &j) {
+    P0 = j["P0"];
+    S = j["S"];
+    T = j["T"];
+    U = j["U"];
+
+    for(nlohmann::json layer1 : j["control_points"]) {
+        std::vector<std::vector<glm::vec3>> vector2;
+        for(nlohmann::json layer2 : layer1) {
+            std::vector<glm::vec3> vector1;
+            for(glm::vec3 controlPoint : layer2) {
+                vector1.push_back(controlPoint);
+            }
+            vector2.push_back(vector1);
+        }
+        controlPoints.push_back(vector2);
+    }
 }
 
 void FFD::renderControlPoints(glm::mat4 transMat, GLint uniLocTransMat, GLint uniLocTexture, Camera &cam, int pickedDot) {
@@ -181,30 +210,4 @@ void FFD::setControlPointAbsCoord(glm::tvec3<int> index, glm::vec3 pos) {
 
 void FFD::setControlPointAbsCoord(int index, glm::vec3 pos) {
     setControlPoint(flatIndexToFullIndex(index), absToRelCoords(pos));
-}
-
-nlohmann::json FFD::to_json() {
-    nlohmann::json j;
-    j["P0"] = {P0.x, P0.y, P0.z};
-    j["S"] = {S.x, S.y, S.z};
-    j["T"] = {T.x, T.y, T.z};
-    j["U"] = {U.x, U.y, U.z};
-//    j["l"] = controlPoints.size();
-//    j["m"] = controlPoints[0].size();
-//    j["n"] = controlPoints[0][0].size();
-    nlohmann::json j_controlPoints1 = nlohmann::json::array();
-    for(int i = 0; i < controlPoints.size(); ++i) {
-        nlohmann::json j_controlPoints2 = nlohmann::json::array();
-        for(int j = 0; j < controlPoints[0].size(); ++j) {
-            nlohmann::json j_controlPoints3 = nlohmann::json::array();
-            for(int k = 0; k < controlPoints[0][0].size(); ++k) {
-                glm::vec3 &cp = controlPoints[i][j][k];
-                j_controlPoints3.push_back({cp.x, cp.y, cp.z});
-            }
-            j_controlPoints2.push_back(j_controlPoints3);
-        }
-        j_controlPoints1.push_back(j_controlPoints2);
-    }
-    j["control_points"] = j_controlPoints1;
-    return j;
 }

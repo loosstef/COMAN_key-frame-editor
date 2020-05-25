@@ -11,7 +11,14 @@
 #include "Keyframe.h"
 #include "Model.h"
 #include "FFD.h"
+#include "jsonCast.h"
 
+StepAheadAnimationChannel::StepAheadAnimationChannel(nlohmann::json j) {
+    mModel = new Model(j["model_filename"].get<std::string>().data());
+    for(nlohmann::json j_ffd : j["FFDs"]) {
+        mFFDs.push_back(new FFD(j_ffd));
+    }
+}
 
 void StepAheadAnimationChannel::setPath(LinearPath *path) {
     mPath = path;
@@ -78,7 +85,7 @@ nlohmann::json StepAheadAnimationChannel::to_json() {
     j["keyframes"] = mPath->to_json();
     nlohmann::json j_FFDs = nlohmann::json::array();
     for(auto &FFD : mFFDs) {
-        j_FFDs.push_back(FFD->to_json());
+        j_FFDs.push_back(*FFD);
     }
     j["FFDs"] = j_FFDs;
     return j;

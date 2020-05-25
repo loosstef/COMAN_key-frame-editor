@@ -36,6 +36,7 @@ add_executable(project main.cpp Logger.h Camera.cpp Camera.h old_code/Lights_DEP
         gui/WindowRenderEngine.h Channel.cpp Channel.h gui/EditSAAChannelWindow.cpp gui/EditSAAChannelWindow.h
         Keyframe.cpp Keyframe.h Orientation.cpp Orientation.h
         vendor/nlohmann/json.hpp
+        jsonCast.h jsonCast.cpp
         Mesh.cpp Mesh.h Model.cpp Model.h stb_image.h FFD.cpp FFD.h Picked.h LinInterp.cpp Shader.cpp Shader.h StandardShader.cpp StandardShader.h Mouse3D.cpp Mouse3D.h Scene.cpp Scene.h TransformStack.cpp TransformStack.h Picked.cpp gui/EditJointWindow.cpp gui/EditJointWindow.h LSystem.cpp LSystem.h Plant.cpp Plant.h Branch.cpp Branch.h ParticleSystem.cpp ParticleSystem.h Particle.cpp Particle.h Explosion.cpp Explosion.h old_code/SkyBox_DEPRECATED.cpp old_code/SkyBox_DEPRECATED.h SkyBox.cpp SkyBox.h BSpline.cpp BSpline.h BSplinePath.cpp BSplinePath.h gui/RenderEngineWindow.cpp gui/RenderEngineWindow.h gui/MainMenuBar.cpp gui/MainMenuBar.h gui/SceneWindow.cpp gui/SceneWindow.h)
 
 

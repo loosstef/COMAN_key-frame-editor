@@ -75,9 +75,17 @@ void Scene::load(std::string path) {
     // open file
     std::ifstream ifs(path);
     nlohmann::json j = nlohmann::json::parse(ifs);
-    // load everything
+    // load skybox
     if(j.find("skybox") != j.end()) {
         mSkyBox = new SkyBox(j["skybox"].get<nlohmann::json>());
+    }
+    // load step ahead animation channels
+    if(j.find("step_ahead_animation_channels") != j.end()) {
+        nlohmann::json j_saaChannels = j["step_ahead_animation_channels"];
+        for(int i = 0; i < j_saaChannels.size(); ++i) {
+            auto *newSaaChannel = new StepAheadAnimationChannel(j_saaChannels[i]);
+            mSaaChannels.push_back(newSaaChannel);
+        }
     }
     // close file
     ifs.close();

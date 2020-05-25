@@ -21,6 +21,7 @@ class FFD;
 class StepAheadAnimationChannel : public Channel {
 public:
     StepAheadAnimationChannel() : mTransMat(1.0f) {}
+    explicit StepAheadAnimationChannel(nlohmann::json j);
     ChannelType getType() override { return SAA; }
     void setPath(LinearPath* path);
     Path* getPath() { return mPath; }
