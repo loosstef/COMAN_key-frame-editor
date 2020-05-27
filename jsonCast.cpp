@@ -6,6 +6,9 @@
 #include "jsonCast.h"
 #include "FFD.h"
 #include "Keyframe.h"
+#include "CSkeleton.h"
+#include "CLink.h"
+#include "CJoint.h"
 
 
 namespace glm {
@@ -38,4 +41,33 @@ void from_json(const nlohmann::json &j, Keyframe &kf) {
     kf.setPos(pos);
     kf.setRot(rot);
     kf.setScale(scale);
+}
+
+
+void to_json(nlohmann::json &j, const CSkeleton &skeleton) {
+    j["root_joint"] = *skeleton.getRootJoint();
+}
+
+
+void to_json(nlohmann::json &j, const CJoint &joint) {
+    j["id"] = joint.getId();
+    j["link_offset"] = joint.offset();
+    j["joint_angle"] = joint.currJointAngle();
+    j["joint_angles"] = joint.jointAngles();
+    j["frame_indices"] = joint.frameIndices();
+    j["min_joint_angle"] = joint.minJointangle();
+    j["max_joint_angle"] = joint.maxJointAngle();
+    j["max_children_count"] = joint.maxChildrenCount();
+    std::vector<CLink*> childLinks = joint.childLinks();
+    for(auto *childLink : childLinks) {
+        j["child_links"].push_back(*childLink);
+    }
+}
+
+
+void to_json(nlohmann::json &j, const CLink &link) {
+    j["link_length"] = link.linkTwist();
+    j["link_twist"] = link.linkTwist();
+    j["second_point"] = link.getSecondPoint();
+    j["child_joint"] = *link.getChildJoint();
 }

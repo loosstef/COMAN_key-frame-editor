@@ -21,24 +21,31 @@ public:
     void setParentLink(CLink *parentLink);
     void addChildLink(CLink *childLink);
     bool full();
-    CLink *parent();
     void setGlobalTransMat(glm::mat4 transMat);
     glm::vec3 getGlobPos();
     int childCount() { return mMaxChildrenCount; }
     CLink *childLink(int index) { return mChildLinks[index]; }
     void updateLocalTransMat();
     glm::mat4 transMat();
-    float offset() { return mLinkOffset; }
-    void setId(int id) { mId = id; }
-    int getId() { return mId; }
-    float getCurrJointAngle() { return mCurrJointAngle; }
-    void setJointAngle(float jointAngle, int frameIndex);
     glm::vec3 getRotAxis();
+    // setters
     void setTime(int frameIndex);
+    void setId(int id) { mId = id; }
+    void setJointAngle(float jointAngle, int frameIndex);
+    // getters
+    [[nodiscard]] int getId() const { return mId; }
+    [[nodiscard]] float offset() const { return mLinkOffset; }
+    [[nodiscard]] float currJointAngle() const { return mCurrJointAngle; }
+    [[nodiscard]] std::vector<float> jointAngles() const { return mJointAngles; }
+    [[nodiscard]] std::vector<int> frameIndices() const { return mFrameIndices; }
+    [[nodiscard]] float minJointangle() const { return mMinJointAngle; }
+    [[nodiscard]] float maxJointAngle() const { return mMaxJointAngle; }
+    [[nodiscard]] int maxChildrenCount() const { return mMaxChildrenCount; }
+    std::vector<CLink*> childLinks() const { return mChildLinks; }
+    CLink *parent();
     // DEPRECATED FUNCTIONS
     void renderAll_DEPRECTATED(StandardShader *standardShader);
     // IMGUI FUNCTIONS
-//    float* ImGui_linkOffset() { return &mLinkOffset; }
     float* ImGui_jointAngle() { return &mCurrJointAngle; }
     float* ImGui_minJointAngle() { return &mMinJointAngle; }
     float* ImGui_maxJointAngle() { return &mMaxJointAngle; }

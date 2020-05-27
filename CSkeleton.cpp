@@ -195,7 +195,7 @@ void CSkeleton::inverseKinematic(CJoint *joint, glm::vec3 newPos) {
         glm::vec3 diffPos = calcDifferential(joint, rotJoint);
         glm::vec3 shouldBeDiff = joint->getGlobPos() - newPos;
         float jointRot = glm::dot(diffPos, shouldBeDiff) * ROT_FACTOR;
-        rotJoint->setJointAngle(rotJoint->getCurrJointAngle() - jointRot, mCurrFrame);
+        rotJoint->setJointAngle(rotJoint->currJointAngle() - jointRot, mCurrFrame);
         rotJoint->updateLocalTransMat();
         if(rotJoint->parent() != nullptr) {
             rotJoint = rotJoint->parent()->parent();

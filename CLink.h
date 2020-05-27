@@ -17,9 +17,12 @@ public:
     CJoint *parent() { return mParentJoint; }
     CJoint *child() { return mChildJoint; }
     void setChild(CJoint *childJoint);
-    float linkLength() const { return mLinkLength; }
-    float linkTwist() { return mLinkTwist; }
     void draw(StandardShader &shader);
+    // getters
+    float linkLength() const { return mLinkLength; }
+    float linkTwist() const { return mLinkTwist; }
+    CJoint* getChildJoint() const { return mChildJoint; }
+    glm::vec3 getSecondPoint() const { return mPoints[1]; }
 private:
     float mLinkLength;
     float mLinkTwist;

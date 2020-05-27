@@ -10,6 +10,9 @@
 
 class FFD;
 class Keyframe;
+class CSkeleton;
+class CJoint;
+class CLink;
 
 namespace glm {
     void to_json(nlohmann::json& j, const glm::vec3& p);
@@ -20,4 +23,9 @@ namespace glm {
 void to_json(nlohmann::json &j, const FFD &ffd);
 // keyframe
 void from_json(const nlohmann::json &j, Keyframe &kf);
+// skeletons
+void to_json(nlohmann::json &j, const CSkeleton &skeleton);
+void to_json(nlohmann::json &j, const CJoint &joint);
+void to_json(nlohmann::json &j, const CLink &link);
+
 #endif

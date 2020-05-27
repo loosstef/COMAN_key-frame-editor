@@ -9,6 +9,7 @@
 #include <string>
 #include "Model.h"
 #include "Picked.h"
+#include "jsonCast.h"
 
 class CJoint;
 class StandardShader;
@@ -19,9 +20,11 @@ public:
     CSkeleton(std::string filename);
     void render(StandardShader *standardShader, Picked picked);
     int renderForPicking(StandardShader *shader);
-    CJoint *getJoint(int id);
     void inverseKinematic(CJoint *joint, glm::vec3 newPos);
     void setTime(int frameIndex);
+    // getters
+    CJoint* getRootJoint() const { return mRootJoint; }
+    CJoint *getJoint(int id);
 private:
     void renderJointAndChildren(StandardShader *standardShader, CJoint *joint, int pickedIndex);
     void renderJoints(StandardShader *standardShader, CJoint *joint);

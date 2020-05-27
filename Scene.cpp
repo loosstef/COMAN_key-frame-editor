@@ -8,6 +8,7 @@
 #include "Camera.h"
 #include "vendor/nlohmann/json.hpp"
 #include "StepAheadAnimationChannel.h"
+#include "jsonCast.h"
 
 void Scene::init(RenderEngine *re, Clock *clock) {
     mRenderEngine = re;
@@ -63,6 +64,17 @@ void Scene::save(std::string path) {
             j_saaChannels.push_back(saaChannel->to_json());
         }
         j["step_ahead_animation_channels"] = j_saaChannels;
+    }
+    // save skeleton
+    if(!mSkeletons.empty()) {
+        j["skeletons"] = nlohmann::json::array();
+        for(CSkeleton *skeleton : mSkeletons) {
+            nlohmann::json j_skeleton;
+            to_json(j_skeleton, *skeleton);
+            j["skeletons"].push_back(j_skeleton);
+//            nlohmann::json j_skeleton = *skeleton;
+//            j["skeletons"].push_back(*skeleton);
+        }
     }
     std::fstream file(path, std::fstream::out);
     file << j;
