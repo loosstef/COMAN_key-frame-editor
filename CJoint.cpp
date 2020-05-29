@@ -21,6 +21,24 @@ CJoint::CJoint(float linkOffset, float jointAngle, float minJointAngle, float ma
     mGlobalTransMat = glm::mat4(1.0f);
 }
 
+CJoint::CJoint(nlohmann::json &j) : mModel("base_models/green_cube.obj") {
+    mParentLink = nullptr;
+    mId = j["id"];
+    mLinkOffset = j["link_offset"];
+    mCurrJointAngle = j["joint_angle"];
+    mJointAngles = j["joint_angles"].get<std::vector<float>>();
+    mFrameIndices = j["frame_indices"].get<std::vector<int>>();
+    mMinJointAngle = j["min_joint_angle"];
+    mMaxJointAngle = j["max_joint_angle"];
+    mMaxChildrenCount = j["max_children_count"];
+    mGlobalTransMat = glm::mat4(1.0f);
+    for(nlohmann::json &j_child : j["child_links"]) {
+        CLink *childLink = new CLink(j_child);
+        addChildLink(childLink);
+        childLink->setParent(this);
+    }
+}
+
 void CJoint::setGlobalTransMat(glm::mat4 transMat) {
     mGlobalTransMat = transMat;
     updateLocalTransMat();

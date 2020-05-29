@@ -9,6 +9,7 @@
 #include "vendor/nlohmann/json.hpp"
 #include "StepAheadAnimationChannel.h"
 #include "jsonCast.h"
+#include "CSkeleton.h"
 
 void Scene::init(RenderEngine *re, Clock *clock) {
     mRenderEngine = re;
@@ -97,6 +98,13 @@ void Scene::load(std::string path) {
         for(int i = 0; i < j_saaChannels.size(); ++i) {
             auto *newSaaChannel = new StepAheadAnimationChannel(j_saaChannels[i]);
             mSaaChannels.push_back(newSaaChannel);
+        }
+    }
+    // load skeletons
+    if(j.find("skeletons") != j.end()) {
+        for(nlohmann::json &j_skeleton : j["skeletons"]) {
+            CSkeleton *newSkeleton = new CSkeleton(j_skeleton);
+            mSkeletons.push_back(newSkeleton);
         }
     }
     // close file

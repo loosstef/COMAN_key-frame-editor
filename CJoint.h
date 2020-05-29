@@ -11,6 +11,7 @@
 #include <vector>
 #include <vector>
 #include "Model.h"
+#include "vendor/nlohmann/json.hpp"
 
 class CLink;
 class StandardShader;
@@ -18,6 +19,7 @@ class StandardShader;
 class CJoint {
 public:
     CJoint(float linkOffset=0.0f, float jointAngle=0.0f, float minJointAngle=0.0f, float maxJointAngle=360.0f, int mChildrenCount = 0);
+    explicit CJoint(nlohmann::json &j);
     void setParentLink(CLink *parentLink);
     void addChildLink(CLink *childLink);
     bool full();

@@ -7,12 +7,14 @@
 
 #include <glm/vec3.hpp>
 #include "StandardShader.h"
+#include "vendor/nlohmann/json.hpp"
 
 class CJoint;
 
 class CLink {
 public:
     explicit CLink(float linkLength = 0.0f, float linkTwist = 0.0f);
+    explicit CLink(nlohmann::json &j);
     void setParent(CJoint *joint) { mParentJoint = joint; }
     CJoint *parent() { return mParentJoint; }
     CJoint *child() { return mChildJoint; }

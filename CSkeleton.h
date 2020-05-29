@@ -17,6 +17,7 @@ class StandardShader;
 class CSkeleton {
 public:
     CSkeleton(CJoint *joint);
+    CSkeleton(nlohmann::json &j);
     CSkeleton(std::string filename);
     void render(StandardShader *standardShader, Picked picked);
     int renderForPicking(StandardShader *shader);

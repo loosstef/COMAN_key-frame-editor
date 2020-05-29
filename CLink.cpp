@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "CLink.h"
 #include "CJoint.h"
+#include "jsonCast.h"
 
 CLink::CLink(float linkLength, float linkTwist) {
     mLinkLength = linkLength;
@@ -16,6 +17,22 @@ CLink::CLink(float linkLength, float linkTwist) {
     mIndices[1] = 1;
 
     setupLink();
+}
+
+CLink::CLink(nlohmann::json &j) {
+    mLinkLength = j["link_length"];
+    mLinkTwist = j["link_twist"];
+
+    mPoints[0] = glm::vec3(0.0f);
+    mPoints[1] = j["second_point"];
+    mIndices[0] = 0;
+    mIndices[1] = 1;
+
+    setupLink();
+
+    CJoint *child = new CJoint(j["child_joint"]);
+    child->setParentLink(this);
+    setChild(child);
 }
 
 void CLink::setupLink() {

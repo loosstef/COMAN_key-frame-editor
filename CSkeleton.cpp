@@ -78,6 +78,14 @@ CSkeleton::CSkeleton(CJoint *joint)
     joint->setGlobalTransMat(glm::mat4(1.0f));
 }
 
+CSkeleton::CSkeleton(nlohmann::json &j)
+  : mModelRedDot("base_models/red_dot.obj"),
+    mModelOrangeDot("base_models/orange_dot.obj")
+{
+    mRootJoint = new CJoint(j["root_joint"]);
+    mRootJoint->setGlobalTransMat(glm::mat4(1.0f));
+}
+
 void CSkeleton::render(StandardShader *standardShader, Picked picked) {
     mRootJoint->setGlobalTransMat(glm::mat4(1.0f));
     int pickedId = -1;

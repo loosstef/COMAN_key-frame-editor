@@ -66,7 +66,7 @@ void to_json(nlohmann::json &j, const CJoint &joint) {
 
 
 void to_json(nlohmann::json &j, const CLink &link) {
-    j["link_length"] = link.linkTwist();
+    j["link_length"] = link.linkLength();
     j["link_twist"] = link.linkTwist();
     j["second_point"] = link.getSecondPoint();
     j["child_joint"] = *link.getChildJoint();
