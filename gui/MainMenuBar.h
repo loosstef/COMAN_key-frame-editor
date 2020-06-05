@@ -22,6 +22,7 @@ private:
     void showAddSkyboxPopup();
     void showAddSaaChannelPopup();
     void showAddSkeletonPopup();
+    void showAddPlantPopup();
 };
 
 

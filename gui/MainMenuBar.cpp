@@ -2,6 +2,7 @@
 // Created by stef on 21.05.20.
 //
 
+#include <sstream>
 #include "MainMenuBar.h"
 #include "WindowRenderEngine.h"
 #include "../Scene.h"
@@ -9,6 +10,8 @@
 #include "../LinearPath.h"
 #include "../Model.h"
 #include "../CSkeleton.h"
+#include "../LSystem.h"
+#include "../Plant.h"
 
 MainMenuBar::MainMenuBar(Scene &scene, WindowRenderEngine &wre) : mScene(scene), mWRE(wre) {
 }
@@ -25,6 +28,7 @@ void MainMenuBar::showFileMenu() {
     bool shouldOpenSkyboxPopup = false;
     bool shouldOpenSaaChannelPopup = false;
     bool shouldOpenSkeletonPopup = false;
+    bool shouldOpenPlantPopup = false;
     if (ImGui::BeginMainMenuBar())
     {
         if (ImGui::BeginMenu("File"))
@@ -47,6 +51,9 @@ void MainMenuBar::showFileMenu() {
             }
             if(ImGui::MenuItem("skeleton")) {
                 shouldOpenSkeletonPopup = true;
+            }
+            if(ImGui::MenuItem("plant")) {
+                shouldOpenPlantPopup = true;
             }
             ImGui::EndMenu();
         }
@@ -72,11 +79,16 @@ void MainMenuBar::showFileMenu() {
         ImGui::OpenPopup("add skeleton");
         shouldOpenSkeletonPopup = false;
     }
+    if(shouldOpenPlantPopup && !ImGui::IsPopupOpen("add plant")) {
+        ImGui::OpenPopup("add plant");
+        shouldOpenPlantPopup = false;
+    }
     showLoadFile();
     showSaveFile();
     showAddSkyboxPopup();
     showAddSaaChannelPopup();
     showAddSkeletonPopup();
+    showAddPlantPopup();
 }
 
 
@@ -199,6 +211,37 @@ void MainMenuBar::showAddSkeletonPopup() {
         if (ImGui::Button("Load")) {
             CSkeleton *skeleton = new CSkeleton(path);
             mScene.add(skeleton);
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+    }
+}
+
+void MainMenuBar::showAddPlantPopup() {
+    const int RULES_BUFFER_SIZE = 4096;
+    static char rules[RULES_BUFFER_SIZE]  = "F->F[+F]F[-RF]F:1.0";
+    static int treeDepth = 3;
+    static char startString[256] = "F";
+    if (ImGui::BeginPopupModal("add plant", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        ImGui::InputInt("depth", &treeDepth);
+        ImGui::InputTextMultiline("rules", rules, RULES_BUFFER_SIZE);
+        ImGui::InputText("starting situation", startString, 256);
+        // cancel btn
+        if (ImGui::Button("Cancel")) {
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::SameLine();
+        // load btn
+        if (ImGui::Button("Create")) {
+            LSystem lSystem(treeDepth);
+            std::istringstream stream_rules(rules);
+            std::string str_rule;
+            while(std::getline(stream_rules, str_rule, ';')) {
+                lSystem.addRule(str_rule);
+            }
+            Plant *plant = new Plant(lSystem.produce(startString));
+            mScene.add(plant);
             ImGui::CloseCurrentPopup();
         }
         ImGui::EndPopup();

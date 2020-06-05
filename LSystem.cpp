@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <algorithm>
 #include "LSystem.h"
 
 LSystem::LSystem(int maxDepth) : mDepth(maxDepth)
@@ -10,6 +11,8 @@ LSystem::LSystem(int maxDepth) : mDepth(maxDepth)
 }
 
 void LSystem::addRule(std::string rule) {
+    // clean rule
+    std::remove(rule.begin(), rule.end(), '\n');
     // determine chance
     float chance = 1.0f;
     int posOfColon = rule.find(':');
