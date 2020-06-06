@@ -6,7 +6,10 @@
 #include "Explosion.h"
 #include "Particle.h"
 
-Explosion::Explosion(Scene &scene, Model &model, int when) : ParticleSystem(scene, model) {
+Explosion::Explosion(Model &model, int when, int particlesCount)
+  : ParticleSystem(model),
+    PARTICLES_COUNT(particlesCount)
+{
     mFrameOfExplosion = when;
 }
 

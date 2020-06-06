@@ -12,6 +12,7 @@
 #include "../CSkeleton.h"
 #include "../LSystem.h"
 #include "../Plant.h"
+#include "../Explosion.h"
 
 MainMenuBar::MainMenuBar(Scene &scene, WindowRenderEngine &wre) : mScene(scene), mWRE(wre) {
 }
@@ -29,6 +30,7 @@ void MainMenuBar::showFileMenu() {
     bool shouldOpenSaaChannelPopup = false;
     bool shouldOpenSkeletonPopup = false;
     bool shouldOpenPlantPopup = false;
+    bool shouldOpenParticleSystemPopup = false;
     if (ImGui::BeginMainMenuBar())
     {
         if (ImGui::BeginMenu("File"))
@@ -54,6 +56,9 @@ void MainMenuBar::showFileMenu() {
             }
             if(ImGui::MenuItem("plant")) {
                 shouldOpenPlantPopup = true;
+            }
+            if(ImGui::MenuItem("particles-system")) {
+                shouldOpenParticleSystemPopup = true;
             }
             ImGui::EndMenu();
         }
@@ -83,12 +88,17 @@ void MainMenuBar::showFileMenu() {
         ImGui::OpenPopup("add plant");
         shouldOpenPlantPopup = false;
     }
+    if(shouldOpenParticleSystemPopup && !ImGui::IsPopupOpen("add particles-system")) {
+        ImGui::OpenPopup("add particles-system");
+        shouldOpenParticleSystemPopup = false;
+    }
     showLoadFile();
     showSaveFile();
     showAddSkyboxPopup();
     showAddSaaChannelPopup();
     showAddSkeletonPopup();
     showAddPlantPopup();
+    showAddParticlesSystemPopup();
 }
 
 
@@ -242,6 +252,46 @@ void MainMenuBar::showAddPlantPopup() {
             }
             Plant *plant = new Plant(lSystem.produce(startString));
             mScene.add(plant);
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+    }
+}
+
+void MainMenuBar::showAddParticlesSystemPopup() {
+    const int MODEL_PATH_BUFFER_SIZE = 256;
+    static char modelPath[MODEL_PATH_BUFFER_SIZE]  = "base_models/red_dot.obj";
+    static int particlesCount = 100;
+    static int frameOfExplosion = 0;
+    if (ImGui::BeginPopupModal("add particles-system", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        if (ImGui::BeginCombo("type", "explosion", 0))
+        {
+            ImGui::Selectable("explosion");
+            ImGui::EndCombo();
+        }
+        ImGui::InputText("model", modelPath, MODEL_PATH_BUFFER_SIZE);
+        ImGui::DragInt("amount of particles", &particlesCount);
+        ImGui::DragInt("frame of event", &frameOfExplosion);
+
+        // cancel btn
+        if (ImGui::Button("Cancel")) {
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::SameLine();
+        // load btn
+        if (ImGui::Button("Create")) {
+            Model *model = new Model(modelPath);
+            Explosion *explosion = new Explosion(*model, frameOfExplosion, particlesCount);
+            mScene.add(explosion);
+//            LSystem lSystem(treeDepth);
+//            std::istringstream stream_rules(rules);
+//            std::string str_rule;
+//            while(std::getline(stream_rules, str_rule, ';')) {
+//                lSystem.addRule(str_rule);
+//            }
+//            Plant *plant = new Plant(lSystem.produce(startString));
+//            mScene.add(plant);
             ImGui::CloseCurrentPopup();
         }
         ImGui::EndPopup();

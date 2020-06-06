@@ -12,14 +12,14 @@ class Model;
 
 class Explosion : public ParticleSystem {
 public:
-    Explosion(Scene &scene, Model &model, int when);
+    Explosion(Model &model, int when, int particlesCount = 1000);
 private:
     // functions
     void generate(int firstIndex, int lastIndex) override;
     // variables
     int mFrameOfExplosion;
     // constants
-    const int PARTICLES_COUNT = 1000;
+    const int PARTICLES_COUNT;
 };
 
 

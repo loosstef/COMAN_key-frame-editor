@@ -10,8 +10,10 @@
 #include "Clock.h"
 #include "Plant.h"
 
+
 class CSkeleton;
 class SkyBox;
+class ParticleSystem;
 
 class Scene {
 public:
@@ -29,11 +31,13 @@ public:
     std::vector<Plant*>& plants() { return mPlants; }
     SkyBox *skyBox() { return mSkyBox; }
     std::vector<Camera*>& cameras() { return mCameras; }
+    std::vector<ParticleSystem*> &particleSystems() { return mParticleSystems; }
     // add scene objects
     void add(StepAheadAnimationChannel *saaChannel);
     void add(CSkeleton *skeleton);
     void add(Plant *plant);
     void add(Camera *camera);
+    void add(ParticleSystem *particleSystem);
     // update all elements dependant of time
     void update();
     // load & save
@@ -48,6 +52,7 @@ private:
     std::vector<Plant*> mPlants;
     SkyBox *mSkyBox = nullptr;
     std::vector<Camera*> mCameras;
+    std::vector<ParticleSystem*> mParticleSystems;
 };
 
 

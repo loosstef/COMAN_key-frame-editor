@@ -39,6 +39,10 @@ void Scene::add(Camera *camera) {
     mCameras.push_back(camera);
 }
 
+void Scene::add(ParticleSystem *particleSystem) {
+    mParticleSystems.push_back(particleSystem);
+}
+
 void Scene::setSkyBox(std::vector<std::string> &faces) {
     if(mSkyBox != nullptr) {
         delete mSkyBox;

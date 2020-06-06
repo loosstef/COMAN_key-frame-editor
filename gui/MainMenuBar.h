@@ -23,6 +23,7 @@ private:
     void showAddSaaChannelPopup();
     void showAddSkeletonPopup();
     void showAddPlantPopup();
+    void showAddParticlesSystemPopup();
 };
 
 

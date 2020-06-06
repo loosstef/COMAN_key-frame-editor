@@ -13,7 +13,7 @@ class Particle;
 
 class ParticleSystem {
 public:
-    ParticleSystem(Scene &scene, Model &model);
+    ParticleSystem(Model &model);
     void draw(Scene &scene);
 protected:
     std::vector<Particle*> mParticles;

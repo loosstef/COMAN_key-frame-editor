@@ -7,7 +7,7 @@
 #include "Scene.h"
 #include "Particle.h"
 
-ParticleSystem::ParticleSystem(Scene &scene, Model &model)
+ParticleSystem::ParticleSystem(Model &model)
    : mModel(model)
 {
     mGenTill = 0;

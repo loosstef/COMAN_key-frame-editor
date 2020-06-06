@@ -16,6 +16,7 @@
 #include "CSkeleton.h"
 #include "SkyBox.h"
 #include "FFD.h"
+#include "ParticleSystem.h"
 
 
 //char VERTEX_SHADER_FILENAME[] = "shaders/standard.vert";
@@ -79,6 +80,11 @@ void RenderEngine::render(Scene &scene, Picked picked) {
     std::vector<Camera*> &cameras = scene.cameras();
     for(auto camera : cameras) {
         camera->draw(scene);
+    }
+    // render Particle systems
+    std::vector<ParticleSystem*> &particleSystems = scene.particleSystems();
+    for(auto particleSystem : particleSystems) {
+        particleSystem->draw(scene);
     }
     // render skybox
     if(scene.skyBox() != nullptr) {
