@@ -162,4 +162,7 @@ void Scene::reset() {
 //    for(auto *camera : mCameras)
 //        delete camera;
     mCameras.clear();
+    for(auto *ps : mParticleSystems)
+        delete ps;
+    mParticleSystems.clear();
 }
