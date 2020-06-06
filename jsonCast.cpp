@@ -9,6 +9,7 @@
 #include "CSkeleton.h"
 #include "CLink.h"
 #include "CJoint.h"
+#include "Plant.h"
 
 
 namespace glm {
@@ -70,4 +71,8 @@ void to_json(nlohmann::json &j, const CLink &link) {
     j["link_twist"] = link.linkTwist();
     j["second_point"] = link.getSecondPoint();
     j["child_joint"] = *link.getChildJoint();
+}
+
+void to_json(nlohmann::json &j, const Plant &plant) {
+    j["structure"] = plant.getStructure();
 }

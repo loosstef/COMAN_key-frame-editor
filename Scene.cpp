@@ -77,6 +77,13 @@ void Scene::save(std::string path) {
 //            j["skeletons"].push_back(*skeleton);
         }
     }
+    // save Plant
+    if(!mPlants.empty()) {
+        j["plants"] = nlohmann::json::array();
+        for(Plant *plant : mPlants) {
+            j["plants"].push_back(*plant);
+        }
+    }
     std::fstream file(path, std::fstream::out);
     file << j;
     file.close();
@@ -105,6 +112,13 @@ void Scene::load(std::string path) {
         for(nlohmann::json &j_skeleton : j["skeletons"]) {
             CSkeleton *newSkeleton = new CSkeleton(j_skeleton);
             mSkeletons.push_back(newSkeleton);
+        }
+    }
+    // load plants
+    if(j.find("plants") != j.end()) {
+        for(nlohmann::json &j_plant : j["plants"]) {
+            Plant *newPlant = new Plant(j_plant);
+            mPlants.push_back(newPlant);
         }
     }
     // close file

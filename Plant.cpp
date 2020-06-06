@@ -7,12 +7,16 @@
 #include "RenderEngine.h"
 
 Plant::Plant(std::string structure) {
+    mStructure = structure;
     if(structure[0] == 'F') {
         mRoot = new Branch(structure.substr(1), glm::mat4(1.0f));
     }
     else {
         mRoot = new Branch(structure, glm::mat4(1.0f), 0.0f);
     }
+}
+
+Plant::Plant(nlohmann::json &j) : Plant(j["structure"].get<std::string>()) {
 }
 
 Plant::~Plant() {

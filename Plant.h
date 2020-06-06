@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include "StandardShader.h"
+#include "vendor/nlohmann/json.hpp"
 
 class Branch;
 class RenderEngine;
@@ -15,10 +16,13 @@ class RenderEngine;
 class Plant {
 public:
     Plant(std::string structure);
+    explicit Plant(nlohmann::json &j);
     ~Plant();
     void draw(RenderEngine &re, StandardShader &shader);
+    [[nodiscard]] std::string getStructure() const { return mStructure; }
 private:
     Branch *mRoot;
+    std::string mStructure;
 };
 
 
