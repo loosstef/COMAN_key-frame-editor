@@ -10,6 +10,7 @@
 #include "CLink.h"
 #include "CJoint.h"
 #include "Plant.h"
+#include "Explosion.h"
 
 
 namespace glm {
@@ -75,4 +76,11 @@ void to_json(nlohmann::json &j, const CLink &link) {
 
 void to_json(nlohmann::json &j, const Plant &plant) {
     j["structure"] = plant.getStructure();
+}
+
+void to_json(nlohmann::json &j, const Explosion &explosion) {
+    j["type"] = "explosion";
+    j["frameOfEvent"] = explosion.getFrameOfExplosion();
+    j["particlePath"] = explosion.model().getPath();
+    j["particleCount"] = explosion.particlesCount();
 }

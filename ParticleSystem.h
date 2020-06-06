@@ -15,6 +15,7 @@ class ParticleSystem {
 public:
     ParticleSystem(Model &model);
     void draw(Scene &scene);
+    [[nodiscard]] Model &model() const { return mModel; }
 protected:
     std::vector<Particle*> mParticles;
 private:

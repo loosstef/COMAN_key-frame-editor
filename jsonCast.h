@@ -14,6 +14,7 @@ class CSkeleton;
 class CJoint;
 class CLink;
 class Plant;
+class Explosion;
 
 namespace glm {
     void to_json(nlohmann::json& j, const glm::vec3& p);
@@ -30,5 +31,7 @@ void to_json(nlohmann::json &j, const CJoint &joint);
 void to_json(nlohmann::json &j, const CLink &link);
 // plant
 void to_json(nlohmann::json &j, const Plant &plant);
+// particles
+void to_json(nlohmann::json &j, const Explosion &explosion);
 
 #endif

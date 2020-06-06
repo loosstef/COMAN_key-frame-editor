@@ -13,6 +13,13 @@ Explosion::Explosion(Model &model, int when, int particlesCount)
     mFrameOfExplosion = when;
 }
 
+[[maybe_unused]] Explosion::Explosion(nlohmann::json &j)
+  : ParticleSystem(*(new Model(j["particlePath"].get<std::string>().data()))),
+    PARTICLES_COUNT(j["particleCount"])
+{
+    mFrameOfExplosion = j["frameOfEvent"];
+}
+
 void Explosion::generate(int firstIndex, int lastIndex) {
     if(firstIndex <= mFrameOfExplosion && mFrameOfExplosion <= lastIndex) {
         glm::mat4 transMat(1.0f);

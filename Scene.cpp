@@ -10,6 +10,7 @@
 #include "StepAheadAnimationChannel.h"
 #include "jsonCast.h"
 #include "CSkeleton.h"
+#include "Explosion.h"
 
 void Scene::init(RenderEngine *re, Clock *clock) {
     mRenderEngine = re;
@@ -88,6 +89,16 @@ void Scene::save(std::string path) {
             j["plants"].push_back(*plant);
         }
     }
+    // save particle-system
+    if(!mParticleSystems.empty()) {
+        j["particle_systems"] = nlohmann::json::array();
+        for(ParticleSystem *ps : mParticleSystems) {
+            Explosion *explosion = (Explosion*) ps;
+            nlohmann::json j_explosion;
+            to_json(j_explosion, *explosion);
+            j["particle_systems"].push_back(j_explosion);
+        }
+    }
     std::fstream file(path, std::fstream::out);
     file << j;
     file.close();
@@ -123,6 +134,13 @@ void Scene::load(std::string path) {
         for(nlohmann::json &j_plant : j["plants"]) {
             Plant *newPlant = new Plant(j_plant);
             mPlants.push_back(newPlant);
+        }
+    }
+    // load particle systems
+    if(j.find("particle_systems") != j.end()) {
+        for(nlohmann::json &j_ps : j["particle_systems"]) {
+            Explosion *explosion = new Explosion(j_ps);
+            mParticleSystems.push_back(explosion);
         }
     }
     // close file
