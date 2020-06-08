@@ -7,7 +7,7 @@
 #include <vector>
 #include "Model.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "vendor/stb-master/stb_image.h"
 #include "FFD.h"
 
 Model::Model(char *path) {

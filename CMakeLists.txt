@@ -25,7 +25,7 @@ add_executable(
         LinearPath.h Clock.cpp Clock.h gui/TimelineWindow.cpp gui/TimelineWindow.h gui/WindowRenderEngine.cpp
         gui/WindowRenderEngine.h Channel.cpp Channel.h gui/EditSAAChannelWindow.cpp gui/EditSAAChannelWindow.h
         Keyframe.cpp Keyframe.h Orientation.cpp Orientation.h  jsonCast.h jsonCast.cpp
-        Mesh.cpp Mesh.h Model.cpp Model.h stb_image.h FFD.cpp FFD.h Picked.h LinInterp.cpp Shader.cpp Shader.h
+        Mesh.cpp Mesh.h Model.cpp Model.h FFD.cpp FFD.h Picked.h LinInterp.cpp Shader.cpp Shader.h
         StandardShader.cpp StandardShader.h Mouse3D.cpp Mouse3D.h Scene.cpp Scene.h TransformStack.cpp TransformStack.h
         Picked.cpp gui/EditJointWindow.cpp gui/EditJointWindow.h LSystem.cpp LSystem.h Plant.cpp Plant.h
         Branch.cpp Branch.h ParticleSystem.cpp ParticleSystem.h Particle.cpp Particle.h Explosion.cpp Explosion.h
@@ -33,6 +33,7 @@ add_executable(
         gui/RenderEngineWindow.cpp gui/RenderEngineWindow.h  gui/MainMenuBar.cpp gui/MainMenuBar.h
         gui/SceneWindow.cpp gui/SceneWindow.h
 
+        vendor/stb-master/stb_image.h
         vendor/imgui/imconfig.h vendor/imgui/imgui.cpp vendor/imgui/imgui.h
         vendor/imgui/imgui_demo.cpp vendor/imgui/imgui_draw.cpp vendor/imgui/imgui_impl_glfw.cpp
         vendor/imgui/imgui_impl_glfw.h vendor/imgui/imgui_impl_opengl3.cpp vendor/imgui/imgui_impl_opengl3.h
