@@ -73,7 +73,7 @@ void SkyBox::init(std::vector<std::string> faces) {
 
 void SkyBox::draw(Scene &scene) {
     Shader *shader = scene.renderEngine().shader();
-    Camera &camera = scene.renderEngine().editorCamera();
+    Camera &camera = scene.renderEngine().camera();
     // check if using correct shader
     if(shader->name().compare("skybox") != 0) {
         std::cerr << "Error: wrong shader set for drawing of skybox" << std::endl;
