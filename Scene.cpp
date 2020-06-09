@@ -12,11 +12,19 @@
 #include "CSkeleton.h"
 #include "Explosion.h"
 
+/**
+ * Initialize the scene-object
+ * @param re the used render engine
+ * @param clock the clock of this scene
+ */
 void Scene::init(RenderEngine *re, Clock *clock) {
     mRenderEngine = re;
     mClock = clock;
 }
 
+/**
+ * Destructor
+ */
 Scene::~Scene() {
     delete mRenderEngine;
     delete mClock;
@@ -25,7 +33,6 @@ Scene::~Scene() {
 
 void Scene::add(StepAheadAnimationChannel *saaChannel) {
     mSaaChannels.push_back(saaChannel);
-//    renderEngine->add(saaChannel);
 }
 
 void Scene::add(CSkeleton *skeleton) {
@@ -51,6 +58,11 @@ void Scene::setSkyBox(std::vector<std::string> &faces) {
     mSkyBox = new SkyBox(faces);
 }
 
+/**
+ * Call this function before rendering the scene.
+ * This will update all time-dependant channels based on the
+ * current time.
+ */
 void Scene::update() {
     int currFrame = mClock->getFrameIndex();
     for(auto *camera : mCameras) {
@@ -58,6 +70,10 @@ void Scene::update() {
     }
 }
 
+/**
+ * Save the current scene.
+ * @param path path of save-file
+ */
 void Scene::save(std::string path) {
     nlohmann::json j;
     // save skybox
@@ -78,8 +94,6 @@ void Scene::save(std::string path) {
             nlohmann::json j_skeleton;
             to_json(j_skeleton, *skeleton);
             j["skeletons"].push_back(j_skeleton);
-//            nlohmann::json j_skeleton = *skeleton;
-//            j["skeletons"].push_back(*skeleton);
         }
     }
     // save Plant
@@ -104,6 +118,10 @@ void Scene::save(std::string path) {
     file.close();
 }
 
+/**
+ * Load a scene from file
+ * @param path path of scene-file
+ */
 void Scene::load(std::string path) {
     // reset all
     reset();
@@ -147,11 +165,12 @@ void Scene::load(std::string path) {
     ifs.close();
 }
 
+/**
+ * reset the current scene. Making it empty.
+ */
 void Scene::reset() {
     // TODO: correctly free all memory
     delete mSkyBox;
-//    for(auto *saaChannel : mSaaChannels)
-//        delete saaChannel;
     mSaaChannels.clear();
     for(auto *skeleton : mSkeletons)
         delete skeleton;
@@ -159,8 +178,6 @@ void Scene::reset() {
     for(auto *plant : mPlants)
         delete plant;
     mPlants.clear();
-//    for(auto *camera : mCameras)
-//        delete camera;
     mCameras.clear();
     for(auto *ps : mParticleSystems)
         delete ps;
