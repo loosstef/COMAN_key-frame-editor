@@ -9,7 +9,6 @@
 #include "Camera.h"
 #include "StepAheadAnimationChannel.h"
 #include "InputHandler.h"
-#include "old_code/Object_DEPRECATED.h"
 #include "Orientation.h"
 #include "Path.h"
 #include "Scene.h"
@@ -19,32 +18,27 @@
 #include "ParticleSystem.h"
 
 
-//char VERTEX_SHADER_FILENAME[] = "shaders/standard.vert";
-//char FRAGMENT_SHADER_FILENAME[] = "shaders/standard.frag";
-//char PICKING_VERTEX_SHADER_FILENAME[] = "shaders/color_picking_shader.vert";
-//char PICKING_FRAGMENT_SHADER_FILENAME[] = "shaders/color_picking_shader.frag";
-
-
-RenderEngine::RenderEngine() : mTransformStack(this),
+/**
+ * Constructor
+ * @param width window width
+ * @param height window height
+ */
+RenderEngine::RenderEngine(int width, int height)
+  : mTransformStack(this),
     mSkyBoxShader("shaders/skybox.vert", "shaders/skybox.frag", "skybox")
 {
-    // set standard values of member variables
-    mWindowWidth = 1940;
-    mWindowHeight = 1080;
+    // set member variables
+    mWindowWidth = width;
+    mWindowHeight = height;
     // set id of standard shader to 0
     mStandardShader.setId(0);
-    // create new camera
+    // create editor camera
     mEditorCamera = new Camera(mWindowWidth, mWindowHeight, "editor cam");
     mCurrCamera = mEditorCamera;
-    // generate and load projection matrix
-//    mProjectionMatrix = glm::perspective(
-//            glm::radians(CAMERA_FOV),
-//            ((float)mWindowWidth) / ((float)mWindowHeight),
-//            CAMERA_NEAR_CLIPPING,
-//            CAMERA_FAR_CLIPPING
-//    );
+    // derive and set projection matrix
     glm::mat4 projMat = mCurrCamera->getProjectionMatrix();
     mStandardShader.setMatrix(PROJECTION_MATRIX, projMat);
+    // set shader
     useShader(mStandardShader);
 }
 
@@ -192,27 +186,32 @@ void RenderEngine::renderForPicking(StepAheadAnimationChannel *saaChannel, Scene
 }
 
 
+/**
+ * getter
+ * @return editor camra
+ */
 Camera &RenderEngine::editorCamera() {
     return *mEditorCamera;
 }
 
+/**
+ * Call this function when window size changed. Will update current camera.
+ * @param width
+ * @param height
+ */
 void RenderEngine::onWindowSizeChange(uint width, uint height) {
     mWindowWidth = width;
     mWindowHeight = height;
     mEditorCamera->setWindowSize(width, height);
-    // TODO: resize all extra cameras
-//    mVirtualCamera->setWindowSize(width, height);
-//    mProjectionMatrix = glm::perspective(
-//            glm::radians(45.0f),
-//            ((float)mWindowWidth) / ((float)mWindowHeight),
-//            CAMERA_NEAR_CLIPPING,
-//            CAMERA_FAR_CLIPPING
-//    );
-//    mStandardShader.setMatrix(PROJECTION_MATRIX, mProjectionMatrix);
-//    glUniformMatrix4fv(mUniLocProjMat, 1, GL_FALSE, glm::value_ptr(mProjectionMatrix));
 }
 
 
+/**
+ * Render a given step ahead animation channel
+ * @param frameIndex current frame index
+ * @param saaChannel set-ahead-animation channel to render
+ * @param picked the picked object
+ */
 void RenderEngine::renderSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel, Picked picked) {
     // retrieve model and ffd
     Model *model = saaChannel.getModel();
@@ -255,6 +254,7 @@ void RenderEngine::useShader(Shader &shader) {
 }
 
 void RenderEngine::useCamera(Camera &camera) {
+    camera.setWindowSize(mWindowWidth, mWindowHeight);
     mCurrCamera = &camera;
 }
 
@@ -267,17 +267,3 @@ Shader *RenderEngine::shader() {
     assert(mCurrShader != nullptr);
     return mCurrShader;
 }
-
-//glm::mat4 RenderEngine::calcTransMatOfSaaChannel(int frameIndex, StepAheadAnimationChannel &saaChannel) {
-//    Path *path = saaChannel.getPath();
-//    if(path == nullptr) {
-//        return glm::mat4(1.0f);
-//    }
-//    else {
-//        Orientation orientation = path->orientation(frameIndex);
-//        glm::mat4 rotMat = glm::toMat4(orientation.rotation);
-//        glm::mat4 transMat = glm::translate(glm::mat4(1.0f), orientation.position);
-//        glm::mat4 transformationMatrix = glm::scale(transMat*rotMat, orientation.scale);
-//        return transformationMatrix;
-//    }
-//}

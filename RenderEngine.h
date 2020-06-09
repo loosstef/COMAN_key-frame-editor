@@ -12,13 +12,12 @@
 #include "StandardShader.h"
 #include "TransformStack.h"
 
-const float CAMERA_FOV = 45.0f;
-const float CAMERA_NEAR_CLIPPING = 0.1f;
-const float CAMERA_FAR_CLIPPING = 50.0f;
+//const float CAMERA_FOV = 45.0f;
+//const float CAMERA_NEAR_CLIPPING = 0.1f;
+//const float CAMERA_FAR_CLIPPING = 50.0f;
 
 class Camera;
 class StepAheadAnimationChannel;
-class Object_DEPRECATED;
 class Channel;
 class GLFWwindow;
 class Scene;
@@ -26,7 +25,7 @@ class Scene;
 class RenderEngine {
 public:
     // constructor
-    RenderEngine();
+    RenderEngine(int width = 1940, int height = 1080);
     // render
     void render(Scene &scene, Picked picked);
     Picked pick(Scene &scene, double mouseX, double mouseY, GLFWwindow *window);
@@ -41,8 +40,6 @@ public:
     TransformStack& transformStack() { return mTransformStack; }
     // events
     void onWindowSizeChange(uint width, uint height);
-    // DEPRECATED
-//    StandardShader *getStandardShader_DEPRECATED() { return &mStandardShader; }
 private:
     // set state
     void useShader(Shader &shader);
@@ -53,18 +50,14 @@ private:
     // member variables
     uint mWindowWidth;
     uint mWindowHeight;
-//    glm::mat4 mProjectionMatrix;
     TransformStack mTransformStack;
     // cameras
     Camera *mCurrCamera;
     Camera *mEditorCamera;
-    Camera *mVirtualCamera;
     // shaders
     Shader *mCurrShader;
     StandardShader mStandardShader;
     Shader mSkyBoxShader;
-    // deprectated variables
-//    std::vector<StepAheadAnimationChannel*> mStepAheadAnimationChannels_DEPRECATED;
 };
 
 
