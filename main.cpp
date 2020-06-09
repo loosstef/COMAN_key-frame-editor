@@ -3,22 +3,13 @@
 #include <GLFW/glfw3.h> // GLFW helper library
 #include <string>
 #include "InputHandler.h"
-#include "StepAheadAnimationChannel.h"
 #include "vendor/imgui/imgui.h"
 #include "vendor/imgui/imgui_impl_opengl3.h"
 #include "vendor/imgui/imgui_impl_glfw.h"
-#include "LinearPath.h"
-#include "Path.h"
 #include "gui/WindowRenderEngine.h"
-#include "Keyframe.h"
 #include "Camera.h"
 #include "Scene.h"
 #include "Mouse3D.h"
-#include "CSkeleton.h"
-#include "CJoint.h"
-#include "CLink.h"
-#include "Explosion.h"
-#include "SkyBox.h"
 #include "BSpline.h"
 
 // constants
