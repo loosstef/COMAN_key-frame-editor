@@ -33,12 +33,9 @@ orangeDot(&ORANGE_DOT_MODEL_LOCATION[0])
             for (int k = 0; k < n; ++k) {
                 glm::vec3 pos = glm::vec3(i/(float)(l-1), j/(float)(m-1), k/(float)(n-1));
                 controlPoints[i][j][k] = pos;
-//                controlPoints[i][j][k].addKeyframe(Keyframe(0, pos));
             }
         }
     }
-//    allControlPoints.push_back(controlPoints);
-//    frameIndices.push_back(0);
 }
 
 FFD::FFD(nlohmann::json j) :
@@ -128,7 +125,6 @@ Vertex FFD::calcPos(Vertex locVertex) {
     for(int i = 0; i <= l; ++i) {
         for(int j = 0; j <= m; ++j) {
             for(int k = 0; k <= n; ++k) {
-//                glm::vec3 locPijk = controlPoints[i][j][k].orientation(frameIndex).position;
                 glm::vec3 locPijk = controlPoints[i][j][k];
                 glm::vec3 Pijk = P0 + locPijk[0] * S + locPijk[1] * T + locPijk[2] * U;
                 float factor = (float)(FFD::C(l, i) * FFD::C(m, j) * FFD::C(n, k));
@@ -159,7 +155,6 @@ int FFD::fac(int l) {
 }
 
 int FFD::C(int n, int k) {
-//    return fac(n) / (float)(fac(k)*fac(n-k));
     if (k == 0 || k == n)
         return 1;
     return C(n - 1, k - 1) + C(n - 1, k);
@@ -167,7 +162,6 @@ int FFD::C(int n, int k) {
 
 void FFD::setControlPoint(glm::tvec3<int> index, glm::vec3 pos) {
     controlPoints[index.x][index.y][index.z] = pos;
-//    controlPoints[index.x][index.y][index.z].addKeyframe(Keyframe(frameIndex, pos));
 }
 
 void FFD::setControlPoint(int index, glm::vec3 pos) {

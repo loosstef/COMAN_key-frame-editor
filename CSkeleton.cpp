@@ -93,7 +93,6 @@ void CSkeleton::render(StandardShader *standardShader, Picked picked) {
         pickedId = picked.joint->getId();
     }
     renderJointAndChildren(standardShader, mRootJoint, pickedId);
-//    mRootJoint->renderAll_DEPRECTATED(standardShader);
 
 }
 
@@ -125,23 +124,19 @@ void CSkeleton::renderJointAndChildren(StandardShader *standardShader, CJoint *j
 }
 
 void CSkeleton::renderJoints(StandardShader *standardShader, CJoint *joint) {
-//    int lastId = jointId;
     joint->updateLocalTransMat();
     glm::vec3 pos = joint->getGlobPos();
     glm::mat4 transMat = glm::translate(glm::mat4(1.0f), pos);
     transMat = glm::scale(transMat, glm::vec3(0.005f));
     standardShader->setMatrix(TRANSFORMATION_MATRIX, transMat);
-//    standardShader->setId(jointId);
     standardShader->setId(joint->getId()+1);
     mModelRedDot.draw(0, standardShader->getUniLocTexture());
     for(int i = 0; i < joint->childCount(); ++i) {
         CLink *childLink = joint->childLink(i);
         if(childLink != nullptr) {
             renderJoints(standardShader, childLink->child());
-//            lastId = renderJoints(standardShader, childLink->child(), lastId+1);
         }
     }
-//    return lastId;
 }
 
 
@@ -216,14 +211,6 @@ void CSkeleton::inverseKinematic(CJoint *joint, glm::vec3 newPos) {
 }
 
 glm::vec3 CSkeleton::calcDifferential(CJoint *endJoint, CJoint *rotJoint) {
-//    const float MINIMAL_ROT = 0.01f;
-//    glm::vec3 origPos = endJoint->getGlobPos();
-//    rotJoint->setJointAngle(rotJoint->calcJointAngle()+MINIMAL_ROT);
-//    rotJoint->updateLocalTransMat();
-//    glm::vec3 endPos = endJoint->getGlobPos();
-//    rotJoint->setJointAngle(rotJoint->calcJointAngle()-MINIMAL_ROT);
-//    rotJoint->updateLocalTransMat();
-//    return (endPos-origPos) / MINIMAL_ROT;
     glm::vec3 rotAxis = rotJoint->getRotAxis();
     glm::vec3 arm = endJoint->getGlobPos() - rotJoint->getGlobPos();
     glm::vec3 diff = glm::cross(rotAxis, arm);

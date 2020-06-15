@@ -62,16 +62,11 @@ void CLink::draw(StandardShader &shader) {
     if(mParentJoint != nullptr) {
         transMat = mParentJoint->transMat();
     }
-
     shader.setMatrix(TRANSFORMATION_MATRIX, transMat);
-//    shader.setId(256*256*255);
-
     // draw mesh
     glBindVertexArray(VAO);
     glDrawElements(GL_LINES, 2, GL_UNSIGNED_INT, (GLvoid*)0);
     glBindVertexArray(0);
-
-//    shader.setId(0);
 }
 
 void CLink::setChild(CJoint *childJoint) {

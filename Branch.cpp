@@ -8,20 +8,12 @@
 #include "RenderEngine.h"
 
 Branch::Branch(std::string structure, glm::mat4 transMat, float length) : redDot("base_models/red_dot.obj") {
-    // set default variables
-//    if(structure[0] == 'F') {
     mLength = length;
-//        structure = structure.substr(1);
-//    }
-//    else {
-//        mLength = 0.0f;
-//    }
     mRotAngle = 0.44854961776f;
     mChildScale = 1.0f;
     if(length == 0.0f) {
         mChildScale = 1.0f;
     }
-//    mLocTransMat = glm::mat4(1.0f);
     // set drawing points
     mPoints[0] = glm::vec3(0.0f);
     // TODO: set length as y-value
@@ -48,8 +40,6 @@ void Branch::generate(std::string structure, glm::mat4 transMat) {
         glm::mat4 nextTransMat = glm::translate(mTransMat, glm::vec3(0.0f, mLength, 0.0f));
         nextTransMat = nextTransMat * transMat;
         nextTransMat = glm::scale(nextTransMat, glm::vec3(mChildScale));
-//        nextTransMat = glm::scale(nextTransMat, glm::vec3(mChildScale));
-//        nextTransMat = nextTransMat * transMat;
         Branch nextBranch(structure.substr(1), nextTransMat);
         mChildren.push_back(nextBranch);
         return;
@@ -107,27 +97,10 @@ int Branch::findClosingBracket(std::string str, int openBracket) {
 }
 
 void Branch::draw(RenderEngine &re, StandardShader &shader) {
-    // BEGIN OF TEST
-//    TransformStack &transStack = re.transformStack();
-//    transStack.push(mTransMat);
     shader.setMatrix(TRANSFORMATION_MATRIX, mTransMat);
-//    redDot.Draw(0, shader.getUniLocTexture());
-//    transStack.pop();
-    // END OF TEST
-
-//    StandardShader *shader = re.getStandardShader();
-//    TransformStack &transStack = re.transformStack();
-//    transStack.push(mTransMat);
-//
-//    shader->setId(250);
-
     glBindVertexArray(VAO);
     glDrawElements(GL_LINES, 2, GL_UNSIGNED_INT, (GLvoid*)0);
     glBindVertexArray(0);
-//    transStack.pop();
-
-//    shader->setId(0);
-
     // draw children
     for(auto branch : mChildren) {
         branch.draw(re, shader);
@@ -135,28 +108,16 @@ void Branch::draw(RenderEngine &re, StandardShader &shader) {
 }
 
 void Branch::setup() {
-    // create arrays
-//    glm::vec3 points[2];
-//    points[0] = glm::vec3(0.0f);
-//    points[1] = glm::vec3(0.0f, 1.0f, 0.0f);
-//    unsigned int indices[2];
-//    indices[0] = 0;
-//    indices[1] = 1;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
-
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
     glBufferData(GL_ARRAY_BUFFER, 2 * sizeof(glm::vec3), &mPoints[0], GL_STATIC_DRAW);
-
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * sizeof(unsigned int), &mIndices[0], GL_STATIC_DRAW);
-
     // vertex positions
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)nullptr);
-
     glBindVertexArray(0);
 }

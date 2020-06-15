@@ -61,12 +61,7 @@ void Camera::move(glm::vec3 movement) {
 
 
 void Camera::relativeMove(glm::vec3 movement) {
-//    glm::mat4 rotMat = glm::rotate(glm::mat4(1.0f), glm::radians(mRotY), glm::vec3(0.0f, 1.0f, 0.0f));
-//    rotMat = glm::rotate(rotMat, glm::radians(mRotX), glm::vec3(1.0f, 0.0f, 0.0f));
-//    rotMat = glm::rotate(rotMat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-//    glm::vec3 absMoveVec = rotMat * glm::vec4(movement, 1.0f);
     glm::vec3 absNewPos = (glm::vec3)(mTransMat * glm::vec4(movement, 1.0f));
-//    mPos += absMoveVec;
     mPos = absNewPos;
     mTransMat = calcTransMat(mPos, mRotX, mRotY);
 }
@@ -75,10 +70,6 @@ void Camera::relativeMove(glm::vec3 movement) {
 glm::vec3 Camera::calcGlobPos(glm::vec3 pos) {
     glm::vec4 viewDir = mTransMat * glm::vec4(pos, 1.0f);
     return (glm::vec3)viewDir;
-//    glm::mat4 rotViewMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(mRotY), glm::vec3(0.0f, 1.0f, 0.0f));
-//    rotViewMatrix = glm::rotate(rotViewMatrix, glm::radians(mRotX), glm::vec3(1.0f, 0.0f, 0.0f));
-//    glm::vec4 homogeneViewDir = rotViewMatrix * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f);
-//    return glm::vec3(homogeneViewDir.x/homogeneViewDir.w, homogeneViewDir.y/homogeneViewDir.w, homogeneViewDir.z/homogeneViewDir.w);
 }
 
 
@@ -156,7 +147,6 @@ void Camera::draw(Scene &scene) {
     // draw the camera-model
     StandardShader *standardShader = (StandardShader*) shader;
     standardShader->setMatrix(TRANSFORMATION_MATRIX, mTransMat);
-//    standardShader->setId(0);
     mModel.draw(0, standardShader->getUniLocTexture());
 }
 

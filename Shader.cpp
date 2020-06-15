@@ -7,9 +7,6 @@
 #include "Shader.h"
 #include "InputHandler.h"
 
-//char VERTEX_SHADER_FILENAME[] = "shaders/standard.vert";
-//char FRAGMENT_SHADER_FILENAME[] = "shaders/standard.frag";
-
 Shader::Shader(char *vsPath, char *fsPath, std::string name) : mName(name) {
     GLuint vs = InputHandler::loadAndCompileShader(&vsPath[0], GL_VERTEX_SHADER);
     GLuint fs = InputHandler::loadAndCompileShader(&fsPath[0], GL_FRAGMENT_SHADER);

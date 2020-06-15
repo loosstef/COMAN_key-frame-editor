@@ -116,7 +116,6 @@ void BSpline::populatePointsVector(uint pointsCount) {
 }
 
 float BSpline::dist(glm::vec3 v1, glm::vec3 v2) {
-//    return sqrtf(powf(v1.x-v2.x, 2) + powf(v1.y-v2.y, 2) + powf(v1.z-v2.z, 2));
     return glm::distance(v1, v2);
 }
 
@@ -165,10 +164,7 @@ void BSpline::loadToGPU(int pointsLayout) {
     glBindVertexArray(mVAO);
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
     glVertexAttribPointer(pointsLayout, POINT_DATA_SIZE, GL_FLOAT, GL_FALSE, POINT_DATA_SIZE*sizeof(float), NULL);
-//    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-//    glVertexAttribPointer(colorLayout, POINT_COLOR_DATASIZE, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*) (POINT_COORD_DATASIZE * sizeof(GLfloat)));
     glEnableVertexAttribArray(pointsLayout);
-//    glEnableVertexAttribArray(colorLayout);
 }
 
 void BSpline::draw(Scene &scene) {

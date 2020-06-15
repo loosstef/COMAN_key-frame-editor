@@ -171,6 +171,7 @@ void Scene::load(std::string path) {
 void Scene::reset() {
     // TODO: correctly free all memory
     delete mSkyBox;
+    mSkyBox = nullptr;
     mSaaChannels.clear();
     for(auto *skeleton : mSkeletons)
         delete skeleton;

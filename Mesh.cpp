@@ -9,11 +9,6 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
         orig_vertices(vertices), indices(indices), textures(textures)
 {
     curr_vertices = &orig_vertices;
-//    all_vertices[0] = vertices;
-//    curr_vertices = &all_vertices[0];
-//    this->vertices = vertices;
-//    this->indices = indices;
-//    this->textures = textures;
     setupMesh(*curr_vertices);
 }
 
@@ -58,19 +53,10 @@ void Mesh::Draw(int frameIndex, GLint uniTexture) {
             number = std::to_string(diffuseNr++);
         else if(name == "texture_specular")
             number = std::to_string(specularNr++);
-
-//        shader.setFloat(("material." + name + number).c_str(), i);
         glUniform1f(uniTexture, i);
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
     glActiveTexture(GL_TEXTURE0);
-
-    // FFD ZOOI
-//    if(ffd != nullptr) {
-//        deformed_vertices = ffd->calcPos_debug(frameIndex, orig_vertices);
-//        setupMesh(deformed_vertices);
-//    }
-    // END OF FFD ZOOI
 
     // draw mesh
     glBindVertexArray(VAO);
