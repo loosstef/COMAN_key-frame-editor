@@ -43,10 +43,6 @@ void Mouse3D::mouse_button_callback(GLFWwindow *window, int button, int action, 
             glm::vec4 viewport(0.0f, 0.0f, width, height);
             glm::vec3 mouseWindowPos = glm::project(localAbsPosCtrlPoint, modelViewMat, projMat, viewport);
             mouseWindowZ = mouseWindowPos.z;
-//            mouseSceneCoord = glm::unProject(glm::vec3(mouseWindowPos.x, (float)windowHeight-mouseWindowPos.y, mouseWindowZ), modelViewMat, projMat, viewport);
-//            picked.ffd->setControlPoint(picked.controlPointIndex, mouseSceneCoord);
-//            picked.ffd->setControlPointAbsCoord(picked.controlPointIndex, mouseSceneCoord);
-//            std::cout << mouseWindowCoord.y << std::endl;
         }
         else if(picked.joint != nullptr) {
             CJoint *joint = picked.joint;
@@ -61,8 +57,6 @@ void Mouse3D::mouse_button_callback(GLFWwindow *window, int button, int action, 
             glm::vec4 viewport(0.0f, 0.0f, width, height);
             glm::vec3 mouseWindowPos = glm::project(localAbsPosCtrlPoint, modelViewMat, projMat, viewport);
             mouseWindowZ = mouseWindowPos.z;
-//            mouseSceneCoord = glm::unProject(glm::vec3(mouseWindowPos.x, (float)windowHeight-mouseWindowPos.y, mouseWindowZ), modelViewMat, projMat, viewport);
-//            skeleton->inverseKinematic(joint, mouseSceneCoord);
         }
     }
 }
@@ -86,20 +80,15 @@ void Mouse3D::loop(Scene &scene, double mouseX, double mouseY) {
         CJoint *joint = picked.joint;
         CSkeleton *skeleton = picked.skeleton;
         int windowHeight = scene.renderEngine().getWindowHeight();
-//        glm::vec3 localAbsPosCtrlPoint = joint->getGlobPos();
         glm::mat4 viewMat = scene.renderEngine().editorCamera().getViewMatrix();
         glm::mat4 modelViewMat = viewMat;
         glm::mat4 projMat = scene.renderEngine().camera().getProjectionMatrix();  // getProjectionMatrix();
         int width = scene.renderEngine().getWindowWidth();
         int height = scene.renderEngine().getWindowHeight();
         glm::vec4 viewport(0.0f, 0.0f, width, height);
-//        glm::vec3 mouseWindowPos = glm::project(localAbsPosCtrlPoint, modelViewMat, projMat, viewport);
-//        mouseWindowZ = mouseWindowPos.z;
-
         glm::vec3 localAbsPosCtrlPoint = joint->getGlobPos();
         glm::vec3 mouseWindowPos = glm::project(localAbsPosCtrlPoint, modelViewMat, projMat, viewport);
         mouseWindowZ = mouseWindowPos.z;
-
         mouseSceneCoord = glm::unProject(glm::vec3(mouseX, windowHeight-mouseY, mouseWindowZ), modelViewMat, projMat, viewport);
         skeleton->inverseKinematic(joint, mouseSceneCoord);
     }

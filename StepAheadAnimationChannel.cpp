@@ -67,7 +67,6 @@ void StepAheadAnimationChannel::prepare(int frameIndex) {
 
 void StepAheadAnimationChannel::tellModelFFDChanged(FFD *ffd, int frameIndex) {
     mModel->applyFFD(frameIndex, ffd);
-//    mModel->onFFDChange();
 }
 
 void StepAheadAnimationChannel::removeFFD(int frameIndex) {
