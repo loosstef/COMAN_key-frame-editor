@@ -58,20 +58,18 @@ Orientation LinearPath::orientation(int frameIndex) {
         Keyframe &keyframe = *mKeyframes.begin();
         return {keyframe.getPos(), keyframe.getRot(), keyframe.getScale()};
     }
+    // if first keyframe is later than querried one --> use that one
+    if(mKeyframes.begin()->getFrameIndex() > frameIndex) {
+        return Orientation(*mKeyframes.begin());
+    }
     // If frame contains a keyframe, return that keyframe his orientation
     Keyframe beforeKeyframe = *mKeyframes.begin();
     Keyframe afterKeyframe = Keyframe(0);
     for (Keyframe &keyframe : mKeyframes) {
          // return orientation if frame-index contains a keyframe
          if (keyframe.getFrameIndex() == frameIndex) {
-    //             glm::quat quat = glm::toQuat(glm::orientate3(glm::vec3(keyframe.getRot().x, keyframe.getRot().z, keyframe.getRot().y)));
-    //             glm::quat quat1X = glm::angleAxis(keyframe.getRot().x, glm::vec3(1.0f, 0.0f, 0.0f));
-    //             glm::quat quat1Y = glm::angleAxis(keyframe.getRot().y, glm::vec3(0.0f, 1.0f, 0.0f));
-    //             glm::quat quat1Z = glm::angleAxis(keyframe.getRot().z, glm::vec3(0.0f, 0.0f, 1.0f));
-    //             glm::quat quat = quat1Y * quat1X * quat1Z;
             glm::mat4x4 euler = glm::eulerAngleYXZ(keyframe.getRot().y, keyframe.getRot().x, keyframe.getRot().z);
             glm::quat quat = glm::toQuat(euler);
-//            glm::quat quat = glm::quat(keyframe.getRot());
             glm::vec3 interpEuler = glm::eulerAngles(quat);
             return Orientation(keyframe.getPos(), interpEuler, keyframe.getScale());
          }
@@ -86,7 +84,6 @@ Orientation LinearPath::orientation(int frameIndex) {
     if(afterKeyframe.getFrameIndex() <= frameIndex) {
         return {mKeyframes.back().getPos(), mKeyframes.back().getRot(), mKeyframes.back().getScale()};
     }
-
     // interpolate and generate keyframe
     int beforeFrameIndex = beforeKeyframe.getFrameIndex();
     int afterFrameIndex = afterKeyframe.getFrameIndex();

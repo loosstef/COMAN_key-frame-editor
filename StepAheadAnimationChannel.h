@@ -13,7 +13,6 @@
 #include "vendor/nlohmann/json.hpp"
 #include "LinearPath.h"
 
-class Object_DEPRECATED;
 class Path;
 class Model;
 class FFD;
